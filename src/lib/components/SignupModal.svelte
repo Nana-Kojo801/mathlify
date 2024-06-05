@@ -23,8 +23,8 @@
 				formData.username
 			);
 			await appwrite.account.createEmailPasswordSession(formData.email, formData.password);
-            await userStore.setUser(await appwrite.account.get())
 			await userStore.createUser(formData);
+            await userStore.setUser(await appwrite.account.get())
 			authModalStore.openModal = false;
 		} catch (err) {
 			if (err instanceof ZodError) {
