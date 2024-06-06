@@ -16,7 +16,7 @@ export default {
         "large-top-players-grid": "repeat(10, minmax(170px, 200px))",
         "level-grid": "repeat(auto-fill, 70px)",
         "difficulty-grid": "repeat(auto-fill, minmax(100px, 110px))"
-      }
+      },
     },
   },
   plugins: [],

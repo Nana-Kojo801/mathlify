@@ -16,7 +16,7 @@
 	});
 </script>
 
-<div class="w-screen h-screen flex flex-col overflow-auto relative">
+<div class="w-screen h-dvh flex flex-col overflow-auto relative">
 	{#if $navigating || userStore.loading.gettingLoggedInUser || userStore.loading.loggingOutUser || userStore.loading.settingLoggedInUser}
 		<div class="w-full h-full grid place-content-center">
 			<Circle color="purple" />
