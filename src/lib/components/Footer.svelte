@@ -23,7 +23,7 @@
   ];
 </script>
 
-<footer class="flex justify-evenly items-center p-2 fixed bottom-0 left-0 w-full bg-white">
+<footer class="flex justify-evenly items-center p-2 bg-white">
     {#each navLinks as links}
         <a class="flex flex-col items-center" href="{links.href}">
             <iconify-icon class="text-purple-900 text-xl" icon={links.icon}></iconify-icon>
