@@ -11,7 +11,7 @@
 	const { children } = $props();
 
 	$effect(() => {
-		const getUser = async () => await userStore.getLoggedInUser();
+		const getUser = async () => await userStore.initUser();
 		getUser();
 	});
 </script>

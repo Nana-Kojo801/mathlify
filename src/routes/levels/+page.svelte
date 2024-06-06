@@ -29,23 +29,24 @@
 
 	const startLevel = (level: Level) => {
 		currLevel = level;
+		answer = null
 		currState = 'level';
 	};
 
 	const retry = () => {
-		currState = 'level';
 		answer = null;
+		currState = 'level';
 	};
 
 	const goBack = () => {
-		currState = 'levels';
 		answer = null;
+		currState = 'levels';
 	};
 
 	const nextLevel = () => {
-		currLevel = levels[levels.indexOf(currLevel!) + 1];
-		currState = 'level';
+		currLevel = levels.find(l => l.level = (currLevel?.level as number) + 1)
 		answer = null;
+		currState = 'level';
 	};
 </script>
 

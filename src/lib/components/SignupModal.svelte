@@ -7,24 +7,13 @@
 	import type { EventHandler } from 'svelte/elements';
 	import { ZodError } from 'zod';
 
-	let loading = $state(false);
 	let formData = $state({ username: '', password: '', email: '' });
 	let errors = $state<{ field: any; form: string | null }>({ field: {}, form: null });
 
 	const handleSubmit: EventHandler = async (e: Event) => {
 		e.preventDefault();
 		try {
-            loading = true;
-			SignupSchema.parse(formData);
-			await appwrite.account.create(
-				ID.unique(),
-				formData.email,
-				formData.password,
-				formData.username
-			);
-			await appwrite.account.createEmailPasswordSession(formData.email, formData.password);
-			await userStore.createUser(formData);
-            await userStore.setUser(await appwrite.account.get())
+			await userStore.signup(formData)
 			authModalStore.openModal = false;
 		} catch (err) {
 			if (err instanceof ZodError) {
@@ -34,8 +23,6 @@
 			} else {
                 errors.form = (err as Error).message;
             }
-		} finally {
-			loading = false;
 		}
 	};
 </script>
@@ -85,8 +72,8 @@
 				<p class="text-xs text-red-600 mt-1">{errors.field.password}</p>
 			{/if}
 		</div>
-		<button disabled={loading} class="primary-btn rounded-[5px] text-sm p-3 disabled:bg-purple-600">
-			{loading ? 'Creating account...' : 'Create account'}
+		<button disabled={userStore.loading.signingUpUser} class="primary-btn rounded-[5px] text-sm p-3 disabled:bg-gray-400">
+			{userStore.loading.signingUpUser ? 'Creating account...' : 'Create account'}
 		</button>
 	</form>
 	<div class="text-center text-sm flex gap-1 m-auto">

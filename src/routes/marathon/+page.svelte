@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { userStore, getTopTen } from '$lib/stores/userStore.svelte';
+	import { userStore } from '$lib/stores/userStore.svelte';
 	import Play from '$lib/components/Play.svelte';
 	import { getDifficulty } from '$lib/utils';
 	import { Circle } from 'svelte-loading-spinners';
 	import { authModalStore } from '$lib/stores/authModalStore.svelte';
-	import { goto } from "$app/navigation"
+	import { goto } from '$app/navigation';
+	import { getTopTen, getUserImage } from '$lib/appwrite/api';
 
 	let round = $state<number>(1);
 	let answer = $state<number | null>(null);
@@ -12,10 +13,10 @@
 
 	$effect(() => {
 		if (userStore.user === null) {
-			goto("/")
-			authModalStore.openModal = true
+			goto('/');
+			authModalStore.openModal = true;
 		}
-	})
+	});
 
 	$effect(() => {
 		if (currState === 'correct') {
@@ -55,20 +56,16 @@
 {#snippet Player(player)}
 	<div class="p-1 rounded-lg aspect-[1/1.4] flex flex-col justify-center items-center gap-4">
 		<div class="w-[80%] aspect-square rounded-full">
-			<img
-				class="rounded-full"
-				src={userStore.getUserImage(player.username) as unknown as string}
-				alt="User profile"
-			/>
+			<img class="rounded-full" src={getUserImage(player.username) as unknown as string} alt="User profile" />
 		</div>
 		<p class="text-center text-base">{player.username}</p>
 	</div>
 {/snippet}
 {#snippet LoadingPlayer()}
-	<div class="animate-pulse bg-gray-100 p-4 rounded-lg aspect-[1/1.4] flex flex-col justify-center items-center gap-4">
-		<div class="w-full aspect-square rounded-full animate-pulse">
-			
-		</div>
+	<div
+		class="animate-pulse bg-gray-200 p-4 rounded-lg aspect-[1/1.4] flex flex-col justify-center items-center gap-4"
+	>
+		<div class="w-full aspect-square rounded-full animate-pulse"></div>
 		<p class="text-center text-base animate-pulse"></p>
 	</div>
 {/snippet}
@@ -77,17 +74,17 @@
 		<div>
 			<p class="text-2xl font-bold">Top #10</p>
 			<div
-				class="grid grid-flow-col grid-cols-top-players-grid lg:grid-cols-large-top-players-grid gap-8 overflow-auto p-1 mt-4"
+				class="grid grid-flow-col grid-cols-top-players-grid lg:grid-cols-large-top-players-grid gap-8 overflow-auto p-2 mt-4"
 			>
 				{#await getTopTen()}
-          {#each { length: 10 } as _}
-            {@render LoadingPlayer()}
-          {/each}
-        {:then players} 
-          {#each players as player, i}
-            {@render Player(player)}
-          {/each}
-        {/await}
+					{#each { length: 10 } as _}
+						{@render LoadingPlayer()}
+					{/each}
+				{:then players}
+					{#each players as player, i}
+						{@render Player(player)}
+					{/each}
+				{/await}
 			</div>
 		</div>
 		<div>
