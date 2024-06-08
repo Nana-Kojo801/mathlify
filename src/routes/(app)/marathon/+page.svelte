@@ -70,7 +70,7 @@
 			</div>
 			<button
 				onclick={() => (currState = 'playing')}
-				class="p-3 w-full text-base text-white bg-purple-900 rounded-md">Start marathon</button
+				class="p-3 w-full text-sm text-white bg-purple-900 rounded-sm">Start marathon</button
 			>
 		</div>
 		<div class="flex flex-col gap-2">
