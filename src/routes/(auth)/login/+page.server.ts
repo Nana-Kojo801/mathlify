@@ -4,7 +4,8 @@ import { fail, isRedirect, redirect, type Actions } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-export const load = async () => {
+export const load = async ({ locals: { user }}) => {
+	if(user) throw redirect(302, "/")
 	const form = await superValidate(zod(LoginSchema));
 
 	return { form };

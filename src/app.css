@@ -29,7 +29,6 @@
   
   .disable-custom {
     color: lightgray;
-  
     * {
       color: lightgray;
     }
