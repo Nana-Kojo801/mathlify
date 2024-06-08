@@ -5,7 +5,7 @@
 
 	let currDifficulty = $state<Difficulty>(difficulties[0]);
 
-	let currState = $state<'settings' | 'playing' | 'correct' | 'wrong'>('settings');
+	let currState = $state<'settings' | 'playing' | 'correct' | 'wrong' | 'timeup'>('settings');
 	let answer = $state<number | null>(null);
 
 	const playAgain = () => (currState = 'playing');
@@ -99,6 +99,10 @@
 				answer = correctAnswer;
 				currState = 'wrong';
 			}}
+			onTimeUp={(correctAnswer) => {
+				answer = correctAnswer
+				currState = 'timeup'
+			}}
 		/>
 	{/if}
 	{#if currState === 'correct'}
@@ -122,7 +126,28 @@
 	{/if}
 	{#if currState === 'wrong'}
 		<div class="flex flex-col gap-8">
-			<p class="text-2xl text-red-500 text-center">INCORRECT. The answer is</p>
+			<div class="text-6xl text-center text-red-500">
+				<p>{answer}</p>
+			</div>
+			<div class="flex gap-4">
+				<button
+					onclick={playAgain}
+					class="primary-btn flex gap-3 px-3 w-[150px] items-center justify-center"
+				>
+					<iconify-icon class="text-white" icon="circum:redo"></iconify-icon> Play again
+				</button>
+				<button
+					onclick={goBack}
+					class="primary-btn flex gap-3 px-3 w-[150px] items-center justify-center"
+				>
+					<iconify-icon class="text-white" icon="icon-park-solid:back"></iconify-icon> Back
+				</button>
+			</div>
+		</div>
+	{/if}
+	{#if currState === 'timeup'}
+		<div class="flex flex-col gap-8">
+			<p class="text-2xl text-red-500 text-center">Time is up. The answer is</p>
 			<div class="text-6xl text-center text-red-500">
 				<p>{answer}</p>
 			</div>

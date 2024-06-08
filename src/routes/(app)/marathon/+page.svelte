@@ -7,7 +7,7 @@
 
 	let round = $state<number>(1);
 	let answer = $state<number | null>(null);
-	let currState = $state<'idle' | 'playing' | 'correct' | 'wrong' | 'updatingRound'>('idle');
+	let currState = $state<'idle' | 'playing' | 'correct' | 'wrong' | 'updatingRound' | 'timeup'>('idle');
 	let updatingRound = $state<boolean>(false);
 
 	const onCorrect = async () => {
@@ -41,6 +41,12 @@
 		answer = null;
 		currState = 'playing';
 	};
+
+	const onTimeUp = (ans: number) => {
+		answer = ans;
+		currState = 'timeup';
+
+	}
 </script>
 
 <div class="h-full flex flex-col p-2 gap-14 overflow-auto relative">
@@ -119,7 +125,7 @@
 	{/if}
 	{#if currState === 'playing'}
 		<p class="absolute left-2 top-2 text-2xl font-bold">Round: {round}</p>
-		<Play difficulty={getDifficulty(round)} {onCorrect} {onWrong} />
+		<Play {onTimeUp} difficulty={getDifficulty(round)} {onCorrect} {onWrong} />
 	{/if}
 	{#if updatingRound}
 		<div class="w-full h-full grid place-content-center">
@@ -147,6 +153,29 @@
 	{#if currState === 'wrong'}
 		<div class="flex flex-col gap-8 w-full h-full justify-center items-center">
 			<p class="text-2xl text-red-500 text-center">INCORRECT. The answer is</p>
+			<div class="text-6xl text-center text-red-500">
+				<p>{answer}</p>
+			</div>
+			<p class="text-xl font-bold text-center mt-2">Your round: {round}</p>
+			<div class="flex gap-4">
+				<button
+					onclick={startOver}
+					class="primary-btn flex gap-3 px-3 w-[150px] items-center justify-center"
+				>
+					<iconify-icon class="text-white" icon="circum:redo"></iconify-icon> Retry
+				</button>
+				<button
+					onclick={goBack}
+					class="primary-btn flex gap-3 px-3 w-[150px] items-center justify-center"
+				>
+					<iconify-icon class="text-white" icon="icon-park-solid:back"></iconify-icon> Back
+				</button>
+			</div>
+		</div>
+	{/if}
+	{#if currState === 'timeup'}
+		<div class="flex flex-col gap-8 w-full h-full justify-center items-center">
+			<p class="text-2xl text-red-500 text-center">Time is up. The answer is</p>
 			<div class="text-6xl text-center text-red-500">
 				<p>{answer}</p>
 			</div>

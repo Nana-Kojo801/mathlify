@@ -5,13 +5,14 @@
 	import CountDown from './CountDown.svelte';
 	import DisplayNumbers from './DisplayNumbers.svelte';
 
-	const { difficulty, onCorrect, onWrong } = $props<{
+	const { difficulty, onCorrect, onWrong, onTimeUp } = $props<{
 		difficulty: Difficulty;
 		onCorrect: (answer: number) => void;
 		onWrong: (answer: number) => void;
+		onTimeUp: (answer: number) => void
 	}>();
 
-	let currState = $state<'idle' | 'countdown' | 'questioning' | 'answer' | 'wrong' | 'correct'>(
+	let currState = $state<'idle' | 'countdown' | 'questioning' | 'answer'>(
 		'idle'
 	);
 
@@ -19,7 +20,7 @@
 
 </script>
 
-<div class="w-full h-full flex justify-center items-center">
+<div class="w-full h-full flex justify-center items-center relative">
 	{#if currState === 'idle'}
 		<button onclick={() => (currState = 'countdown')} class="primary-btn p-3 text-xl w-[150px]"
 			>Start</button
@@ -39,6 +40,6 @@
 		/>
 	{/if}
     {#if currState === 'answer'}
-        <Answer correctAnswer={answer as number} onWrong={onWrong} onCorrect={onCorrect} />
+        <Answer onTimeUp={onTimeUp} correctAnswer={answer as number} onWrong={onWrong} onCorrect={onCorrect} />
     {/if}
 </div>

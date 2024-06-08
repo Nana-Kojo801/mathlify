@@ -6,7 +6,7 @@
 	import { updateUser } from '$lib/appwrite/api';
 	const { data } = $props()
 
-	let currState = $state<'levels' | 'level' | 'correct' | 'wrong'>('levels');
+	let currState = $state<'levels' | 'level' | 'correct' | 'wrong' | 'timeup'>('levels');
 	let currLevel = $state<Level | null>(null);
 	let answer = $state<number | null>(null);
 	let updatingLevel = $state<boolean>(false)
@@ -30,6 +30,11 @@
 			await updateUser(data.user.id, { completed_levels: [...data.user.completed_levels, currLevel?.level] })
 			updatingLevel = false
 		}
+	}
+
+	const onTimeUp = (ans: number) => {
+		answer = ans
+		currState = 'timeup'
 	}
 
 	const goBack = () => {
@@ -85,6 +90,7 @@
 				answer = correctAnswer;
 				currState = 'wrong';
 			}}
+			{onTimeUp}
 		/>
 	{/if}
 	{#if updatingLevel}
@@ -113,6 +119,28 @@
 	{#if currState === 'wrong'}
 		<div class="flex flex-col gap-8">
 			<p class="text-2xl text-red-500 text-center">INCORRECT. The answer is</p>
+			<div class="text-6xl text-center text-red-500">
+				<p>{answer}</p>
+			</div>
+			<div class="flex gap-4">
+				<button
+					onclick={retry}
+					class="primary-btn flex gap-3 px-3 w-[150px] items-center justify-center"
+				>
+					<iconify-icon class="text-white" icon="circum:redo"></iconify-icon> Retry
+				</button>
+				<button
+					onclick={goBack}
+					class="primary-btn flex gap-3 px-3 w-[150px] items-center justify-center"
+				>
+					<iconify-icon class="text-white" icon="icon-park-solid:back"></iconify-icon> Back
+				</button>
+			</div>
+		</div>
+	{/if}
+	{#if currState === 'timeup'}
+		<div class="flex flex-col gap-8">
+			<p class="text-2xl text-red-500 text-center">Time is up. The answer is</p>
 			<div class="text-6xl text-center text-red-500">
 				<p>{answer}</p>
 			</div>
