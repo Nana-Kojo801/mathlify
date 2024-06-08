@@ -18,11 +18,7 @@ export type Level = {
 export type User = {
   id: string;
   username: string;
-  email: string;
-  password: string;
   completed_levels: number[];
-  image: string;
-  rank: number;
   highest_round: number;
 };
 

@@ -10,16 +10,10 @@ export function getRandomNumbers(difficulty: Difficulty): number[] {
   const {
     range: { from, to },
     quantity: { min, max },
-    interval,
   } = difficulty;
 
-  // Validate input
-  if (from < 0 || to < 0 || min <= 0 || max <= 0 || interval <= 0) {
-    throw new Error("Input values must be positive numbers");
-  }
-
-  // Determine a random number of times within the min and max range
-  const times = Math.floor(Math.random() * (max - min + 1)) + min;
+  // DeterMath.abs(min)e a random number of times within the Math.abs(min) and Math.abs(max) range
+  const times = Math.floor(Math.random() * (Math.abs(max) - Math.abs(min) + 1)) + Math.abs(min);
 
   const numbers = [];
   let lastNumber = null;
@@ -27,8 +21,8 @@ export function getRandomNumbers(difficulty: Difficulty): number[] {
   for (let i = 0; i < times; i++) {
     let randomValue;
     do {
-      // Generate random number between from and to (inclusive)
-      randomValue = Math.floor(Math.random() * (to - from + 1)) + from;
+      // Generate random number between Math.abs(from) and Math.abs(to) (inclusive)
+      randomValue = Math.floor(Math.random() * (Math.abs(to) - Math.abs(from) + 1)) + Math.abs(from);
       // Randomly determine positive or negative
       randomValue = Math.random() < 0.5 ? -randomValue : randomValue;
     } while (randomValue === lastNumber);

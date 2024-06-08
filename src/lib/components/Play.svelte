@@ -7,7 +7,7 @@
 
 	const { difficulty, onCorrect, onWrong } = $props<{
 		difficulty: Difficulty;
-		onCorrect: () => void;
+		onCorrect: (answer: number) => void;
 		onWrong: (answer: number) => void;
 	}>();
 

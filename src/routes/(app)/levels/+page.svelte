@@ -2,30 +2,14 @@
 	import type { Difficulty, Level } from '$lib/types';
 	import { levels } from '$lib/utils';
 	import Play from '$lib/components/Play.svelte';
-	import { userStore } from '$lib/stores/userStore.svelte';
 	import { Circle } from 'svelte-loading-spinners';
-	import { authModalStore } from '$lib/stores/authModalStore.svelte';
-	import { goto } from '$app/navigation';
+	import { updateUser } from '$lib/appwrite/api';
+	const { data } = $props()
 
 	let currState = $state<'levels' | 'level' | 'correct' | 'wrong'>('levels');
-	let currLevel = $state<Level>();
+	let currLevel = $state<Level | null>(null);
 	let answer = $state<number | null>(null);
-
-	$effect(() => {
-		if (userStore.user === null) {
-			goto('/');
-			authModalStore.openModal = true;
-		}
-	});
-
-	$effect(() => {
-		if (currState === 'correct') {
-			if (userStore.user?.completed_levels.includes(currLevel?.level)) return;
-			userStore.updateUser({
-				completed_levels: [...userStore.user?.completed_levels, currLevel?.level]
-			});
-		}
-	});
+	let updatingLevel = $state<boolean>(false)
 
 	const startLevel = (level: Level) => {
 		currLevel = level;
@@ -34,20 +18,35 @@
 	};
 
 	const retry = () => {
+		currLevel = null
 		answer = null;
 		currState = 'level';
 	};
 
+	const onCorrect = async () => {
+		currState = "correct"
+		if(!data.user.completed_levels.includes(currLevel?.level as number)) {
+			updatingLevel = true
+			await updateUser(data.user.id, { completed_levels: [...data.user.completed_levels, currLevel?.level] })
+			updatingLevel = false
+		}
+	}
+
 	const goBack = () => {
 		answer = null;
+		currLevel = null
 		currState = 'levels';
 	};
 
 	const nextLevel = () => {
-		currLevel = levels.find(l => l.level = (currLevel?.level as number) + 1)
+		currLevel = levels[(currLevel?.level! + 1) - 1]
 		answer = null;
 		currState = 'level';
 	};
+
+	$effect(() => {
+		console.log('curr', currLevel?.level);
+	})
 </script>
 
 <div class="p-2 relative w-full h-full flex justify-center items-center flex-col">
@@ -59,8 +58,8 @@
 					{@const isUnlocked =
 						level.level === 1
 							? true
-							: userStore.user?.completed_levels.includes(levels[i - 1].level)}
-					{@const isCompleted = userStore.user?.completed_levels.includes(level.level)}
+							: data.user.completed_levels.includes(levels[i - 1].level)}
+					{@const isCompleted = data.user.completed_levels.includes(level.level)}
 					<button
 						onclick={() => startLevel(level)}
 						disabled={!isUnlocked}
@@ -81,14 +80,14 @@
 		<p class="absolute left-2 top-2 text-2xl font-bold">Level: {currLevel?.level}</p>
 		<Play
 			difficulty={currLevel?.difficulty as Difficulty}
-			onCorrect={() => (currState = 'correct')}
+			onCorrect={onCorrect}
 			onWrong={(correctAnswer) => {
 				answer = correctAnswer;
 				currState = 'wrong';
 			}}
 		/>
 	{/if}
-	{#if userStore.loading.updatingUser}
+	{#if updatingLevel}
 		<div class="w-full h-full grid place-content-center">
 			<Circle color="purple" />
 		</div>

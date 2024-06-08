@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { appwrite } from '$lib/appwrite/appwrite';
+	import { appwrite } from '$lib/appwrite/client/appwrite';
 	import { SignupSchema } from '$lib/schemas/schema';
 	import { authModalStore } from '$lib/stores/authModalStore.svelte';
 	import { userStore } from '$lib/stores/userStore.svelte';

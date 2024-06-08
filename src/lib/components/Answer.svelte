@@ -4,7 +4,7 @@
     const { correctAnswer, onWrong, onCorrect } = $props<{
         correctAnswer: number;
         onWrong: (answer: number) => void;
-        onCorrect: () => void;
+        onCorrect: (answer: number) => void;
     }>();
     
     let userAnswer = $state<number>()
@@ -13,7 +13,7 @@
     const handleSubmit: FormEventHandler<HTMLFormElement> = (e: Event) => {
         e.preventDefault();
         if (userAnswer === null || userAnswer === undefined) return
-        return userAnswer === correctAnswer ? onCorrect() : onWrong(correctAnswer);
+        return userAnswer === correctAnswer ? onCorrect(correctAnswer) : onWrong(correctAnswer);
     }
 
     $effect(() => {

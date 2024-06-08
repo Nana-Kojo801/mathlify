@@ -1,5 +1,6 @@
 // env.d.ts
 
+import type { User } from '$lib/types';
 import type { Models } from 'node-appwrite';
 
 // See https://kit.svelte.dev/docs/types#app
@@ -7,8 +8,13 @@ import type { Models } from 'node-appwrite';
 declare global {
 	namespace App {
 		// interface Error {}
-		interface Locals {}
-		// interface PageData {}
+		interface Locals {
+			account: Models.User<Models.Preferences> | null,
+			user: User | null
+		}
+		interface PageData {
+			user: User | null,
+		}
 		// interface Platform {}
 	}
 }
