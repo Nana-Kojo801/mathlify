@@ -10,10 +10,12 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			account: Models.User<Models.Preferences> | null,
-			user: User | null
+			user: User | null,
+			online: boolean
 		}
 		interface PageData {
 			user: User | null,
+			online: boolean
 		}
 		// interface Platform {}
 	}

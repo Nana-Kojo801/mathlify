@@ -3,6 +3,7 @@ export type Difficulty = {
   range: { from: number; to: number };
   quantity: { min: number; max: number };
   interval: number;
+  timer: number;
 };
 
 export type Level = {
@@ -12,6 +13,7 @@ export type Level = {
     range: { from: number; to: number };
     quantity: { min: number; max: number };
     interval: number;
+    timer: number;
   };
 };
 

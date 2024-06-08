@@ -2,16 +2,17 @@
 	import { wait } from '$lib/utils';
 	import type { FormEventHandler } from 'svelte/elements';
 
-	const { correctAnswer, onWrong, onCorrect, onTimeUp } = $props<{
+	const { correctAnswer, onWrong, onCorrect, onTimeUp, timer } = $props<{
 		correctAnswer: number;
 		onWrong: (answer: number) => void;
 		onCorrect: (answer: number) => void;
 		onTimeUp: (answer: number) => void;
+		timer: number;
 	}>();
 
 	let userAnswer = $state<number>();
 	let inputEl = $state<HTMLInputElement | null>(null);
-	let timer = $state<number>(6);
+	let timerValue = $state<number>(timer + 1);
 	let stopTimer = $state<boolean>(false)
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = (e: Event) => {
@@ -23,10 +24,10 @@
 
 	const decreaseTimer = async () => {
 		if (stopTimer === true) return
-		if(timer <= 0) {
+		if(timerValue <= 0) {
 			return onTimeUp(correctAnswer)
 		}
-		timer -= 1
+		timerValue -= 1
 		await wait(1000)
 		decreaseTimer()
 	}
@@ -39,7 +40,7 @@
 </script>
 
 <div class="flex flex-col gap-6 items-center justify-center w-full h-full relative">
-	<p class="text-2xl tabular-nums font-bold absolute top-2 right-2">Timer: {timer}</p>
+	<p class="text-2xl tabular-nums font-bold absolute top-2 right-2">Timer: {timerValue}</p>
 	<p class="text-2xl">The answer is</p>
 	<form onsubmit={handleSubmit} class="flex flex-col gap-6">
 		<input

@@ -6,7 +6,14 @@
 	import { navigating } from '$app/stores';
 	import type { SvelteComponent } from 'svelte';
 	import type { PageData } from './$types';
+	import { onlineStore } from '$lib/stores/onlineStore.svelte';
 	const { children, data } = $props<{ children: SvelteComponent; data: PageData }>();
+
+	const { user, online } = $state(data)
+
+	$effect(() => {
+		onlineStore.online = online
+	})
 	
 </script>
 
@@ -15,7 +22,7 @@
 		<Circle color="purple" />
 	</div>
 {:else}
-	<Header user={data?.user} />
+	<Header {user} />
 	<main class="flex-grow gap-8 px-4 mt-3 overflow-auto">
 		{@render children()}
 	</main>

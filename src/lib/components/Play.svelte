@@ -40,6 +40,6 @@
 		/>
 	{/if}
     {#if currState === 'answer'}
-        <Answer onTimeUp={onTimeUp} correctAnswer={answer as number} onWrong={onWrong} onCorrect={onCorrect} />
+        <Answer timer={difficulty.timer} onTimeUp={onTimeUp} correctAnswer={answer as number} onWrong={onWrong} onCorrect={onCorrect} />
     {/if}
 </div>

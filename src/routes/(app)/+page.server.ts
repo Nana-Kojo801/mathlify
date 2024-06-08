@@ -1,6 +1,6 @@
-import { invalidate } from "$app/navigation";
 import { createSessionClient, SESSION_ID } from "$lib/appwrite/server/appwrite";
 import { redirect, type Actions } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
 
 export const actions: Actions = {
     logout: async (event) => {

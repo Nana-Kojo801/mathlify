@@ -70,6 +70,6 @@
 				{/if}
 			</button>
 		</form>
-		<p class="text-center mt-1">Already have an account? <a href="/login">Login</a></p>
+		<p class="text-center mt-1">Already have an account? <a class="text-purple-900" href="/login">Login</a></p>
 	</div>
 </div>

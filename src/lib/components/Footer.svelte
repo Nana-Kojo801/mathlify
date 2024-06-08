@@ -1,44 +1,43 @@
 <script lang="ts">
-	import { offlineStore } from '$lib/stores/offlineStore.svelte';
+	import { onlineStore } from '$lib/stores/onlineStore.svelte';
 
-	let navLinks = $state([]) as { href: string; icon: string; name: string }[];
-
+	const onlineLinks = [
+		{
+			name: 'Home',
+			href: '/',
+			icon: 'ph:house-fill'
+		},
+		{
+			name: 'Marathon',
+			href: '/marathon',
+			icon: 'cil:running'
+		},
+		{
+			name: 'Levels',
+			href: '/levels',
+			icon: 'icon-park-solid:game-ps'
+		},
+		{
+			name: 'Practice',
+			href: '/practice',
+			icon: 'ic:round-model-training'
+		}
+	];
+	const offlineLinks = [
+		{
+			name: 'Home',
+			href: '/',
+			icon: 'ph:house-fill'
+		},
+		{
+			name: 'Practice',
+			href: '/practice',
+			icon: 'ic:round-model-training'
+		}
+	];
+	let navLinks = $state([]) as { href: string, icon: string, name: string }[];
 	$effect(() => {
-		navLinks = offlineStore.offline
-			? [
-					{
-						name: 'Home',
-						href: '/',
-						icon: 'ph:house-fill'
-					},
-					{
-						name: 'Practice',
-						href: '/practice',
-						icon: 'ic:round-model-training'
-					}
-				]
-			: [
-					{
-						name: 'Home',
-						href: '/',
-						icon: 'ph:house-fill'
-					},
-					{
-						name: 'Marathon',
-						href: '/marathon',
-						icon: 'cil:running'
-					},
-					{
-						name: 'Levels',
-						href: '/levels',
-						icon: 'icon-park-solid:game-ps'
-					},
-					{
-						name: 'Practice',
-						href: '/practice',
-						icon: 'ic:round-model-training'
-					}
-				];
+		navLinks = onlineStore.online ? onlineLinks : offlineLinks;
 	});
 </script>
 

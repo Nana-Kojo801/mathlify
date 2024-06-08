@@ -55,6 +55,6 @@
 				{/if}
 			</button>
 		</form>
-		<p class="text-center mt-1">Dont' have an account? <a href="/signup">Signup</a></p>
+		<p class="text-center mt-1">Dont' have an account? <a class="text-purple-900" href="/signup">Signup</a></p>
 	</div>
 </div>
