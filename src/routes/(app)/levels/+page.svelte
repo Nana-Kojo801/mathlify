@@ -18,7 +18,6 @@
 	};
 
 	const retry = () => {
-		currLevel = null
 		answer = null;
 		currState = 'level';
 	};
