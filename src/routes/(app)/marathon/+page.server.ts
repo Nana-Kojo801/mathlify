@@ -5,7 +5,6 @@ import { Query } from 'node-appwrite';
 
 export const load: ServerLoad = async ({ locals: { user, online }, depends }) => {
 	depends("appwrite:auth")
-	if (online === false) redirect(302, "/")
 	if (!user) redirect(302, '/login');
     const {databases} = createAdminClient()
 

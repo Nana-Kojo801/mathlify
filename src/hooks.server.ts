@@ -23,12 +23,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 			completed_levels: user.completed_levels,
 			highest_round: user.highest_round
 		};
-		event.locals.online = !(typeof navigator !== "undefined" ? navigator.onLine : true)
+		const isOnline = !(typeof navigator !== "undefined" ? navigator.onLine : false)
+		console.log('online', isOnline);
+		
+		event.locals.online = !(typeof navigator !== "undefined" ? navigator.onLine : false)
 		
 	} catch (err) {
 		event.locals.account = null;
 		event.locals.user = null;
 		event.locals.online = false
+		console.log('online', !(typeof navigator !== "undefined" ? navigator.onLine : false));
 	}
 
 	return resolve(event);

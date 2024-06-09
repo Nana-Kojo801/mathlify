@@ -7,22 +7,9 @@
 	import type { SvelteComponent } from 'svelte';
 	import type { PageData } from './$types';
 	import { onlineStore } from '$lib/stores/onlineStore.svelte';
-	import { browser } from '$app/environment';
 	const { children, data } = $props<{ children: SvelteComponent; data: PageData }>();
 
 	const { user, online } = $state(data)
-
-	$effect(() => {
-		if (browser) {
-			window.addEventListener('offline', () => {
-				onlineStore.online = false;
-			});
-			window.addEventListener('online', () => {
-				onlineStore.online = true;
-			});
-		}
-	})
-	
 </script>
 
 {#if $navigating}
