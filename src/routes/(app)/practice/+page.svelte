@@ -127,6 +127,7 @@
 	{#if currState === 'wrong'}
 		<div class="flex flex-col gap-8">
 			<div class="text-6xl text-center text-red-500">
+				<p class="text-2xl text-red-500 text-center">INCORRECT. The answer is</p>
 				<p>{answer}</p>
 			</div>
 			<div class="flex gap-4">

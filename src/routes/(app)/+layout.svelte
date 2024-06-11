@@ -9,7 +9,10 @@
 	import { onlineStore } from '$lib/stores/onlineStore.svelte';
 	const { children, data } = $props<{ children: SvelteComponent; data: PageData }>();
 
-	const { user, online } = $state(data)
+	const { user, offline } = $state(data)
+
+	onlineStore.online = !offline
+
 </script>
 
 {#if $navigating}

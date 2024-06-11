@@ -22,6 +22,7 @@ export type User = {
   username: string;
   completed_levels: number[];
   highest_round: number;
+  rank: number;
 };
 
 export type AppwriteUser = {

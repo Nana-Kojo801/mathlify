@@ -4,7 +4,7 @@ import { Query } from "node-appwrite";
 import type { PageServerLoad } from "../$types";
 
 export const load: PageServerLoad = async () => {
-    const {account, databases} = createAdminClient()
+    const {databases} = createAdminClient()
     const results = await databases.listDocuments(
         PUBLIC_APPWRITE_DATABASE_ID,
         PUBLIC_APPWRITE_USERS_COLLECTION_ID,
