@@ -10,6 +10,8 @@ export const load: LayoutLoad = async ({ depends, data: { user }, fetch }) => {
     } catch {
         offline = true
     }
+    console.log('offline',offline);
+    
     return {
         user,
         offline

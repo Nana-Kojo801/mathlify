@@ -7,12 +7,31 @@
 	import type { SvelteComponent } from 'svelte';
 	import type { PageData } from './$types';
 	import { onlineStore } from '$lib/stores/onlineStore.svelte';
+	import { browser } from '$app/environment';
+	import { invalidateAll } from '$app/navigation';
 	const { children, data } = $props<{ children: SvelteComponent; data: PageData }>();
 
-	const { user, offline } = $state(data)
+	const { user, offline } = $state(data);
+	// console.log('offline', offline);
 
-	onlineStore.online = !offline
+	onlineStore.online = offline === true ? false : true;
 
+	$effect(() => {
+		if (browser) {
+			window.addEventListener('offline', () => {
+				onlineStore.online = false;
+				invalidateAll()
+			});
+			window.addEventListener('online', () => {
+				onlineStore.online = true;
+				invalidateAll()
+			});
+		}
+	});
+
+	$effect(() => {
+		console.log('effect online', onlineStore.online);
+	})
 </script>
 
 {#if $navigating}
