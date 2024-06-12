@@ -8,10 +8,12 @@
 	import type { PageData } from './$types';
 	import { onlineStore } from '$lib/stores/onlineStore.svelte';
 	import { browser } from '$app/environment';
+	import { invalidateAll } from '$app/navigation';
 	const { children, data } = $props<{ children: SvelteComponent; data: PageData }>();
 	
 	$effect(() => {
 		onlineStore.online = navigator.onLine
+		invalidateAll()
 	});
 
 	onDestroy(() => {
