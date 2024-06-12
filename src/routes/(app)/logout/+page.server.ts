@@ -1,8 +1,13 @@
-import { createSessionClient, SESSION_ID } from "$lib/appwrite/server/appwrite";
-import { redirect, type Actions } from "@sveltejs/kit";
+
+import { createSessionClient, SESSION_ID } from '$lib/appwrite/server/appwrite';
+import { redirect, type Actions } from '@sveltejs/kit';
+
+export const load = async () => {
+	throw redirect(302, "/")
+};
 
 export const actions: Actions = {
-	logout: async (event) => {
+	default: async (event) => {
 		console.log('logout');
 		const { account } = createSessionClient(event);
 		await account.deleteSession('current');

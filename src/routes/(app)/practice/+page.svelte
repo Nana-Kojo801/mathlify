@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { difficulties, difficultyList } from '$lib/utils';
+	import { difficulties } from '$lib/utils';
 	import { type Difficulty } from '$lib/types';
 	import Play from '$lib/components/Play.svelte';
 
@@ -38,6 +38,16 @@
 								class="border-b-2 border-purple-900 p-2 w-full text-base outline-none"
 								type="number"
 								bind:value={currDifficulty.interval}
+							/>
+						</div>
+					</div>
+					<div>
+						<p class="text-purple-900 text-xl font-bold">Timer(seconds)</p>
+						<div class="flex gap-2 items-center mt-2">
+							<input
+								class="border-b-2 border-purple-900 p-2 w-full text-base outline-none"
+								type="number"
+								bind:value={currDifficulty.timer}
 							/>
 						</div>
 					</div>

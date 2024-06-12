@@ -5,13 +5,17 @@ class OnlineStore {
 
 	constructor() {
 		if (browser) {
-			window.addEventListener('offline', () => {
-				this.online = false;
-			});
-			window.addEventListener('online', () => {
-				this.online = true;
-			});
+			window.addEventListener('offline', this.onlineHandler);
+			window.addEventListener('online', this.offlineHandler);
 		}
+	}
+
+	onlineHandler() {
+		this.online = false
+	}
+
+	offlineHandler() {
+		this.online = true
 	}
 }
 
