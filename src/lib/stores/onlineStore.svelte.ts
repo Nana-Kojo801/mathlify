@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { invalidateAll } from '$app/navigation';
 
 class OnlineStore {
 	online = $state<boolean>(true);
@@ -12,10 +13,12 @@ class OnlineStore {
 
 	onlineHandler() {
 		this.online = false
+		invalidateAll()
 	}
 
 	offlineHandler() {
 		this.online = true
+		invalidateAll()
 	}
 }
 
