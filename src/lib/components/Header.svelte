@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { appwrite } from '$lib/appwrite/client/appwrite';
 	import { onlineStore } from '$lib/stores/onlineStore.svelte';
 	import { type User } from '$lib/types';
@@ -7,9 +8,13 @@
 	let loggingOut = $state<boolean>(false);
 
 	const logout = async () => {
-		loggingOut = true;
-		await appwrite.account.deleteSession('current');
-		loggingOut = false;
+		try {
+			loggingOut = true;
+			await fetch("/api/logout", { method: "POST"})
+			invalidateAll();
+		} catch {
+			loggingOut = false
+		}
 	};
 </script>
 
@@ -25,7 +30,7 @@
 				class="py-2 px-4 flex items-center gap-2 rounded-lg disabled:text-gray-500 text-purple-900 text-lg"
 			>
 				<iconify-icon icon="ic:baseline-logout"></iconify-icon>
-				Logout
+				{loggingOut ? 'Logging out...' : 'Logout'}
 			</button>
 		{/if}
 	{/if}
