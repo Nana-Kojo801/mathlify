@@ -14,6 +14,8 @@
 			invalidateAll();
 		} catch {
 			loggingOut = false
+		} finally {
+			loggingOut = false
 		}
 	};
 </script>
