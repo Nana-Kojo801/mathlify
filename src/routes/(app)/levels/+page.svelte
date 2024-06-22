@@ -3,7 +3,6 @@
 	import { levels } from '$lib/utils';
 	import Play from '$lib/components/Play.svelte';
 	import { Circle } from 'svelte-loading-spinners';
-	import { updateUser } from '$lib/appwrite/api';
 	import { invalidate } from '$app/navigation';
 	const { data } = $props();
 

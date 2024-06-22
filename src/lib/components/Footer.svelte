@@ -14,6 +14,11 @@
 			icon: 'cil:running'
 		},
 		{
+			name: 'Profile',
+			href: '/profile',
+			icon: 'bxs:user'
+		},
+		{
 			name: 'Levels',
 			href: '/levels',
 			icon: 'icon-park-solid:game-ps'
@@ -23,11 +28,6 @@
 			href: '/practice',
 			icon: 'ic:round-model-training'
 		},
-		{
-			name: 'Profile',
-			href: '/profile',
-			icon: 'bxs:user'
-		}
 	];
 	const offlineLinks = ["/home", "/practice"];
 	let navLinks = $state([]) as { href: string, icon: string, name: string }[];

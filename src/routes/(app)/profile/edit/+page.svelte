@@ -10,18 +10,21 @@
 	let userImage = $state<string>(
 		!data.user?.image ? (getUserImage(data.user?.username!) as unknown as string) : data.user.image
 	);
-
+	let imageChanged = $state<boolean>(false)
 	let fileInput = $state<HTMLInputElement>();
+	let shouldUpdate = $state(false)
 
-	const handleFileChange = async (
-		e: Event & {
-			currentTarget: EventTarget & HTMLInputElement;
-		}
-	) => {
+	form.subscribe(({ username, password }) => {
+		shouldUpdate = username !== data.user?.username || password !== data.user?.password || imageChanged
+	})
+
+	const handleFileChange = async () => {
 		if (!fileInput?.files) return;
 		const file = fileInput.files[0];
 		const imageUrl = URL.createObjectURL(file);
 		userImage = imageUrl;
+		imageChanged = true
+		shouldUpdate = true
 	};
 </script>
 
@@ -86,7 +89,7 @@
 				<p class="text-sm text-red-500">{$errors.password}</p>
 			{/if}
 		</div>
-		<button disabled={$submitting} class="primary-btn p-2 grid place-content-center disabled:bg-gray-300"
+		<button disabled={($submitting || !shouldUpdate) as boolean} class="primary-btn p-3 text-sm grid place-content-center disabled:bg-gray-300"
 			>{#if $submitting}
 				<Circle color="purple" size={20} />
 			{:else}

@@ -99,47 +99,7 @@
 	};
 </script>
 
-{#snippet LoadingTable()}
-	<table class="min-w-full divide-y divide-gray-200 mt-3">
-		<thead class="bg-purple-900">
-			<tr>
-				<th
-					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">#</th
-				>
-				<th
-					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-					>Player</th
-				>
-				<th
-					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-					>Round</th
-				>
-				<th
-					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-					>Time</th
-				>
-			</tr>
-		</thead>
-		<tbody class="bg-white divide-y divide-gray-200">
-			{#each { length: 10 } as _}
-				<tr>
-					<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"></td>
-					<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
-					<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
-					<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-						></td
-					>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-{/snippet}
-
-<div class="h-full flex flex-col p-2 gap-14 relative">
+<div class="h-full w-full flex flex-col p-2 gap-14 relative">
 	{#if currState === 'idle'}
 		<div class="rounded-lg flex flex-col gap-6">
 			<div class="flex gap-10">
@@ -166,7 +126,7 @@
 			</div>
 			<button
 				onclick={() => (currState = 'playing')}
-				class="p-3 w-full text-sm text-white bg-purple-900 rounded-sm">Start marathon</button
+				class="p-3 w-full text-sm text-white bg-purple-900 rounded-md">Start marathon</button
 			>
 		</div>
 		<div class="flex flex-col gap-2">
@@ -179,52 +139,60 @@
 					></iconify-icon>Leaderboard</a
 				>
 			</div>
-			{#await data.players}
-				{@render LoadingTable()}
-			{:then players}
-				<table class="min-w-full divide-y divide-gray-200 mt-2">
-					<thead class="bg-purple-900">
+			<table class="min-w-full divide-y divide-gray-200 mt-2">
+				<thead class="border-b-1 border-b-purple-900">
+					<tr>
+						<th
+							scope="col"
+							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							>Rank</th
+						>
+						<th
+							scope="col"
+							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							>Player</th
+						>
+						<th
+							scope="col"
+							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							>Round</th
+						>
+						<th
+							scope="col"
+							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							>Time</th
+						>
+					</tr>
+				</thead>
+				<tbody class="bg-white divide-y divide-gray-200">
+					{#each data.players as player, i}
 						<tr>
-							<th
-								scope="col"
-								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-								>#</th
+							<td
+								class="py-4 whitespace-nowrap text-xs md:text-sm font-medium text-gray-900 text-center"
+								>{i + 1}</td
 							>
-							<th
-								scope="col"
-								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-								>Player</th
+							<td
+								class="flex items-center justify-center gap-2 py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-center"
 							>
-							<th
-								scope="col"
-								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-								>Round</th
+							<div class="w-2/4 flex gap-2 items-center">
+								<img
+									class="w-[20px] md:w-[40px] aspect-square rounded-full object-cover"
+									src={player.image || getUserImage(player.username)}
+									alt="User profile"
+								/>
+								{player.username}
+							</div>
+							</td>
+							<td class=" py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-center"
+								>{player.highest_round}</td
 							>
-							<th
-								scope="col"
-								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-								>Time</th
+							<td class=" py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-center"
+								>{player.average_time || 0}</td
 							>
 						</tr>
-					</thead>
-					<tbody class="bg-white divide-y divide-gray-200">
-						{#each players as player, i}
-							<tr>
-								<td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900"
-									>{i + 1}</td
-								>
-								<td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900">{player.username}</td>
-								<td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900"
-									>{player.highest_round}</td
-								>
-								<td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900"
-									>{player.average_time || 0}</td
-								>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			{/await}
+					{/each}
+				</tbody>
+			</table>
 		</div>
 	{/if}
 	{#if currState === 'playing'}

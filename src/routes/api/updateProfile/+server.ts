@@ -4,7 +4,7 @@ import {
 	PUBLIC_APPWRITE_PROJECT
 } from '$env/static/public';
 import { createSessionClient } from '$lib/appwrite/server/appwrite.js';
-import { ID, Query } from 'node-appwrite';
+import { ID } from 'node-appwrite';
 
 export const PUT = async (event) => {
 	const { account, storage } = createSessionClient(event);
@@ -17,7 +17,7 @@ export const PUT = async (event) => {
 	await account.updateName(formData.username as string);
 	await account.updatePassword(formData.password as string, event.locals.user?.password);
 
-	let url = null;
+	let url = event.locals.user?.image as string;
 
 	if (formData.image !== 'null') {
 		const files = await storage.listFiles(PUBLIC_APPWRITE_BUCKET_ID)
