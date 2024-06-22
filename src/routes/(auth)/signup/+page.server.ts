@@ -1,10 +1,9 @@
 import { fail, isRedirect, redirect, type Actions } from '@sveltejs/kit';
 import { SignupSchema } from '$lib/schemas/schema';
 import { zod } from 'sveltekit-superforms/adapters';
-import { message, superForm, superValidate } from 'sveltekit-superforms';
-import { ZodError } from 'zod';
+import { message, superValidate } from 'sveltekit-superforms';
 
-export const load = async (event) => {
+export const load = async () => {
 	const form = await superValidate(zod(SignupSchema));
 
 	return { form };

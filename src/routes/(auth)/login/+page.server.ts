@@ -1,5 +1,3 @@
-import { appwrite } from '$lib/appwrite/client/appwrite.js';
-import { createAdminClient, SESSION_ID } from '$lib/appwrite/server/appwrite';
 import { LoginSchema } from '$lib/schemas/schema';
 import { fail, isRedirect, redirect, type Actions } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
