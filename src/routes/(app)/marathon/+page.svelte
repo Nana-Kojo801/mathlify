@@ -176,7 +176,7 @@
 							>
 							<div class="w-2/4 flex gap-2 items-center">
 								<img
-									class="w-[20px] md:w-[40px] aspect-square rounded-full object-cover"
+									class="w-[30px] md:w-[40px] aspect-square rounded-full object-cover"
 									src={player.image || getUserImage(player.username)}
 									alt="User profile"
 								/>
