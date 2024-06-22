@@ -4,16 +4,18 @@
 	import Play from '$lib/components/Play.svelte';
 	import { Circle } from 'svelte-loading-spinners';
 	import { updateUser } from '$lib/appwrite/api';
-	const { data } = $props()
+	import { invalidate } from '$app/navigation';
+	const { data } = $props();
 
-	let currState = $state<'levels' | 'level' | 'correct' | 'wrong' | 'timeup'>('levels');
+	let currState = $state<'levels' | 'level' | 'correct' | 'wrong' | 'timeup' | 'updatingLevel'>(
+		'levels'
+	);
 	let currLevel = $state<Level | null>(null);
 	let answer = $state<number | null>(null);
-	let updatingLevel = $state<boolean>(false)
 
 	const startLevel = (level: Level) => {
 		currLevel = level;
-		answer = null
+		answer = null;
 		currState = 'level';
 	};
 
@@ -23,34 +25,38 @@
 	};
 
 	const onCorrect = async () => {
-		currState = "correct"
-		if(!data.user.completed_levels.includes(currLevel?.level as number)) {
-			updatingLevel = true
-			await updateUser(data.user.id, { completed_levels: [...data.user.completed_levels, currLevel?.level] })
-			updatingLevel = false
+		if (!data.user?.completed_levels.includes(currLevel?.level as number)) {
+			currState = 'updatingLevel'
+			await fetch(`/api/user/${data.user.$id}`, {
+				method: "PUT",
+				headers: { 'Content-type': 'application/json' },
+				body: JSON.stringify({ completed_levels: [...data.user?.completed_levels!, currLevel?.level] })
+			})
+			await invalidate("appwrite:auth")
 		}
-	}
+		currState = 'correct'
+	};
 
 	const onTimeUp = (ans: number) => {
-		answer = ans
-		currState = 'timeup'
-	}
+		answer = ans;
+		currState = 'timeup';
+	};
 
 	const goBack = () => {
 		answer = null;
-		currLevel = null
+		currLevel = null;
 		currState = 'levels';
 	};
 
 	const nextLevel = () => {
-		currLevel = levels[(currLevel?.level! + 1) - 1]
+		currLevel = levels[currLevel?.level! + 1 - 1];
 		answer = null;
 		currState = 'level';
 	};
 
 	$effect(() => {
 		console.log('curr', currLevel?.level);
-	})
+	});
 </script>
 
 <div class="p-2 relative w-full h-full flex justify-center items-center flex-col">
@@ -60,10 +66,8 @@
 			<div class="grid gap-5 grid-cols-5 md:grid-cols-level-grid place-content-center mt-4">
 				{#each levels as level, i}
 					{@const isUnlocked =
-						level.level === 1
-							? true
-							: data.user.completed_levels.includes(levels[i - 1].level)}
-					{@const isCompleted = data.user.completed_levels.includes(level.level)}
+						level.level === 1 ? true : data.user?.completed_levels.includes(levels[i - 1].level)}
+					{@const isCompleted = data.user?.completed_levels.includes(level.level)}
 					<button
 						onclick={() => startLevel(level)}
 						disabled={!isUnlocked}
@@ -84,7 +88,7 @@
 		<p class="absolute left-2 top-2 text-2xl font-bold">Level: {currLevel?.level}</p>
 		<Play
 			difficulty={currLevel?.difficulty as Difficulty}
-			onCorrect={onCorrect}
+			{onCorrect}
 			onWrong={(correctAnswer) => {
 				answer = correctAnswer;
 				currState = 'wrong';
@@ -92,11 +96,12 @@
 			{onTimeUp}
 		/>
 	{/if}
-	{#if updatingLevel}
+	{#if currState === 'updatingLevel'}
 		<div class="w-full h-full grid place-content-center">
 			<Circle color="purple" />
 		</div>
-	{:else if currState === 'correct'}
+	{/if}
+	{#if currState === 'correct'}
 		<div class="flex flex-col gap-8">
 			<p class="text-4xl text-green-500 text-center">CORRECT</p>
 			<div class="flex gap-4">

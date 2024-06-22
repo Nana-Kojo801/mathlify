@@ -1,9 +1,6 @@
 import type { Difficulty, Level } from "./types";
 
-export const APPWRITE_ENDPOINT = "https://cloud.appwrite.io/v1"
-export const APPWRITE_PROJECT_ENDPOINT = "665d7490003e64abf620"
-export const APPWRITE_DATABASE_ID = "665d74be00248ec07494"
-export const APPWRITE_USERS_COLLECTION_ID ="665d74ca00052720b944"
+export const user_props = ["$id", "username", "password", "email", "highest_round", "completed_levels", "image", "average_time"]
 
 export function getRandomNumbers(difficulty: Difficulty): number[] {
   // Destructure the range and rounds from the difficulty object

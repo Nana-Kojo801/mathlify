@@ -1,9 +1,6 @@
-import { redirect } from "@sveltejs/kit";
+
 import type { PageServerLoad } from "../$types";
-
-export const load: PageServerLoad = async ({ locals: { user, online }, depends }) => {
-    depends("appwrite:auth")
-	if (!user) redirect(302, '/login');
-
+export const load: PageServerLoad = async ({ parent, depends }) => {
+	const {user} = await parent()
 	return { user };
 };

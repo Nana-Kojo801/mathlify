@@ -1,7 +1,7 @@
 import { APPWRITE_KEY } from "$env/static/private"
 import { PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT } from "$env/static/public"
 import type { RequestEvent } from "@sveltejs/kit"
-import { Client, Account, Databases, ID } from "node-appwrite"
+import { Client, Account, Databases, ID, Storage } from "node-appwrite"
 
 export const createSessionClient = (event: RequestEvent) => {
     const client = new Client()
@@ -16,7 +16,8 @@ export const createSessionClient = (event: RequestEvent) => {
 
     return {
         get account() { return new Account(client) },
-        get databases() { return new Databases(client)}
+        get databases() { return new Databases(client)},
+        get storage() { return new Storage(client) }
     }
 }
 
@@ -28,7 +29,8 @@ export const createAdminClient = () => {
 
     return {
         get account() { return new Account(client) },
-        get databases() { return new Databases(client)}
+        get databases() { return new Databases(client)},
+        get storage() { return new Storage(client) }
     }
 }
 

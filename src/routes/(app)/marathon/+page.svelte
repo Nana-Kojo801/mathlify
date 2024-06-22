@@ -1,53 +1,143 @@
 <script lang="ts">
 	import Play from '$lib/components/Play.svelte';
 	import { getDifficulty } from '$lib/utils';
-	import { getUserImage, updateUser } from '$lib/appwrite/api';
+	import { getUserImage } from '$lib/appwrite/api';
 	import { Circle } from 'svelte-loading-spinners';
+	import { invalidate } from '$app/navigation';
 	const { data } = $props();
 
 	let round = $state<number>(1);
 	let answer = $state<number | null>(null);
-	let currState = $state<'idle' | 'playing' | 'correct' | 'wrong' | 'updatingRound' | 'timeup'>('idle');
-	let updatingRound = $state<boolean>(false);
+	let currState = $state<
+		| 'idle'
+		| 'playing'
+		| 'correct'
+		| 'wrong'
+		| 'updatingRound'
+		| 'updatingTime'
+		| 'timeup'
+		| 'pending'
+	>('idle');
+	let different_times = $state<number[]>([]);
+	let average_time = $derived.by(() => {
+		return (
+			different_times.reduce((prev, curr) => prev + curr, 0) / (round === 1 ? round : round - 1)
+		);
+	});
+	let pending_actions = [] as (() => Promise<void>)[];
 
-	const onCorrect = async () => {
-		currState = 'correct';
-		if (round > data.user.highest_round) {
-			updatingRound = true;
-			await updateUser(data.user.id, { highest_round: round });
-			updatingRound = false;
+	const checkNewTime = () => {
+		if (data.user?.average_time === 0 || null || average_time < data.user?.average_time) {
+			pending_actions.push(async () => {
+				await fetch(`/api/user/${data.user.$id}`, {
+					method: 'PUT',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify({ average_time: average_time })
+				});
+				await invalidate('appwrite:auth');
+			});
 		}
 	};
 
-	const onWrong = (ans: number) => {
+	const checkNewRound = () => {
+		if (round > data.user?.highest_round!) {
+			pending_actions.push(async () => {
+				await fetch(`/api/user/${data.user.$id}`, {
+					method: 'PUT',
+					headers: { 'Content-type': 'application/json' },
+					body: JSON.stringify({ highest_round: round })
+				});
+				await invalidate('appwrite:auth');
+			});
+		}
+	};
+
+	const onCorrect = async ({ time }: { time: number }) => {
+		different_times.push(parseFloat((getDifficulty(round).timer + 1 - time).toFixed(2)));
+		checkNewTime();
+		checkNewRound();
+		currState = 'correct';
+	};
+
+	const onWrong = async (ans: number) => {
+		checkNewTime();
 		answer = ans;
 		currState = 'wrong';
 	};
 
-	const nextRound = () => {
+	const execute_action = async () => {
+		currState = 'pending';
+		await Promise.all(pending_actions);
+		pending_actions = [];
+	};
+
+	const nextRound = async () => {
+		if (pending_actions.length !== 0) await execute_action();
 		round = round + 1;
 		answer = null;
 		currState = 'playing';
 	};
 
-	const goBack = () => {
+	const goBack = async () => {
+		if (pending_actions.length !== 0) await execute_action();
 		round = 1;
 		answer = null;
 		currState = 'idle';
 	};
 
-	const startOver = () => {
+	const startOver = async () => {
+		if (pending_actions.length !== 0) await execute_action();
 		round = 1;
 		answer = null;
 		currState = 'playing';
 	};
 
-	const onTimeUp = (ans: number) => {
+	const onTimeUp = async (ans: number) => {
+		if (pending_actions.length !== 0) await execute_action();
 		answer = ans;
 		currState = 'timeup';
-
-	}
+	};
 </script>
+
+{#snippet LoadingTable()}
+	<table class="min-w-full divide-y divide-gray-200 mt-3">
+		<thead class="bg-purple-900">
+			<tr>
+				<th
+					scope="col"
+					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">#</th
+				>
+				<th
+					scope="col"
+					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+					>Player</th
+				>
+				<th
+					scope="col"
+					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+					>Round</th
+				>
+				<th
+					scope="col"
+					class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+					>Time</th
+				>
+			</tr>
+		</thead>
+		<tbody class="bg-white divide-y divide-gray-200">
+			{#each { length: 10 } as _}
+				<tr>
+					<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"></td>
+					<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
+					<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
+					<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+						></td
+					>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{/snippet}
 
 <div class="h-full flex flex-col p-2 gap-14 overflow-auto relative">
 	{#if currState === 'idle'}
@@ -56,11 +146,11 @@
 				<div class="aspect-square flex flex-col gap-2 items-center">
 					<img
 						class="w-[80px] md:w-[100px] rounded-full"
-						src={getUserImage(data.user.username) as unknown as string}
+						src={getUserImage(data.user?.username) as unknown as string}
 						alt="User profile"
 					/>
 					<div class="flex flex-col justify-center">
-						<p class="font-bold text-xl">{data.user.username}</p>
+						<p class="font-bold text-xl">{data.user?.username}</p>
 					</div>
 				</div>
 				<div class="flex-grow flex gap-10 items-center">
@@ -69,7 +159,7 @@
 						<p class="text-center">Rank</p>
 					</div>
 					<div class="flex flex-col gap-1">
-						<p class="font-bold text-xl text-center">{data.user.highest_round}</p>
+						<p class="font-bold text-xl text-center">{data.user?.highest_round}</p>
 						<p class="text-center">Round</p>
 					</div>
 				</div>
@@ -89,49 +179,64 @@
 					></iconify-icon>Leaderboard</a
 				>
 			</div>
-			<table class="min-w-full divide-y divide-gray-200 mt-3">
-				<thead class="bg-purple-900">
-					<tr>
-						<th
-							scope="col"
-							class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-							>Rank</th
-						>
-						<th
-							scope="col"
-							class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-							>Player</th
-						>
-						<th
-							scope="col"
-							class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-							>Round</th
-						>
-					</tr>
-				</thead>
-				<tbody class="bg-white divide-y divide-gray-200">
-					{#each data.players as player, i}
+			{#await data.players}
+				{@render LoadingTable()}
+			{:then players}
+				<table class="min-w-full divide-y divide-gray-200 mt-3">
+					<thead class="bg-purple-900">
 						<tr>
-							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{i + 1}</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{player.username}</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-								>{player.highest_round}</td
+							<th
+								scope="col"
+								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+								>#</th
+							>
+							<th
+								scope="col"
+								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+								>Player</th
+							>
+							<th
+								scope="col"
+								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+								>Round</th
+							>
+							<th
+								scope="col"
+								class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+								>Time</th
 							>
 						</tr>
-					{/each}
-				</tbody>
-			</table>
+					</thead>
+					<tbody class="bg-white divide-y divide-gray-200">
+						{#each players as player, i}
+							<tr>
+								<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+									>{i + 1}</td
+								>
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{player.username}</td>
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+									>{player.highest_round}</td
+								>
+								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+									>{player.average_time || 0}</td
+								>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			{/await}
 		</div>
 	{/if}
 	{#if currState === 'playing'}
 		<p class="absolute left-2 top-2 text-2xl font-bold">Round: {round}</p>
 		<Play {onTimeUp} difficulty={getDifficulty(round)} {onCorrect} {onWrong} />
 	{/if}
-	{#if updatingRound}
+	{#if currState === 'updatingRound' || currState === 'updatingTime' || currState === 'pending'}
 		<div class="w-full h-full grid place-content-center">
 			<Circle color="purple" />
 		</div>
-	{:else if currState === 'correct'}
+	{/if}
+	{#if currState === 'correct'}
 		<div class="flex flex-col gap-8 w-full h-full justify-center items-center">
 			<p class="text-4xl text-green-500 text-center">CORRECT</p>
 			<div class="flex gap-4">

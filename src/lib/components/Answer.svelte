@@ -1,38 +1,33 @@
 <script lang="ts">
-	import { wait } from '$lib/utils';
 	import type { FormEventHandler } from 'svelte/elements';
+	import Timer from './Timer.svelte';
 
-	const { correctAnswer, onWrong, onCorrect, onTimeUp, timer } = $props<{
+	const { correctAnswer, onWrong, onCorrect, onTimeUp, timer, showTime } = $props<{
 		correctAnswer: number;
 		onWrong: (answer: number) => void;
-		onCorrect: (answer: number) => void;
+		onCorrect: ({ answer, time }: { answer: number; time: number }) => void;
 		onTimeUp: (answer: number) => void;
 		timer: number;
+		showTime: boolean;
 	}>();
 
 	let userAnswer = $state<number>();
 	let inputEl = $state<HTMLInputElement | null>(null);
 	let timerValue = $state<number>(timer + 1);
-	let stopTimer = $state<boolean>(false)
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = (e: Event) => {
 		e.preventDefault();
+		console.log('timer', timerValue);
+		
 		if (userAnswer === null || userAnswer === undefined) return;
-		stopTimer = true
-		return userAnswer === correctAnswer ? onCorrect(correctAnswer) : onWrong(correctAnswer);
+		return userAnswer === correctAnswer
+			? onCorrect({ answer: correctAnswer, time: timerValue })
+			: onWrong(correctAnswer);
 	};
 
-	const decreaseTimer = async () => {
-		if (stopTimer === true) return
-		if(timerValue <= 0) {
-			return onTimeUp(correctAnswer)
-		}
-		timerValue -= 1
-		await wait(1000)
-		decreaseTimer()
-	}
-
-	decreaseTimer()
+	const trackTime = (time: number) => {
+		timerValue = time;
+	};
 
 	$effect(() => {
 		inputEl?.focus();
@@ -40,7 +35,9 @@
 </script>
 
 <div class="flex flex-col gap-6 items-center justify-center w-full h-full relative">
-	<p class="text-2xl tabular-nums font-bold absolute top-2 right-2">Timer: {timerValue}</p>
+	{#if showTime}
+		<Timer track={trackTime} onDone={() => onTimeUp(correctAnswer)} startSeconds={timer} />
+	{/if}
 	<p class="text-2xl">The answer is</p>
 	<form onsubmit={handleSubmit} class="flex flex-col gap-6">
 		<input

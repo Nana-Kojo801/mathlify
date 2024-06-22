@@ -7,9 +7,18 @@
 
 	let currState = $state<'settings' | 'playing' | 'correct' | 'wrong' | 'timeup'>('settings');
 	let answer = $state<number | null>(null);
+	let timer = $state<number | null>(null);
 
 	const playAgain = () => (currState = 'playing');
 	const goBack = () => (currState = 'settings');
+	const onCorrect = ({ time }: { time: number }) => {
+		timer = time;
+		currState = 'correct';
+	};
+	const onWrong = (correctAnswer: number) => {
+		answer = correctAnswer;
+		currState = 'wrong';
+	};
 </script>
 
 <div class="w-full h-full flex justify-center items-center">
@@ -104,20 +113,19 @@
 	{#if currState === 'playing'}
 		<Play
 			difficulty={currDifficulty}
-			onCorrect={() => (currState = 'correct')}
-			onWrong={(correctAnswer) => {
-				answer = correctAnswer;
-				currState = 'wrong';
-			}}
+			{onCorrect}
+			{onWrong}
 			onTimeUp={(correctAnswer) => {
-				answer = correctAnswer
-				currState = 'timeup'
+				answer = correctAnswer;
+				currState = 'timeup';
 			}}
+			showTime
 		/>
 	{/if}
 	{#if currState === 'correct'}
 		<div class="flex flex-col gap-8">
 			<p class="text-4xl text-green-500 text-center">CORRECT</p>
+			<p class="mt-2 text-2xl font-bold text-center">Your time: {timer}s</p>
 			<div class="flex gap-4">
 				<button
 					onclick={playAgain}

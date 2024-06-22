@@ -18,20 +18,12 @@ export type Level = {
 };
 
 export type User = {
-  id: string;
-  username: string;
-  completed_levels: number[];
-  highest_round: number;
-  rank: number;
-};
-
-export type AppwriteUser = {
   $id: string;
   username: string;
+  completed_levels: number[];
+  highest_round: number;
   email: string;
   password: string;
-  completed_levels: number[];
   image: string;
-  rank: number;
-  highest_round: number;
+  average_time: number;
 };

@@ -10,3 +10,9 @@ export const LoginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(3).max(30)
 })
+
+export const UpdateSchema = z.object({
+    username: z.string().min(2).max(15).trim(),
+    password: z.string().min(8).max(30),
+    image: z.custom<File>(data => data instanceof File).nullable()
+})
