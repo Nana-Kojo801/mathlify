@@ -32,7 +32,7 @@
             <p>{data.user?.password}</p>
         </div>
     </div>
-    <a href="/profile/edit" class="primary-btn p-2">Edit profile</a>
+    <a href="/profile/edit" class="primary-btn text-sm p-3">Edit profile</a>
 
-    <button disabled={loggingOut.value} onclick={logout} class="secondary-btn mt-4 flex justify-center items-center gap-2"> <iconify-icon icon="ic:round-logout"></iconify-icon>{loggingOut.value ? "Logging out" : "Logout"}</button>
+    <button disabled={loggingOut.value} onclick={logout} class="secondary-btn text-sm p-3 mt-4 flex justify-center items-center gap-2"> <iconify-icon icon="ic:round-logout"></iconify-icon>{loggingOut.value ? "Logging out" : "Logout"}</button>
 </div>

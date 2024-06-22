@@ -36,11 +36,11 @@
 	});
 </script>
 
-<footer class="flex justify-evenly items-center p-2 bg-white">
+<footer class="flex justify-evenly gap-2 items-center p-2 bg-white">
 	{#each navLinks as links}
 		<a class="flex flex-col items-center" href={links.href}>
 			<iconify-icon class="text-purple-900 text-xl" icon={links.icon}></iconify-icon>
-			<p class="text-xs md:text-sm text-purple-900">{links.name}</p>
+			<p class="text-sm md:text-sm text-purple-900">{links.name}</p>
 		</a>
 	{/each}
 </footer>
