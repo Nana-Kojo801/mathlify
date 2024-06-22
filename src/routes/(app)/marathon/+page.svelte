@@ -139,7 +139,7 @@
 	</table>
 {/snippet}
 
-<div class="h-full flex flex-col p-2 gap-14 overflow-auto relative">
+<div class="h-full flex flex-col p-2 gap-14 relative">
 	{#if currState === 'idle'}
 		<div class="rounded-lg flex flex-col gap-6">
 			<div class="flex gap-10">
@@ -182,7 +182,7 @@
 			{#await data.players}
 				{@render LoadingTable()}
 			{:then players}
-				<table class="min-w-full divide-y divide-gray-200 mt-3">
+				<table class="min-w-full divide-y divide-gray-200 mt-2">
 					<thead class="bg-purple-900">
 						<tr>
 							<th
@@ -210,14 +210,14 @@
 					<tbody class="bg-white divide-y divide-gray-200">
 						{#each players as player, i}
 							<tr>
-								<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+								<td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900"
 									>{i + 1}</td
 								>
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{player.username}</td>
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+								<td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900">{player.username}</td>
+								<td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900"
 									>{player.highest_round}</td
 								>
-								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+								<td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900"
 									>{player.average_time || 0}</td
 								>
 							</tr>

@@ -4,9 +4,9 @@
 	import 'iconify-icon';
 	import { Circle } from 'svelte-loading-spinners';
 	import { navigating } from '$app/stores';
-	import { onDestroy, onMount, type SvelteComponent } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import type { PageData } from './$types';
-	const { children, data } = $props<{ children: SvelteComponent; data: PageData }>();
+	const { children, data } = $props<{ children: Snippet; data: PageData }>();
 
 </script>
 
