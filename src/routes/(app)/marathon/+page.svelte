@@ -145,8 +145,8 @@
 			<div class="flex gap-10">
 				<div class="aspect-square flex flex-col gap-2 items-center">
 					<img
-						class="w-[80px] md:w-[100px] rounded-full"
-						src={getUserImage(data.user?.username) as unknown as string}
+						class="w-[80px] aspect-square md:w-[100px] rounded-full object-cover"
+						src={data.user?.image}
 						alt="User profile"
 					/>
 					<div class="flex flex-col justify-center">

@@ -1,4 +1,4 @@
-import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_USERS_COLLECTION_ID } from '$env/static/public'
+import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_USERS_COLLECTION_ID } from '$env/static/public'
 import { createSessionClient } from '$lib/appwrite/server/appwrite'
 import type { User } from '$lib/types'
 import { user_props } from '$lib/utils'
@@ -16,8 +16,8 @@ export const handle = async ({ event, resolve }) => {
       [Query.equal("email", currentAccount.email), Query.select(user_props)]
     )
     console.log('done loading user...');
-    
-    event.locals.user = results.documents[0] as unknown as User
+    const user = {...results.documents[0], image: results.documents[0].image === null ? `${PUBLIC_APPWRITE_ENDPOINT}/avatars/initials?name=${results.documents[0].username}`: results.documents[0].image}
+    event.locals.user = user as unknown as User
     // console.log(event.locals.user);
     
     

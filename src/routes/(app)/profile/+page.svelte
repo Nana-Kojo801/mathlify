@@ -17,7 +17,7 @@
 	<div class="flex flex-col items-center mt-5">
 		<img
 			class="w-[150px] aspect-square rounded-full object-cover"
-			src={data.user?.image || (getUserImage(data.user?.username!) as unknown as string)}
+			src={data.user?.image}
 			alt="User profile"
 		/>
         <p class="font-bold text-2xl mt-2">{data.user?.username}</p>

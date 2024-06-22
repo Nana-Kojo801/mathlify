@@ -2,7 +2,6 @@
 	import { goto, invalidate } from '$app/navigation';
 	import clickOutside from '$lib/actions/ClickOutside';
 	import { getUserImage } from '$lib/appwrite/api';
-	import notificationStore from '$lib/stores/notificationStore.svelte';
 	import { onlineStore } from '$lib/stores/onlineStore.svelte';
 	import type { User } from '$lib/types';
 
@@ -41,7 +40,7 @@
 			>
 				<img
 					class="w-[40px] aspect-square rounded-full object-cover"
-					src={user?.image || getUserImage(user?.username)}
+					src={user?.image}
 					alt="User profile"
 				/>
 			</button>
