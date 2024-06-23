@@ -6,7 +6,20 @@
 	import { type Snippet } from 'svelte';
 	import type { PageData } from './$types';
 	import { Pages } from '$lib/SkeletonPages';
+	import { appwriteClient } from '$lib/appwrite/client/appwrite';
+	import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_MESSAGES_COLLECTION_ID } from '$env/static/public';
+	import { messageStore } from '$lib/stores/messageStore.svelte';
+	import type { Models } from 'node-appwrite';
 	const { children, data } = $props<{ children: Snippet; data: PageData }>();
+
+	$effect(() => {
+		appwriteClient.subscribe([`databases.${PUBLIC_APPWRITE_DATABASE_ID}.collections.${PUBLIC_APPWRITE_MESSAGES_COLLECTION_ID}.documents`], (response) => {
+			console.log(response);
+			if(response.events.includes("databases.*.collections.*.documents.*.create")) {
+				messageStore.addMessage(response.payload as Models.Document)
+			}
+		})
+	})
 
 </script>
 

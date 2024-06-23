@@ -101,7 +101,7 @@
 
 <div class="h-full w-full flex flex-col p-2 gap-14 relative">
 	{#if currState === 'idle'}
-		<div class="rounded-lg flex flex-col gap-6">
+		<div class="rounded-lg flex flex-col gap-4">
 			<div class="flex gap-10">
 				<div class="aspect-square flex flex-col gap-2 items-center">
 					<img
@@ -127,6 +127,10 @@
 			<button
 				onclick={() => (currState = 'playing')}
 				class="p-3 w-full text-sm text-white bg-purple-900 rounded-md">Start marathon</button
+			>
+			<a
+				href="/chat"
+				class="p-3 w-full text-sm secondary-btn rounded-md mt-3 flex gap-2 justify-center items-center"><iconify-icon class="text-xl" icon="material-symbols:chat-outline"></iconify-icon> Public Chat</a
 			>
 		</div>
 		<div class="flex flex-col gap-2">
