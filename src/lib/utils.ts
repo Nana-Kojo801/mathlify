@@ -1,6 +1,6 @@
 import type { Difficulty, Level } from "./types";
 
-export const user_props = ["$id", "username", "password", "email", "highest_round", "completed_levels", "image", "average_time"]
+export const user_props = ["$id", "username", "password", "email", "highest_round", "completed_levels", "image", "average_time", "unread_messages"]
 
 export function getRandomNumbers(difficulty: Difficulty): number[] {
   // Destructure the range and rounds from the difficulty object

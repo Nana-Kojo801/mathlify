@@ -4,6 +4,7 @@
 	import { getUserImage } from '$lib/appwrite/api';
 	import { Circle } from 'svelte-loading-spinners';
 	import { invalidate } from '$app/navigation';
+	import { page } from '$app/stores';
 	const { data } = $props();
 
 	let round = $state<number>(1);
@@ -138,7 +139,7 @@
 			<a
 				href="/chat"
 				class="p-3 w-full text-sm secondary-btn rounded-md mt-3 flex gap-2 justify-center items-center"
-				><iconify-icon class="text-xl" icon="material-symbols:chat-outline"></iconify-icon> Public Chat</a
+				><iconify-icon class="text-xl" icon="material-symbols:chat-outline"></iconify-icon> Public Chat {data.user?.unread_messages > 0 ? `(${data.user?.unread_messages})` : ""}</a
 			>
 		</div>
 		<div class="flex flex-col gap-2">

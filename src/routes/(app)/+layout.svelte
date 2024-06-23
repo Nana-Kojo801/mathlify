@@ -10,17 +10,32 @@
 	import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_MESSAGES_COLLECTION_ID } from '$env/static/public';
 	import { messageStore } from '$lib/stores/messageStore.svelte';
 	import type { Models } from 'node-appwrite';
+	import { invalidate } from '$app/navigation';
 	const { children, data } = $props<{ children: Snippet; data: PageData }>();
 
 	$effect(() => {
-		appwriteClient.subscribe([`databases.${PUBLIC_APPWRITE_DATABASE_ID}.collections.${PUBLIC_APPWRITE_MESSAGES_COLLECTION_ID}.documents`], (response) => {
+		const unsub = appwriteClient.subscribe([`databases.${PUBLIC_APPWRITE_DATABASE_ID}.collections.${PUBLIC_APPWRITE_MESSAGES_COLLECTION_ID}.documents`], async (response) => {
 			console.log(response);
 			if(response.events.includes("databases.*.collections.*.documents.*.create")) {
 				messageStore.addMessage(response.payload as Models.Document)
+				if (location.pathname !== "/chat") {
+					console.log('not in chat');
+					
+					await fetch(`/api/user/${data.user.$id}`, {
+						method: "PUT",
+						headers: {'Content-type': 'application/json'},
+						body: JSON.stringify({ unread_messages: data.user?.unread_messages + 1 })
+					})
+					await invalidate("appwrite:auth")
+				}
 			} else if(response.events.includes("databases.*.collections.*.documents.*.delete")) {
 				messageStore.deleteMessage(response.payload?.$id as string)
 			}
 		})
+
+		return () => {
+			unsub()
+		}
 	})
 
 </script>
