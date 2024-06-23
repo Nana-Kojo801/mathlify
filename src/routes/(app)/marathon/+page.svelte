@@ -27,7 +27,9 @@
 	let pending_actions = [] as (() => Promise<void>)[];
 
 	const checkNewTime = () => {
-		if (data.user?.average_time === 0 || null || average_time < data.user?.average_time) {
+		if (data.user?.average_time === null || average_time < data.user?.average_time) {
+			console.log('new time');
+			
 			pending_actions.push(async () => {
 				await fetch(`/api/user/${data.user.$id}`, {
 					method: 'PUT',
@@ -66,34 +68,35 @@
 	};
 
 	const execute_action = async () => {
+		if (pending_actions.length === 0) return
 		currState = 'pending';
-		await Promise.all(pending_actions);
+		await pending_actions[0]()
 		pending_actions = [];
 	};
 
 	const nextRound = async () => {
-		if (pending_actions.length !== 0) await execute_action();
+		await execute_action()
 		round = round + 1;
 		answer = null;
 		currState = 'playing';
 	};
 
 	const goBack = async () => {
-		if (pending_actions.length !== 0) await execute_action();
+		await execute_action()
 		round = 1;
 		answer = null;
 		currState = 'idle';
 	};
 
 	const startOver = async () => {
-		if (pending_actions.length !== 0) await execute_action();
+		await execute_action()
 		round = 1;
 		answer = null;
 		currState = 'playing';
 	};
 
 	const onTimeUp = async (ans: number) => {
-		if (pending_actions.length !== 0) await execute_action();
+		await execute_action()
 		answer = ans;
 		currState = 'timeup';
 	};
@@ -122,6 +125,10 @@
 						<p class="font-bold text-xl text-center">{data.user?.highest_round}</p>
 						<p class="text-center">Round</p>
 					</div>
+					<div class="flex flex-col gap-1">
+						<p class="font-bold text-xl text-center">{data.user?.average_time || 0}</p>
+						<p class="text-center">Time</p>
+					</div>
 				</div>
 			</div>
 			<button
@@ -130,7 +137,8 @@
 			>
 			<a
 				href="/chat"
-				class="p-3 w-full text-sm secondary-btn rounded-md mt-3 flex gap-2 justify-center items-center"><iconify-icon class="text-xl" icon="material-symbols:chat-outline"></iconify-icon> Public Chat</a
+				class="p-3 w-full text-sm secondary-btn rounded-md mt-3 flex gap-2 justify-center items-center"
+				><iconify-icon class="text-xl" icon="material-symbols:chat-outline"></iconify-icon> Public Chat</a
 			>
 		</div>
 		<div class="flex flex-col gap-2">
@@ -178,14 +186,14 @@
 							<td
 								class="flex items-center justify-center gap-2 py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-left"
 							>
-							<div class="w-2/4 flex gap-2 items-center">
-								<img
-									class="w-[30px] md:w-[40px] aspect-square rounded-full object-cover"
-									src={player.image || getUserImage(player.username)}
-									alt="User profile"
-								/>
-								{player.username}
-							</div>
+								<div class="w-2/4 flex gap-2 items-center">
+									<img
+										class="w-[30px] md:w-[40px] aspect-square rounded-full object-cover"
+										src={player.image || getUserImage(player.username)}
+										alt="User profile"
+									/>
+									{player.username}
+								</div>
 							</td>
 							<td class=" py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-center"
 								>{player.highest_round}</td
