@@ -1,9 +1,9 @@
-const useLoading = (func: () => Promise<unknown>) => {
+const useLoading = (func: (args: unknown) => Promise<unknown>) => {
     const loading = $state({ value: false })
 
-    const action = async () => {
+    const action = async (...args: unknown[]) => {
         loading.value = true
-        await func()
+        await func(args)
         loading.value = false
     }
 

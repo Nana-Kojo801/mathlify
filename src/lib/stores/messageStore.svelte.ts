@@ -6,6 +6,10 @@ class MessageStore {
     addMessage(message: Models.Document) {
         this.messages.push(message)
     }
+
+    deleteMessage(id: string) {
+        this.messages = this.messages.filter((message: Models.Document) => message.$id !== id)
+    }
 }
 
 export const messageStore = new MessageStore()

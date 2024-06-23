@@ -17,6 +17,8 @@
 			console.log(response);
 			if(response.events.includes("databases.*.collections.*.documents.*.create")) {
 				messageStore.addMessage(response.payload as Models.Document)
+			} else if(response.events.includes("databases.*.collections.*.documents.*.delete")) {
+				messageStore.deleteMessage(response.payload?.$id as string)
 			}
 		})
 	})
