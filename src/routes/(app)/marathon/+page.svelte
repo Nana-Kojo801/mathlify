@@ -148,22 +148,22 @@
 					<tr>
 						<th
 							scope="col"
-							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							class=" p-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
 							>Rank</th
 						>
 						<th
 							scope="col"
-							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							class=" p-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
 							>Player</th
 						>
 						<th
 							scope="col"
-							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							class=" p-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
 							>Round</th
 						>
 						<th
 							scope="col"
-							class=" py-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
+							class=" p-2 text-center md:text-base text-xs font-medium text-purple-900 uppercase tracking-wider"
 							>Time</th
 						>
 					</tr>
@@ -176,7 +176,7 @@
 								>{i + 1}</td
 							>
 							<td
-								class="flex items-center justify-center gap-2 py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-center"
+								class="flex items-center justify-center gap-2 py-4 whitespace-nowrap md:text-sm text-xs text-gray-900 text-left"
 							>
 							<div class="w-2/4 flex gap-2 items-center">
 								<img
