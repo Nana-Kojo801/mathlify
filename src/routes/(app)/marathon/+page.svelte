@@ -27,7 +27,7 @@
 	let pending_actions = [] as (() => Promise<void>)[];
 
 	const checkNewTime = () => {
-		if (data.user?.average_time === null || average_time < data.user?.average_time) {
+		if ((data.user?.average_time === null || data.user?.average_time === 0) || average_time < data.user?.average_time) {
 			console.log('new time');
 			
 			pending_actions.push(async () => {
