@@ -1,0 +1,19 @@
+{
+  "framework": "react",
+  "typescript": true,
+  "projectName": "mathlify",
+  "mode": "file-router",
+  "tailwind": true,
+  "packageManager": "pnpm",
+  "toolchain": "eslint+prettier",
+  "variableValues": {},
+  "git": true,
+  "version": 1,
+  "existingAddOns": [
+    "convex",
+    "form",
+    "netlify",
+    "shadcn",
+    "tanstack-query"
+  ]
+}
