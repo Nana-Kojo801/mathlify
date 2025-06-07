@@ -1,6 +1,6 @@
 import { Award, BarChart2, Clock, TrendingUp } from 'lucide-react'
 import React from 'react'
-import usePlayerCasualEntry from './usePlayerCasualEntry'
+import useCasualEntry from '../useCasualEntry'
 
 function StatCard({
   icon,
@@ -52,7 +52,7 @@ function StatCard({
 }
 
 const PerformanceDashboard = () => {
-  const player = usePlayerCasualEntry()
+  const player = useCasualEntry()
 
   return (
     <div className="w-full mb-11">

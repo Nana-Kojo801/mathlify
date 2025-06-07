@@ -1,54 +1,9 @@
 import { Trophy, Target, Clock, ChevronRight, Users } from 'lucide-react'
 import { useCompetition } from '../useCompetition'
 import UserAvatar from '@/components/user-avatar'
-import { Skeleton } from '@/components/ui/skeleton'
 
 const OtherPlayers = () => {
   const competition = useCompetition()
-  const isLoading = !competition
-
-  if (isLoading) {
-    return (
-      <div className="hidden sm:block">
-        <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-card/50 font-medium text-sm text-muted-foreground border-b border-border/20">
-          <div className="col-span-1">Rank</div>
-          <div className="col-span-5">Player</div>
-          <div className="col-span-2 flex justify-end items-center gap-1">
-            <Trophy className="h-3.5 w-3.5" />
-            <span>Score</span>
-          </div>
-          <div className="col-span-2 flex justify-end items-center gap-1">
-            <Target className="h-3.5 w-3.5" />
-            <span>Round</span>
-          </div>
-          <div className="col-span-2 flex justify-end items-center gap-1">
-            <Clock className="h-3.5 w-3.5" />
-            <span>Time</span>
-          </div>
-        </div>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="grid grid-cols-12 gap-4 items-center px-5 py-3 border-b border-border/10">
-            <div className="col-span-1">
-              <Skeleton className="w-7 h-7 rounded-full" />
-            </div>
-            <div className="col-span-5 flex items-center gap-3">
-              <Skeleton className="w-9 h-9 rounded-full" />
-              <Skeleton className="h-4 w-24" />
-            </div>
-            <div className="col-span-2 flex justify-end">
-              <Skeleton className="h-4 w-16" />
-            </div>
-            <div className="col-span-2 flex justify-end">
-              <Skeleton className="h-4 w-16" />
-            </div>
-            <div className="col-span-2 flex justify-end">
-              <Skeleton className="h-4 w-16" />
-            </div>
-          </div>
-        ))}
-      </div>
-    )
-  }
 
   const otherPlayers = competition.entries.casual.slice(3, 10)
   

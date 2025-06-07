@@ -17,6 +17,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as AppIndexImport } from './routes/app/index'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AppCompetitionRouteImport } from './routes/app/competition/route'
 import { Route as AppSearchUsersIndexImport } from './routes/app/search-users/index'
 import { Route as AppProfileIndexImport } from './routes/app/profile/index'
 import { Route as AppPracticeIndexImport } from './routes/app/practice/index'
@@ -26,7 +27,6 @@ import { Route as AppCompetitionIndexImport } from './routes/app/competition/ind
 import { Route as AppProfileEditIndexImport } from './routes/app/profile/edit/index'
 import { Route as AppPracticeSpeedSolveIndexImport } from './routes/app/practice/speed-solve/index'
 import { Route as AppPracticeCasualIndexImport } from './routes/app/practice/casual/index'
-import { Route as AppCompetitionCreateIndexImport } from './routes/app/competition/create/index'
 import { Route as AppChatFriendIdIndexImport } from './routes/app/chat/$friendId/index'
 import { Route as AppOnlineRoomIdRouteImport } from './routes/app/online/room/$id/route'
 import { Route as AppOnlineRoomIdIndexImport } from './routes/app/online/room/$id/index'
@@ -74,6 +74,12 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
+const AppCompetitionRouteRoute = AppCompetitionRouteImport.update({
+  id: '/competition',
+  path: '/competition',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
 const AppSearchUsersIndexRoute = AppSearchUsersIndexImport.update({
   id: '/search-users/',
   path: '/search-users/',
@@ -105,9 +111,9 @@ const AppFriendRequestsIndexRoute = AppFriendRequestsIndexImport.update({
 } as any)
 
 const AppCompetitionIndexRoute = AppCompetitionIndexImport.update({
-  id: '/competition/',
-  path: '/competition/',
-  getParentRoute: () => AppRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppCompetitionRouteRoute,
 } as any)
 
 const AppProfileEditIndexRoute = AppProfileEditIndexImport.update({
@@ -127,12 +133,6 @@ const AppPracticeSpeedSolveIndexRoute = AppPracticeSpeedSolveIndexImport.update(
 const AppPracticeCasualIndexRoute = AppPracticeCasualIndexImport.update({
   id: '/practice/casual/',
   path: '/practice/casual/',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-
-const AppCompetitionCreateIndexRoute = AppCompetitionCreateIndexImport.update({
-  id: '/competition/create/',
-  path: '/competition/create/',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -156,16 +156,16 @@ const AppOnlineRoomIdIndexRoute = AppOnlineRoomIdIndexImport.update({
 
 const AppCompetitionPlaySpeedSolveIndexRoute =
   AppCompetitionPlaySpeedSolveIndexImport.update({
-    id: '/competition/play/speed-solve/',
-    path: '/competition/play/speed-solve/',
-    getParentRoute: () => AppRouteRoute,
+    id: '/play/speed-solve/',
+    path: '/play/speed-solve/',
+    getParentRoute: () => AppCompetitionRouteRoute,
   } as any)
 
 const AppCompetitionPlayCasualIndexRoute =
   AppCompetitionPlayCasualIndexImport.update({
-    id: '/competition/play/casual/',
-    path: '/competition/play/casual/',
-    getParentRoute: () => AppRouteRoute,
+    id: '/play/casual/',
+    path: '/play/casual/',
+    getParentRoute: () => AppCompetitionRouteRoute,
   } as any)
 
 const AppOnlineRoomIdMembersIndexRoute =
@@ -213,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRoute
     }
+    '/app/competition': {
+      id: '/app/competition'
+      path: '/competition'
+      fullPath: '/app/competition'
+      preLoaderRoute: typeof AppCompetitionRouteImport
+      parentRoute: typeof AppRouteImport
+    }
     '/auth/login': {
       id: '/auth/login'
       path: '/login'
@@ -236,10 +243,10 @@ declare module '@tanstack/react-router' {
     }
     '/app/competition/': {
       id: '/app/competition/'
-      path: '/competition'
-      fullPath: '/app/competition'
+      path: '/'
+      fullPath: '/app/competition/'
       preLoaderRoute: typeof AppCompetitionIndexImport
-      parentRoute: typeof AppRouteImport
+      parentRoute: typeof AppCompetitionRouteImport
     }
     '/app/friend-requests/': {
       id: '/app/friend-requests/'
@@ -290,13 +297,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppChatFriendIdIndexImport
       parentRoute: typeof AppRouteImport
     }
-    '/app/competition/create/': {
-      id: '/app/competition/create/'
-      path: '/competition/create'
-      fullPath: '/app/competition/create'
-      preLoaderRoute: typeof AppCompetitionCreateIndexImport
-      parentRoute: typeof AppRouteImport
-    }
     '/app/practice/casual/': {
       id: '/app/practice/casual/'
       path: '/practice/casual'
@@ -320,17 +320,17 @@ declare module '@tanstack/react-router' {
     }
     '/app/competition/play/casual/': {
       id: '/app/competition/play/casual/'
-      path: '/competition/play/casual'
+      path: '/play/casual'
       fullPath: '/app/competition/play/casual'
       preLoaderRoute: typeof AppCompetitionPlayCasualIndexImport
-      parentRoute: typeof AppRouteImport
+      parentRoute: typeof AppCompetitionRouteImport
     }
     '/app/competition/play/speed-solve/': {
       id: '/app/competition/play/speed-solve/'
-      path: '/competition/play/speed-solve'
+      path: '/play/speed-solve'
       fullPath: '/app/competition/play/speed-solve'
       preLoaderRoute: typeof AppCompetitionPlaySpeedSolveIndexImport
-      parentRoute: typeof AppRouteImport
+      parentRoute: typeof AppCompetitionRouteImport
     }
     '/app/online/room/$id/': {
       id: '/app/online/room/$id/'
@@ -365,6 +365,22 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AppCompetitionRouteRouteChildren {
+  AppCompetitionIndexRoute: typeof AppCompetitionIndexRoute
+  AppCompetitionPlayCasualIndexRoute: typeof AppCompetitionPlayCasualIndexRoute
+  AppCompetitionPlaySpeedSolveIndexRoute: typeof AppCompetitionPlaySpeedSolveIndexRoute
+}
+
+const AppCompetitionRouteRouteChildren: AppCompetitionRouteRouteChildren = {
+  AppCompetitionIndexRoute: AppCompetitionIndexRoute,
+  AppCompetitionPlayCasualIndexRoute: AppCompetitionPlayCasualIndexRoute,
+  AppCompetitionPlaySpeedSolveIndexRoute:
+    AppCompetitionPlaySpeedSolveIndexRoute,
+}
+
+const AppCompetitionRouteRouteWithChildren =
+  AppCompetitionRouteRoute._addFileChildren(AppCompetitionRouteRouteChildren)
+
 interface AppOnlineRoomIdRouteRouteChildren {
   AppOnlineRoomIdIndexRoute: typeof AppOnlineRoomIdIndexRoute
   AppOnlineRoomIdChatIndexRoute: typeof AppOnlineRoomIdChatIndexRoute
@@ -383,8 +399,8 @@ const AppOnlineRoomIdRouteRouteWithChildren =
   AppOnlineRoomIdRouteRoute._addFileChildren(AppOnlineRoomIdRouteRouteChildren)
 
 interface AppRouteRouteChildren {
+  AppCompetitionRouteRoute: typeof AppCompetitionRouteRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
-  AppCompetitionIndexRoute: typeof AppCompetitionIndexRoute
   AppFriendRequestsIndexRoute: typeof AppFriendRequestsIndexRoute
   AppOnlineIndexRoute: typeof AppOnlineIndexRoute
   AppPracticeIndexRoute: typeof AppPracticeIndexRoute
@@ -392,17 +408,14 @@ interface AppRouteRouteChildren {
   AppSearchUsersIndexRoute: typeof AppSearchUsersIndexRoute
   AppOnlineRoomIdRouteRoute: typeof AppOnlineRoomIdRouteRouteWithChildren
   AppChatFriendIdIndexRoute: typeof AppChatFriendIdIndexRoute
-  AppCompetitionCreateIndexRoute: typeof AppCompetitionCreateIndexRoute
   AppPracticeCasualIndexRoute: typeof AppPracticeCasualIndexRoute
   AppPracticeSpeedSolveIndexRoute: typeof AppPracticeSpeedSolveIndexRoute
   AppProfileEditIndexRoute: typeof AppProfileEditIndexRoute
-  AppCompetitionPlayCasualIndexRoute: typeof AppCompetitionPlayCasualIndexRoute
-  AppCompetitionPlaySpeedSolveIndexRoute: typeof AppCompetitionPlaySpeedSolveIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppCompetitionRouteRoute: AppCompetitionRouteRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
-  AppCompetitionIndexRoute: AppCompetitionIndexRoute,
   AppFriendRequestsIndexRoute: AppFriendRequestsIndexRoute,
   AppOnlineIndexRoute: AppOnlineIndexRoute,
   AppPracticeIndexRoute: AppPracticeIndexRoute,
@@ -410,13 +423,9 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppSearchUsersIndexRoute: AppSearchUsersIndexRoute,
   AppOnlineRoomIdRouteRoute: AppOnlineRoomIdRouteRouteWithChildren,
   AppChatFriendIdIndexRoute: AppChatFriendIdIndexRoute,
-  AppCompetitionCreateIndexRoute: AppCompetitionCreateIndexRoute,
   AppPracticeCasualIndexRoute: AppPracticeCasualIndexRoute,
   AppPracticeSpeedSolveIndexRoute: AppPracticeSpeedSolveIndexRoute,
   AppProfileEditIndexRoute: AppProfileEditIndexRoute,
-  AppCompetitionPlayCasualIndexRoute: AppCompetitionPlayCasualIndexRoute,
-  AppCompetitionPlaySpeedSolveIndexRoute:
-    AppCompetitionPlaySpeedSolveIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -441,10 +450,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/app/competition': typeof AppCompetitionRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/app/': typeof AppIndexRoute
-  '/app/competition': typeof AppCompetitionIndexRoute
+  '/app/competition/': typeof AppCompetitionIndexRoute
   '/app/friend-requests': typeof AppFriendRequestsIndexRoute
   '/app/online': typeof AppOnlineIndexRoute
   '/app/practice': typeof AppPracticeIndexRoute
@@ -452,7 +462,6 @@ export interface FileRoutesByFullPath {
   '/app/search-users': typeof AppSearchUsersIndexRoute
   '/app/online/room/$id': typeof AppOnlineRoomIdRouteRouteWithChildren
   '/app/chat/$friendId': typeof AppChatFriendIdIndexRoute
-  '/app/competition/create': typeof AppCompetitionCreateIndexRoute
   '/app/practice/casual': typeof AppPracticeCasualIndexRoute
   '/app/practice/speed-solve': typeof AppPracticeSpeedSolveIndexRoute
   '/app/profile/edit': typeof AppProfileEditIndexRoute
@@ -477,7 +486,6 @@ export interface FileRoutesByTo {
   '/app/profile': typeof AppProfileIndexRoute
   '/app/search-users': typeof AppSearchUsersIndexRoute
   '/app/chat/$friendId': typeof AppChatFriendIdIndexRoute
-  '/app/competition/create': typeof AppCompetitionCreateIndexRoute
   '/app/practice/casual': typeof AppPracticeCasualIndexRoute
   '/app/practice/speed-solve': typeof AppPracticeSpeedSolveIndexRoute
   '/app/profile/edit': typeof AppProfileEditIndexRoute
@@ -494,6 +502,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/app/competition': typeof AppCompetitionRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/app/': typeof AppIndexRoute
@@ -505,7 +514,6 @@ export interface FileRoutesById {
   '/app/search-users/': typeof AppSearchUsersIndexRoute
   '/app/online/room/$id': typeof AppOnlineRoomIdRouteRouteWithChildren
   '/app/chat/$friendId/': typeof AppChatFriendIdIndexRoute
-  '/app/competition/create/': typeof AppCompetitionCreateIndexRoute
   '/app/practice/casual/': typeof AppPracticeCasualIndexRoute
   '/app/practice/speed-solve/': typeof AppPracticeSpeedSolveIndexRoute
   '/app/profile/edit/': typeof AppProfileEditIndexRoute
@@ -523,10 +531,11 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/app/competition'
     | '/auth/login'
     | '/auth/signup'
     | '/app/'
-    | '/app/competition'
+    | '/app/competition/'
     | '/app/friend-requests'
     | '/app/online'
     | '/app/practice'
@@ -534,7 +543,6 @@ export interface FileRouteTypes {
     | '/app/search-users'
     | '/app/online/room/$id'
     | '/app/chat/$friendId'
-    | '/app/competition/create'
     | '/app/practice/casual'
     | '/app/practice/speed-solve'
     | '/app/profile/edit'
@@ -558,7 +566,6 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/search-users'
     | '/app/chat/$friendId'
-    | '/app/competition/create'
     | '/app/practice/casual'
     | '/app/practice/speed-solve'
     | '/app/profile/edit'
@@ -573,6 +580,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/app/competition'
     | '/auth/login'
     | '/auth/signup'
     | '/app/'
@@ -584,7 +592,6 @@ export interface FileRouteTypes {
     | '/app/search-users/'
     | '/app/online/room/$id'
     | '/app/chat/$friendId/'
-    | '/app/competition/create/'
     | '/app/practice/casual/'
     | '/app/practice/speed-solve/'
     | '/app/profile/edit/'
@@ -630,8 +637,8 @@ export const routeTree = rootRoute
     "/app": {
       "filePath": "app/route.tsx",
       "children": [
+        "/app/competition",
         "/app/",
-        "/app/competition/",
         "/app/friend-requests/",
         "/app/online/",
         "/app/practice/",
@@ -639,12 +646,9 @@ export const routeTree = rootRoute
         "/app/search-users/",
         "/app/online/room/$id",
         "/app/chat/$friendId/",
-        "/app/competition/create/",
         "/app/practice/casual/",
         "/app/practice/speed-solve/",
-        "/app/profile/edit/",
-        "/app/competition/play/casual/",
-        "/app/competition/play/speed-solve/"
+        "/app/profile/edit/"
       ]
     },
     "/auth": {
@@ -652,6 +656,15 @@ export const routeTree = rootRoute
       "children": [
         "/auth/login",
         "/auth/signup"
+      ]
+    },
+    "/app/competition": {
+      "filePath": "app/competition/route.tsx",
+      "parent": "/app",
+      "children": [
+        "/app/competition/",
+        "/app/competition/play/casual/",
+        "/app/competition/play/speed-solve/"
       ]
     },
     "/auth/login": {
@@ -668,7 +681,7 @@ export const routeTree = rootRoute
     },
     "/app/competition/": {
       "filePath": "app/competition/index.tsx",
-      "parent": "/app"
+      "parent": "/app/competition"
     },
     "/app/friend-requests/": {
       "filePath": "app/friend-requests/index.tsx",
@@ -704,10 +717,6 @@ export const routeTree = rootRoute
       "filePath": "app/chat/$friendId/index.tsx",
       "parent": "/app"
     },
-    "/app/competition/create/": {
-      "filePath": "app/competition/create/index.tsx",
-      "parent": "/app"
-    },
     "/app/practice/casual/": {
       "filePath": "app/practice/casual/index.tsx",
       "parent": "/app"
@@ -722,11 +731,11 @@ export const routeTree = rootRoute
     },
     "/app/competition/play/casual/": {
       "filePath": "app/competition/play/casual/index.tsx",
-      "parent": "/app"
+      "parent": "/app/competition"
     },
     "/app/competition/play/speed-solve/": {
       "filePath": "app/competition/play/speed-solve/index.tsx",
-      "parent": "/app"
+      "parent": "/app/competition"
     },
     "/app/online/room/$id/": {
       "filePath": "app/online/room/$id/index.tsx",

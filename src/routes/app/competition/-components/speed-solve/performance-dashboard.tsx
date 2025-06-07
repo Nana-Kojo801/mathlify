@@ -1,6 +1,6 @@
 import { Award, BarChart2, Clock, TrendingUp } from 'lucide-react'
 import React from 'react'
-import usePlayerSpeedSolveEntry from './usePlayerSpeedSolveEntry'
+import useSpeedSolveEntry from '../useSpeedSolveEntry'
 
 function StatCard({
   icon,
@@ -52,7 +52,7 @@ function StatCard({
 }
 
 const PerformanceDashboard = () => {
-  const player = usePlayerSpeedSolveEntry()
+  const player = useSpeedSolveEntry()
 
   return (
     <div className="w-full mb-11">

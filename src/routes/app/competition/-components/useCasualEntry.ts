@@ -1,16 +1,16 @@
 import { useUser } from '@/hooks/user'
-import { useCompetition } from '../useCompetition'
+import { useCompetition } from './useCompetition'
 
-const usePlayerSpeedSolveEntry = () => {
+const useCasualEntry = () => {
   const user = useUser()
   const competition = useCompetition()
 
-  const playerEntry = competition.entries.speedSolve.find(
+  const playerEntry = competition.entries.casual.find(
     (entry) => entry.userId === user._id,
   )
 
   const rank = competition
-    .entries.speedSolve.sort((a, b) => b.score - a.score)
+    .entries.casual.sort((a, b) => b.score - a.score)
     .findIndex((entry) => entry.userId === user._id) + 1
 
   if (!playerEntry) {
@@ -19,7 +19,7 @@ const usePlayerSpeedSolveEntry = () => {
       username: user.username,
       avatar: user.avatar,
       score: 0,
-      questions: 0,
+      round: 0,
       avgTime: 0,
       rank: 0
     }
@@ -28,4 +28,4 @@ const usePlayerSpeedSolveEntry = () => {
   return { ...playerEntry, rank }
 }
 
-export default usePlayerSpeedSolveEntry
+export default useCasualEntry

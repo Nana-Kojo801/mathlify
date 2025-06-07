@@ -8,11 +8,11 @@ import Questions from './-components/questions'
 import { calculateSpeedSolveMarathonScore } from '@/lib/helpers'
 import { useState } from 'react'
 import Result from './-components/result'
-import { useCompetitionActions } from '@/stores/competition-store'
 import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { useCompetition } from '../../-components/useCompetition'
+import useSpeedSolveEntry from '../../-components/useSpeedSolveEntry'
 
 export const Route = createFileRoute('/app/competition/play/speed-solve/')({
   component: RouteComponent,
@@ -22,13 +22,13 @@ function RouteComponent() {
   const user = useUser()
   const gameState = useGameState()
   const competition = useCompetition()
-  const { getSpeedSolveEntry, addSpeedSolveEntry } = useCompetitionActions()
   const score = useScore()
   const [gameData, setGameData] = useState({
     avgTime: 0,
     questions: 0,
     score: 0,
   })
+  const speedSolveEntry = useSpeedSolveEntry()
   const addEntry = useMutation(api.competitions.addSpeedSolveGameEntry)
 
   const handleResult = (totalTime: number) => {
@@ -36,8 +36,8 @@ function RouteComponent() {
       totalTime === 0 ? 0 : parseFloat((totalTime / score).toFixed(2))
     const newScore = calculateSpeedSolveMarathonScore(totalTime, score)
 
-    const entry = getSpeedSolveEntry(user._id)
-    const shouldUpdateEntry = !entry.score || newScore > entry.score
+    const shouldUpdateEntry =
+      !speedSolveEntry.score || newScore > speedSolveEntry.score
 
     if (shouldUpdateEntry) {
       const entryData = {
@@ -49,19 +49,13 @@ function RouteComponent() {
       }
 
       addEntry(entryData)
-      addSpeedSolveEntry({
-        ...entryData,
-        username: user.username,
-        avatar: user.avatar,
-      })
-
-      setGameData((prev) => ({
-        ...prev,
-        avgTime,
-        questions: score,
-        score: newScore,
-      }))
     }
+    setGameData((prev) => ({
+      ...prev,
+      avgTime,
+      questions: score,
+      score: newScore,
+    }))
   }
 
   return (

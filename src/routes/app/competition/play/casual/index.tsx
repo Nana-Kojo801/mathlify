@@ -9,11 +9,11 @@ import {
 } from '@/components/game-modes/casual-game/casual-game-store'
 import Result from './-components/result'
 import { calculateCasualCompetitionScore } from '@/lib/helpers'
-import { useCompetitionActions } from '@/stores/competition-store'
 import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { useCompetition } from '../../-components/useCompetition'
+import useCasualEntry from '../../-components/useCasualEntry'
 
 export const Route = createFileRoute('/app/competition/play/casual/')({
   component: RouteComponent,
@@ -21,10 +21,10 @@ export const Route = createFileRoute('/app/competition/play/casual/')({
 
 function RouteComponent() {
   const user = useUser()
-  const competition = useCompetition()!
+  const competition = useCompetition()
   const gameState = useGameState()
   const { playAgain } = useActions()
-  const { addCasualEntry, getCasualEntry } = useCompetitionActions()
+  const casualEntry = useCasualEntry()
   const addEntry = useMutation(api.competitions.addCasualGameEntry)
 
   const [gameData, setGameData] = useState({
@@ -48,8 +48,7 @@ function RouteComponent() {
       const newScore = gameData.score + tempScore
       const avgTime = parseFloat((newTotalTime / gameData.round / 100).toFixed(2))
 
-      const currentEntry = getCasualEntry(user._id)
-      const shouldUpdateEntry = !currentEntry.score || newScore > currentEntry.score
+      const shouldUpdateEntry = !casualEntry.score || newScore > casualEntry.score
 
       if (shouldUpdateEntry) {
         const entryData = {
@@ -60,11 +59,6 @@ function RouteComponent() {
           score: newScore,
         }
         addEntry(entryData)
-        addCasualEntry({
-          ...entryData,
-          username: user.username,
-          avatar: user.avatar,
-        })
       }
 
       setGameData(prev => ({
@@ -73,7 +67,7 @@ function RouteComponent() {
         score: newScore,
       }))
     },
-    [gameData, competition, user, addEntry, addCasualEntry, getCasualEntry],
+    [gameData, competition, user, addEntry],
   )
 
   const renderResults = useCallback(() => {

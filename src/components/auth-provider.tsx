@@ -15,7 +15,6 @@ import { useNetworkState } from 'react-use'
 import { db } from '@/lib/dexie'
 import { registerFriendMessagesSync } from '@/stores/friend-messages-store'
 import { registerFriendsStore } from '@/stores/friends-store'
-import { registerInitCompetition } from '@/stores/competition-store'
 
 export type AuthContextType = {
   user: User | null
@@ -174,7 +173,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setAuthenticated(true)
         registerFriendMessagesSync(convex, user._id, user.friends, online ?? false)
         registerFriendsStore(convex, user, online ?? false)
-        registerInitCompetition(convex)
         setLoading(false)
       } catch(e) {
         console.error(e)

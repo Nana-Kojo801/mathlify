@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useActions } from '@/stores/server-time-store'
-import { useCompetitionStore } from '@/stores/competition-store'
+import { useCompetition } from './useCompetition'
 
 export const useTimer = () => {
   const [timeRemaining, setTimeRemaining] = useState(0)
   const { getServerTime } = useActions()
+  const competition = useCompetition()
 
   useEffect(() => {
     const interval = setInterval(() => {
       const serverTime = getServerTime()
-      const remaining = useCompetitionStore.getState().competition!.endTime - serverTime
+      const remaining = competition.endTime - serverTime
       if (remaining <= 0) {
         clearInterval(interval)
       } else {
