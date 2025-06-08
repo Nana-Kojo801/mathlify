@@ -3,8 +3,8 @@ import { useState } from 'react'
 import Header from './-components/header'
 import type { GameType } from '@/types'
 import GameModeSelection from './-components/game-mode-selection'
-import CreateCasualPresetModal from './-components/create-casual-preset-modal'
-import CreateSpeedSolvePresetModal from './-components/create-speed-solve-preset-modal'
+import CreateFlowPresetModal from './-components/create-flow-preset-modal'
+import CreateRapidPresetModal from './-components/create-rapid-preset-modal'
 import DifficultyOptions from './-components/difficulty-options'
 
 export const Route = createFileRoute('/app/practice/')({
@@ -12,9 +12,9 @@ export const Route = createFileRoute('/app/practice/')({
 })
 
 function PracticePage() {
-  const [gameMode, setGameMode] = useState<GameType>('casual')
-  const [showCreateCasualDialog, setShowCreateCasualDialog] = useState(false)
-  const [showCreateSpeedSolveDialog, setShowCreateSpeedSolveDialog] =
+  const [gameMode, setGameMode] = useState<GameType>('flow')
+  const [showCreateFlowDialog, setShowCreateFlowDialog] = useState(false)
+  const [showCreateRapidDialog, setShowCreateRapidDialog] =
     useState(false)
 
   return (
@@ -29,18 +29,18 @@ function PracticePage() {
 
         <DifficultyOptions
           gameMode={gameMode}
-          setShowCreateCasualDialog={setShowCreateCasualDialog}
-          setShowCreateSpeedSolveDialog={setShowCreateSpeedSolveDialog}
+          setShowCreateFlowDialog={setShowCreateFlowDialog}
+          setShowCreateRapidDialog={setShowCreateRapidDialog}
         />
         
-        <CreateCasualPresetModal
-          open={showCreateCasualDialog}
-          onOpenChange={setShowCreateCasualDialog}
+        <CreateFlowPresetModal
+          open={showCreateFlowDialog}
+          onOpenChange={setShowCreateFlowDialog}
         />
 
-        <CreateSpeedSolvePresetModal
-          open={showCreateSpeedSolveDialog}
-          onOpenChange={setShowCreateSpeedSolveDialog}
+        <CreateRapidPresetModal
+          open={showCreateRapidDialog}
+          onOpenChange={setShowCreateRapidDialog}
         />
       </main>
     </div>

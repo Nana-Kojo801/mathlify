@@ -52,7 +52,7 @@ export type Competition = Omit<CompetitionDB, 'entries'> & {
     }
 }
 
-export type CasualGameDifficulty = {
+export type FlowGameDifficulty = {
     range: {
         min: number
         max: number
@@ -65,7 +65,7 @@ export type CasualGameDifficulty = {
     timeInterval: number
 }
 
-export type SpeedSolveDifficulty = {
+export type RapidGameDifficulty = {
     range: {
         min: number
         max: number

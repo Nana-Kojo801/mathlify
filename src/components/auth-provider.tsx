@@ -22,6 +22,7 @@ export type AuthContextType = {
   authenticated: boolean
   signup: (values: z.infer<typeof authSchema>) => Promise<boolean>
   login: (values: z.infer<typeof authSchema>) => Promise<boolean>
+  updateAuthUser: (changes: Partial<User>) => Promise<void>
   editProfile: (
     values: z.infer<typeof authSchema> & {
       avatar: File | null
@@ -39,6 +40,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authenticated, setAuthenticated] = useState(false)
   const convex = useConvex()
   const generateUrl = useMutation(api.upload.generateUploadUrl)
+  const updateUser = useMutation(api.users.update)
   const { online } = useNetworkState()
 
   const signup = useCallback(
@@ -142,6 +144,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     [user, convex],
   )
 
+  const updateAuthUser = useCallback(async (changes: Partial<User>) => {
+    setUser(Object.assign(user!, changes))
+    await Promise.all([
+      updateUser({ userId: user!._id, ...changes }),
+      db.users.update(user!._id, changes),
+    ])
+  }, [])
+
   const getUser = async () => {
     const userId = localStorage.getItem(SESSION_KEY)
     if (!userId) return null
@@ -186,7 +196,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, authenticated, signup, login, editProfile }}
+      value={{ user, loading, authenticated, signup, login, editProfile, updateAuthUser }}
     >
       {children}
     </AuthContext.Provider>

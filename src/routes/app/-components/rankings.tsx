@@ -10,8 +10,8 @@ const Rankings = () => {
         <div className="bg-card/60 backdrop-blur-sm rounded-lg border border-border/50 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Casual Mode</p>
-              <p className="text-2xl font-bold">{user.elo.casual}</p>
+              <p className="text-sm text-muted-foreground">Flow</p>
+              <p className="text-2xl font-bold">{user.elo.flow}</p>
             </div>
             <Brain className="h-6 w-6 text-primary" />
           </div>
@@ -19,8 +19,8 @@ const Rankings = () => {
         <div className="bg-card/60 backdrop-blur-sm rounded-lg border border-border/50 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Speed Solve</p>
-              <p className="text-2xl font-bold">{user.elo.speedSolve}</p>
+              <p className="text-sm text-muted-foreground">Rapid</p>
+              <p className="text-2xl font-bold">{user.elo.rapid}</p>
             </div>
             <Zap className="h-6 w-6 text-secondary" />
           </div>

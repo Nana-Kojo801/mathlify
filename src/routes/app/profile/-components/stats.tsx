@@ -30,14 +30,14 @@ const Stats = () => {
     <div className="grid grid-cols-2 gap-3 mb-6">
       <StatCard
         icon={<Brain className="w-5 h-5 text-primary" />}
-        title="Casual ELO"
-        value={user.elo.casual}
+        title="Flow ELO"
+        value={user.elo.flow}
         change="+24 this week"
       />
       <StatCard
         icon={<Zap className="w-5 h-5 text-secondary" />}
-        title="Speed ELO"
-        value={user.elo.speedSolve}
+        title="Rapid ELO"
+        value={user.elo.rapid}
         change="+18 this week"
       />
     </div>

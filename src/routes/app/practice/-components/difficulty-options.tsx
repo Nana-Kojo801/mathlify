@@ -1,19 +1,19 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { GameType } from '@/types'
 import SavedPresets from './saved-presets'
-import CasualSettings from './casual-settings'
-import SpeedSolveSettings from './speed-solve-settings'
+import CasualSettings from './flow-settings'
+import SpeedSolveSettings from './rapid-settings'
 
 type DifficultyOptionsProps = {
   gameMode: GameType
-  setShowCreateCasualDialog: React.Dispatch<React.SetStateAction<boolean>>
-  setShowCreateSpeedSolveDialog: React.Dispatch<React.SetStateAction<boolean>>
+  setShowCreateFlowDialog: React.Dispatch<React.SetStateAction<boolean>>
+  setShowCreateRapidDialog: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const DifficultyOptions = ({
   gameMode,
-  setShowCreateCasualDialog,
-  setShowCreateSpeedSolveDialog,
+  setShowCreateFlowDialog,
+  setShowCreateRapidDialog,
 }: DifficultyOptionsProps) => {
   return (
     <section>
@@ -37,18 +37,18 @@ const DifficultyOptions = ({
         <TabsContent value="saved-presets">
           <SavedPresets
             gameMode={gameMode}
-            setShowCreateCasualDialog={setShowCreateCasualDialog}
-            setShowCreateSpeedSolveDialog={setShowCreateSpeedSolveDialog}
+            setShowCreateFlowDialog={setShowCreateFlowDialog}
+            setShowCreateRapidDialog={setShowCreateRapidDialog}
           />
         </TabsContent>
 
         <TabsContent value="custom">
-          {gameMode === 'casual' && (
+          {gameMode === 'flow' && (
             <CasualSettings />
           )}
 
           {/* Difficulty Settings for Speed Solve Mode */}
-          {gameMode === 'speedSolve' && (
+          {gameMode === 'rapid' && (
             <SpeedSolveSettings />
           )}
         </TabsContent>

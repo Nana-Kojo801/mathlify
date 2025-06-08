@@ -10,7 +10,6 @@ export const Route = createFileRoute('/app/')({
 })
 
 function AppDashboard() {
-
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}

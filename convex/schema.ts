@@ -7,34 +7,35 @@ export default defineSchema({
     password: v.string(),
     avatar: v.string(),
     elo: v.object({
-      casual: v.number(),
-      speedSolve: v.number(),
+      flow: v.number(),
+      rapid: v.number(),
     }),
     friends: v.array(v.id('users')),
+    lastCompetition: v.optional(v.id('competitions'))
   })
     .index('by_uesrname', ['username'])
     .searchIndex('search_user', {
       searchField: 'username',
     }),
   friendRequests: defineTable({
-    senderId: v.id("users"),
-    receiverId: v.id("users")
+    senderId: v.id('users'),
+    receiverId: v.id('users'),
   }),
   friendMessages: defineTable({
-    senderId: v.id("users"),
-    receiverId: v.id("users"),
+    senderId: v.id('users'),
+    receiverId: v.id('users'),
     message: v.string(),
-    readBy: v.array(v.id("users"))
+    readBy: v.array(v.id('users')),
   }),
   userConversations: defineTable({
-    userId: v.id("users"),
-    friendId: v.id("users"),
-    lastReadTimestamp: v.number()
-  }).index("by_user_and_friend", ["userId", "friendId"]),
+    userId: v.id('users'),
+    friendId: v.id('users'),
+    lastReadTimestamp: v.number(),
+  }).index('by_user_and_friend', ['userId', 'friendId']),
   presets: defineTable({
     userId: v.id('users'),
     name: v.string(),
-    type: v.union(v.literal('casual'), v.literal('speedSolve')),
+    type: v.union(v.literal('flow'), v.literal('rapid')),
     settings: v.object({
       range: v.object({
         min: v.number(),
@@ -48,23 +49,27 @@ export default defineSchema({
       duration: v.float64(),
     }),
   }),
+  flowCompetitionEntries: defineTable({
+    competitionId: v.id('competitions'),
+    userId: v.id('users'),
+    round: v.number(),
+    avgTime: v.float64(),
+    score: v.number(),
+  })
+    .index('by_competition', ['competitionId'])
+    .index('by_user', ['userId']),
+  rapidCompetitionEntries: defineTable({
+    competitionId: v.id('competitions'),
+    userId: v.id('users'),
+    questions: v.number(),
+    avgTime: v.float64(),
+    score: v.number(),
+  })
+    .index('by_competition', ['competitionId'])
+    .index('by_user', ['userId']),
   competitions: defineTable({
     endTime: v.number(),
-    resultViews: v.array(v.id("users")),
+    resultViews: v.array(v.id('users')),
     expired: v.boolean(),
-    entries: v.object({
-      casual: v.array(v.object({
-        userId: v.id("users"),
-        round: v.number(),
-        avgTime: v.float64(),
-        score: v.number(),
-      })),
-      speedSolve: v.array(v.object({
-        userId: v.id("users"),
-        questions: v.number(),
-        avgTime: v.float64(),
-        score: v.number(),
-      }))
-    })
-  })
+  }),
 })

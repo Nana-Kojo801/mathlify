@@ -25,13 +25,14 @@ import { Route as AppOnlineIndexImport } from './routes/app/online/index'
 import { Route as AppFriendRequestsIndexImport } from './routes/app/friend-requests/index'
 import { Route as AppCompetitionIndexImport } from './routes/app/competition/index'
 import { Route as AppProfileEditIndexImport } from './routes/app/profile/edit/index'
-import { Route as AppPracticeSpeedSolveIndexImport } from './routes/app/practice/speed-solve/index'
-import { Route as AppPracticeCasualIndexImport } from './routes/app/practice/casual/index'
+import { Route as AppPracticeRapidIndexImport } from './routes/app/practice/rapid/index'
+import { Route as AppPracticeFlowIndexImport } from './routes/app/practice/flow/index'
 import { Route as AppChatFriendIdIndexImport } from './routes/app/chat/$friendId/index'
+import { Route as AppCompetitionResultIdImport } from './routes/app/competition/result/$id'
 import { Route as AppOnlineRoomIdRouteImport } from './routes/app/online/room/$id/route'
 import { Route as AppOnlineRoomIdIndexImport } from './routes/app/online/room/$id/index'
-import { Route as AppCompetitionPlaySpeedSolveIndexImport } from './routes/app/competition/play/speed-solve/index'
-import { Route as AppCompetitionPlayCasualIndexImport } from './routes/app/competition/play/casual/index'
+import { Route as AppCompetitionPlayRapidIndexImport } from './routes/app/competition/play/rapid/index'
+import { Route as AppCompetitionPlayFlowIndexImport } from './routes/app/competition/play/flow/index'
 import { Route as AppOnlineRoomIdMembersIndexImport } from './routes/app/online/room/$id/members/index'
 import { Route as AppOnlineRoomIdLeaderboardIndexImport } from './routes/app/online/room/$id/leaderboard/index'
 import { Route as AppOnlineRoomIdChatIndexImport } from './routes/app/online/room/$id/chat/index'
@@ -122,17 +123,15 @@ const AppProfileEditIndexRoute = AppProfileEditIndexImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
-const AppPracticeSpeedSolveIndexRoute = AppPracticeSpeedSolveIndexImport.update(
-  {
-    id: '/practice/speed-solve/',
-    path: '/practice/speed-solve/',
-    getParentRoute: () => AppRouteRoute,
-  } as any,
-)
+const AppPracticeRapidIndexRoute = AppPracticeRapidIndexImport.update({
+  id: '/practice/rapid/',
+  path: '/practice/rapid/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
-const AppPracticeCasualIndexRoute = AppPracticeCasualIndexImport.update({
-  id: '/practice/casual/',
-  path: '/practice/casual/',
+const AppPracticeFlowIndexRoute = AppPracticeFlowIndexImport.update({
+  id: '/practice/flow/',
+  path: '/practice/flow/',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -140,6 +139,12 @@ const AppChatFriendIdIndexRoute = AppChatFriendIdIndexImport.update({
   id: '/chat/$friendId/',
   path: '/chat/$friendId/',
   getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppCompetitionResultIdRoute = AppCompetitionResultIdImport.update({
+  id: '/result/$id',
+  path: '/result/$id',
+  getParentRoute: () => AppCompetitionRouteRoute,
 } as any)
 
 const AppOnlineRoomIdRouteRoute = AppOnlineRoomIdRouteImport.update({
@@ -154,17 +159,17 @@ const AppOnlineRoomIdIndexRoute = AppOnlineRoomIdIndexImport.update({
   getParentRoute: () => AppOnlineRoomIdRouteRoute,
 } as any)
 
-const AppCompetitionPlaySpeedSolveIndexRoute =
-  AppCompetitionPlaySpeedSolveIndexImport.update({
-    id: '/play/speed-solve/',
-    path: '/play/speed-solve/',
+const AppCompetitionPlayRapidIndexRoute =
+  AppCompetitionPlayRapidIndexImport.update({
+    id: '/play/rapid/',
+    path: '/play/rapid/',
     getParentRoute: () => AppCompetitionRouteRoute,
   } as any)
 
-const AppCompetitionPlayCasualIndexRoute =
-  AppCompetitionPlayCasualIndexImport.update({
-    id: '/play/casual/',
-    path: '/play/casual/',
+const AppCompetitionPlayFlowIndexRoute =
+  AppCompetitionPlayFlowIndexImport.update({
+    id: '/play/flow/',
+    path: '/play/flow/',
     getParentRoute: () => AppCompetitionRouteRoute,
   } as any)
 
@@ -290,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOnlineRoomIdRouteImport
       parentRoute: typeof AppRouteImport
     }
+    '/app/competition/result/$id': {
+      id: '/app/competition/result/$id'
+      path: '/result/$id'
+      fullPath: '/app/competition/result/$id'
+      preLoaderRoute: typeof AppCompetitionResultIdImport
+      parentRoute: typeof AppCompetitionRouteImport
+    }
     '/app/chat/$friendId/': {
       id: '/app/chat/$friendId/'
       path: '/chat/$friendId'
@@ -297,18 +309,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppChatFriendIdIndexImport
       parentRoute: typeof AppRouteImport
     }
-    '/app/practice/casual/': {
-      id: '/app/practice/casual/'
-      path: '/practice/casual'
-      fullPath: '/app/practice/casual'
-      preLoaderRoute: typeof AppPracticeCasualIndexImport
+    '/app/practice/flow/': {
+      id: '/app/practice/flow/'
+      path: '/practice/flow'
+      fullPath: '/app/practice/flow'
+      preLoaderRoute: typeof AppPracticeFlowIndexImport
       parentRoute: typeof AppRouteImport
     }
-    '/app/practice/speed-solve/': {
-      id: '/app/practice/speed-solve/'
-      path: '/practice/speed-solve'
-      fullPath: '/app/practice/speed-solve'
-      preLoaderRoute: typeof AppPracticeSpeedSolveIndexImport
+    '/app/practice/rapid/': {
+      id: '/app/practice/rapid/'
+      path: '/practice/rapid'
+      fullPath: '/app/practice/rapid'
+      preLoaderRoute: typeof AppPracticeRapidIndexImport
       parentRoute: typeof AppRouteImport
     }
     '/app/profile/edit/': {
@@ -318,18 +330,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileEditIndexImport
       parentRoute: typeof AppRouteImport
     }
-    '/app/competition/play/casual/': {
-      id: '/app/competition/play/casual/'
-      path: '/play/casual'
-      fullPath: '/app/competition/play/casual'
-      preLoaderRoute: typeof AppCompetitionPlayCasualIndexImport
+    '/app/competition/play/flow/': {
+      id: '/app/competition/play/flow/'
+      path: '/play/flow'
+      fullPath: '/app/competition/play/flow'
+      preLoaderRoute: typeof AppCompetitionPlayFlowIndexImport
       parentRoute: typeof AppCompetitionRouteImport
     }
-    '/app/competition/play/speed-solve/': {
-      id: '/app/competition/play/speed-solve/'
-      path: '/play/speed-solve'
-      fullPath: '/app/competition/play/speed-solve'
-      preLoaderRoute: typeof AppCompetitionPlaySpeedSolveIndexImport
+    '/app/competition/play/rapid/': {
+      id: '/app/competition/play/rapid/'
+      path: '/play/rapid'
+      fullPath: '/app/competition/play/rapid'
+      preLoaderRoute: typeof AppCompetitionPlayRapidIndexImport
       parentRoute: typeof AppCompetitionRouteImport
     }
     '/app/online/room/$id/': {
@@ -367,15 +379,16 @@ declare module '@tanstack/react-router' {
 
 interface AppCompetitionRouteRouteChildren {
   AppCompetitionIndexRoute: typeof AppCompetitionIndexRoute
-  AppCompetitionPlayCasualIndexRoute: typeof AppCompetitionPlayCasualIndexRoute
-  AppCompetitionPlaySpeedSolveIndexRoute: typeof AppCompetitionPlaySpeedSolveIndexRoute
+  AppCompetitionResultIdRoute: typeof AppCompetitionResultIdRoute
+  AppCompetitionPlayFlowIndexRoute: typeof AppCompetitionPlayFlowIndexRoute
+  AppCompetitionPlayRapidIndexRoute: typeof AppCompetitionPlayRapidIndexRoute
 }
 
 const AppCompetitionRouteRouteChildren: AppCompetitionRouteRouteChildren = {
   AppCompetitionIndexRoute: AppCompetitionIndexRoute,
-  AppCompetitionPlayCasualIndexRoute: AppCompetitionPlayCasualIndexRoute,
-  AppCompetitionPlaySpeedSolveIndexRoute:
-    AppCompetitionPlaySpeedSolveIndexRoute,
+  AppCompetitionResultIdRoute: AppCompetitionResultIdRoute,
+  AppCompetitionPlayFlowIndexRoute: AppCompetitionPlayFlowIndexRoute,
+  AppCompetitionPlayRapidIndexRoute: AppCompetitionPlayRapidIndexRoute,
 }
 
 const AppCompetitionRouteRouteWithChildren =
@@ -408,8 +421,8 @@ interface AppRouteRouteChildren {
   AppSearchUsersIndexRoute: typeof AppSearchUsersIndexRoute
   AppOnlineRoomIdRouteRoute: typeof AppOnlineRoomIdRouteRouteWithChildren
   AppChatFriendIdIndexRoute: typeof AppChatFriendIdIndexRoute
-  AppPracticeCasualIndexRoute: typeof AppPracticeCasualIndexRoute
-  AppPracticeSpeedSolveIndexRoute: typeof AppPracticeSpeedSolveIndexRoute
+  AppPracticeFlowIndexRoute: typeof AppPracticeFlowIndexRoute
+  AppPracticeRapidIndexRoute: typeof AppPracticeRapidIndexRoute
   AppProfileEditIndexRoute: typeof AppProfileEditIndexRoute
 }
 
@@ -423,8 +436,8 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppSearchUsersIndexRoute: AppSearchUsersIndexRoute,
   AppOnlineRoomIdRouteRoute: AppOnlineRoomIdRouteRouteWithChildren,
   AppChatFriendIdIndexRoute: AppChatFriendIdIndexRoute,
-  AppPracticeCasualIndexRoute: AppPracticeCasualIndexRoute,
-  AppPracticeSpeedSolveIndexRoute: AppPracticeSpeedSolveIndexRoute,
+  AppPracticeFlowIndexRoute: AppPracticeFlowIndexRoute,
+  AppPracticeRapidIndexRoute: AppPracticeRapidIndexRoute,
   AppProfileEditIndexRoute: AppProfileEditIndexRoute,
 }
 
@@ -461,12 +474,13 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AppProfileIndexRoute
   '/app/search-users': typeof AppSearchUsersIndexRoute
   '/app/online/room/$id': typeof AppOnlineRoomIdRouteRouteWithChildren
+  '/app/competition/result/$id': typeof AppCompetitionResultIdRoute
   '/app/chat/$friendId': typeof AppChatFriendIdIndexRoute
-  '/app/practice/casual': typeof AppPracticeCasualIndexRoute
-  '/app/practice/speed-solve': typeof AppPracticeSpeedSolveIndexRoute
+  '/app/practice/flow': typeof AppPracticeFlowIndexRoute
+  '/app/practice/rapid': typeof AppPracticeRapidIndexRoute
   '/app/profile/edit': typeof AppProfileEditIndexRoute
-  '/app/competition/play/casual': typeof AppCompetitionPlayCasualIndexRoute
-  '/app/competition/play/speed-solve': typeof AppCompetitionPlaySpeedSolveIndexRoute
+  '/app/competition/play/flow': typeof AppCompetitionPlayFlowIndexRoute
+  '/app/competition/play/rapid': typeof AppCompetitionPlayRapidIndexRoute
   '/app/online/room/$id/': typeof AppOnlineRoomIdIndexRoute
   '/app/online/room/$id/chat': typeof AppOnlineRoomIdChatIndexRoute
   '/app/online/room/$id/leaderboard': typeof AppOnlineRoomIdLeaderboardIndexRoute
@@ -485,12 +499,13 @@ export interface FileRoutesByTo {
   '/app/practice': typeof AppPracticeIndexRoute
   '/app/profile': typeof AppProfileIndexRoute
   '/app/search-users': typeof AppSearchUsersIndexRoute
+  '/app/competition/result/$id': typeof AppCompetitionResultIdRoute
   '/app/chat/$friendId': typeof AppChatFriendIdIndexRoute
-  '/app/practice/casual': typeof AppPracticeCasualIndexRoute
-  '/app/practice/speed-solve': typeof AppPracticeSpeedSolveIndexRoute
+  '/app/practice/flow': typeof AppPracticeFlowIndexRoute
+  '/app/practice/rapid': typeof AppPracticeRapidIndexRoute
   '/app/profile/edit': typeof AppProfileEditIndexRoute
-  '/app/competition/play/casual': typeof AppCompetitionPlayCasualIndexRoute
-  '/app/competition/play/speed-solve': typeof AppCompetitionPlaySpeedSolveIndexRoute
+  '/app/competition/play/flow': typeof AppCompetitionPlayFlowIndexRoute
+  '/app/competition/play/rapid': typeof AppCompetitionPlayRapidIndexRoute
   '/app/online/room/$id': typeof AppOnlineRoomIdIndexRoute
   '/app/online/room/$id/chat': typeof AppOnlineRoomIdChatIndexRoute
   '/app/online/room/$id/leaderboard': typeof AppOnlineRoomIdLeaderboardIndexRoute
@@ -513,12 +528,13 @@ export interface FileRoutesById {
   '/app/profile/': typeof AppProfileIndexRoute
   '/app/search-users/': typeof AppSearchUsersIndexRoute
   '/app/online/room/$id': typeof AppOnlineRoomIdRouteRouteWithChildren
+  '/app/competition/result/$id': typeof AppCompetitionResultIdRoute
   '/app/chat/$friendId/': typeof AppChatFriendIdIndexRoute
-  '/app/practice/casual/': typeof AppPracticeCasualIndexRoute
-  '/app/practice/speed-solve/': typeof AppPracticeSpeedSolveIndexRoute
+  '/app/practice/flow/': typeof AppPracticeFlowIndexRoute
+  '/app/practice/rapid/': typeof AppPracticeRapidIndexRoute
   '/app/profile/edit/': typeof AppProfileEditIndexRoute
-  '/app/competition/play/casual/': typeof AppCompetitionPlayCasualIndexRoute
-  '/app/competition/play/speed-solve/': typeof AppCompetitionPlaySpeedSolveIndexRoute
+  '/app/competition/play/flow/': typeof AppCompetitionPlayFlowIndexRoute
+  '/app/competition/play/rapid/': typeof AppCompetitionPlayRapidIndexRoute
   '/app/online/room/$id/': typeof AppOnlineRoomIdIndexRoute
   '/app/online/room/$id/chat/': typeof AppOnlineRoomIdChatIndexRoute
   '/app/online/room/$id/leaderboard/': typeof AppOnlineRoomIdLeaderboardIndexRoute
@@ -542,12 +558,13 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/search-users'
     | '/app/online/room/$id'
+    | '/app/competition/result/$id'
     | '/app/chat/$friendId'
-    | '/app/practice/casual'
-    | '/app/practice/speed-solve'
+    | '/app/practice/flow'
+    | '/app/practice/rapid'
     | '/app/profile/edit'
-    | '/app/competition/play/casual'
-    | '/app/competition/play/speed-solve'
+    | '/app/competition/play/flow'
+    | '/app/competition/play/rapid'
     | '/app/online/room/$id/'
     | '/app/online/room/$id/chat'
     | '/app/online/room/$id/leaderboard'
@@ -565,12 +582,13 @@ export interface FileRouteTypes {
     | '/app/practice'
     | '/app/profile'
     | '/app/search-users'
+    | '/app/competition/result/$id'
     | '/app/chat/$friendId'
-    | '/app/practice/casual'
-    | '/app/practice/speed-solve'
+    | '/app/practice/flow'
+    | '/app/practice/rapid'
     | '/app/profile/edit'
-    | '/app/competition/play/casual'
-    | '/app/competition/play/speed-solve'
+    | '/app/competition/play/flow'
+    | '/app/competition/play/rapid'
     | '/app/online/room/$id'
     | '/app/online/room/$id/chat'
     | '/app/online/room/$id/leaderboard'
@@ -591,12 +609,13 @@ export interface FileRouteTypes {
     | '/app/profile/'
     | '/app/search-users/'
     | '/app/online/room/$id'
+    | '/app/competition/result/$id'
     | '/app/chat/$friendId/'
-    | '/app/practice/casual/'
-    | '/app/practice/speed-solve/'
+    | '/app/practice/flow/'
+    | '/app/practice/rapid/'
     | '/app/profile/edit/'
-    | '/app/competition/play/casual/'
-    | '/app/competition/play/speed-solve/'
+    | '/app/competition/play/flow/'
+    | '/app/competition/play/rapid/'
     | '/app/online/room/$id/'
     | '/app/online/room/$id/chat/'
     | '/app/online/room/$id/leaderboard/'
@@ -646,8 +665,8 @@ export const routeTree = rootRoute
         "/app/search-users/",
         "/app/online/room/$id",
         "/app/chat/$friendId/",
-        "/app/practice/casual/",
-        "/app/practice/speed-solve/",
+        "/app/practice/flow/",
+        "/app/practice/rapid/",
         "/app/profile/edit/"
       ]
     },
@@ -663,8 +682,9 @@ export const routeTree = rootRoute
       "parent": "/app",
       "children": [
         "/app/competition/",
-        "/app/competition/play/casual/",
-        "/app/competition/play/speed-solve/"
+        "/app/competition/result/$id",
+        "/app/competition/play/flow/",
+        "/app/competition/play/rapid/"
       ]
     },
     "/auth/login": {
@@ -713,28 +733,32 @@ export const routeTree = rootRoute
         "/app/online/room/$id/members/"
       ]
     },
+    "/app/competition/result/$id": {
+      "filePath": "app/competition/result/$id.tsx",
+      "parent": "/app/competition"
+    },
     "/app/chat/$friendId/": {
       "filePath": "app/chat/$friendId/index.tsx",
       "parent": "/app"
     },
-    "/app/practice/casual/": {
-      "filePath": "app/practice/casual/index.tsx",
+    "/app/practice/flow/": {
+      "filePath": "app/practice/flow/index.tsx",
       "parent": "/app"
     },
-    "/app/practice/speed-solve/": {
-      "filePath": "app/practice/speed-solve/index.tsx",
+    "/app/practice/rapid/": {
+      "filePath": "app/practice/rapid/index.tsx",
       "parent": "/app"
     },
     "/app/profile/edit/": {
       "filePath": "app/profile/edit/index.tsx",
       "parent": "/app"
     },
-    "/app/competition/play/casual/": {
-      "filePath": "app/competition/play/casual/index.tsx",
+    "/app/competition/play/flow/": {
+      "filePath": "app/competition/play/flow/index.tsx",
       "parent": "/app/competition"
     },
-    "/app/competition/play/speed-solve/": {
-      "filePath": "app/competition/play/speed-solve/index.tsx",
+    "/app/competition/play/rapid/": {
+      "filePath": "app/competition/play/rapid/index.tsx",
       "parent": "/app/competition"
     },
     "/app/online/room/$id/": {

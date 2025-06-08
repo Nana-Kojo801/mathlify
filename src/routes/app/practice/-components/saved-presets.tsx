@@ -4,14 +4,14 @@ import { Play, Plus, Trash2 } from 'lucide-react'
 import { getPresetsQueryOptions } from './queries'
 import { useUser } from '@/hooks/user'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { CasualGameDifficulty, GameType, Preset } from '@/types'
+import type { FlowGameDifficulty, GameType, Preset } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 import Spinner from '@/components/spinner'
 import { useConvexMutation } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { toast } from 'sonner'
-import { useActions as useCasualGameActions } from '@/components/game-modes/casual-game/casual-game-store'
-import { useActions as useSpeedSolveGameActions } from '@/components/game-modes/speed-solve/speed-solve-game-store'
+import { useActions as useFlowGameActions } from '@/components/game-modes/flow-game/flow-game-store'
+import { useActions as useRapidGameActions } from '@/components/game-modes/rapid-game/rapid-game-store'
 import { useNavigate } from '@tanstack/react-router'
 
 const SkeletonSavedPresets = () => {
@@ -81,14 +81,14 @@ const Preset = ({
 }
 
 type SavedPresetsType = {
-  setShowCreateCasualDialog: React.Dispatch<React.SetStateAction<boolean>>
-  setShowCreateSpeedSolveDialog: React.Dispatch<React.SetStateAction<boolean>>
+  setShowCreateFlowDialog: React.Dispatch<React.SetStateAction<boolean>>
+  setShowCreateRapidDialog: React.Dispatch<React.SetStateAction<boolean>>
   gameMode: GameType
 }
 
 const SavedPresets = ({
-  setShowCreateCasualDialog,
-  setShowCreateSpeedSolveDialog,
+  setShowCreateFlowDialog,
+  setShowCreateRapidDialog,
   gameMode,
 }: SavedPresetsType) => {
   const user = useUser()
@@ -104,8 +104,8 @@ const SavedPresets = ({
   )
 
   const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null)
-  const { init: initCasualGame } = useCasualGameActions()
-  const { init: initSpeedSolveGame } = useSpeedSolveGameActions()
+  const { init: initFlowGame } = useFlowGameActions()
+  const { init: initRapidGame } = useRapidGameActions()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -121,8 +121,8 @@ const SavedPresets = ({
           size="sm"
           className="flex items-center gap-2 h-8"
           onClick={() => {
-            if (gameMode === 'casual') setShowCreateCasualDialog(true)
-            else setShowCreateSpeedSolveDialog(true)
+            if (gameMode === 'flow') setShowCreateFlowDialog(true)
+            else setShowCreateRapidDialog(true)
           }}
         >
           <Plus className="h-4 w-4" />
@@ -150,13 +150,13 @@ const SavedPresets = ({
       )}
       {!loadingPresets && filteredPresets.length > 0 && (
         <Button onClick={() => {
-          if (gameMode === 'casual') {
-            initCasualGame(selectedPreset!.settings! as CasualGameDifficulty)
-            navigate({ to: '/app/practice/casual' })
+          if (gameMode === 'flow') {
+            initFlowGame(selectedPreset!.settings! as FlowGameDifficulty)
+            navigate({ to: '/app/practice/flow' })
           } else {
             const { timeInterval, ...rest} = selectedPreset!.settings
-            initSpeedSolveGame(rest)
-            navigate({ to: '/app/practice/speed-solve' })
+            initRapidGame(rest)
+            navigate({ to: '/app/practice/rapid' })
           }
         }} className="w-full">
           <Play /> Start

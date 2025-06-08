@@ -1,10 +1,10 @@
-import type { CasualGameDifficulty, SpeedSolveDifficulty } from "@/types"
+import type { FlowGameDifficulty, RapidGameDifficulty } from "@/types"
 
-export const generateSpeedSolveMarathonQuestions = (difficulty: SpeedSolveDifficulty, score: number) => {
+export const generateRapidMarathonQuestions = (difficulty: RapidGameDifficulty, score: number) => {
   const duration = Math.max(difficulty.duration - Math.log2(score + 1), 3) // Minimum 3 seconds
 
   // Scale difficulty based on score
-  const scaledDifficulty: SpeedSolveDifficulty = {
+  const scaledDifficulty: RapidGameDifficulty = {
     range: {
       min: difficulty.range.min,
       max: Math.min(difficulty.range.max + Math.floor(score / 5), 100), // Increase max by 1 every 5 points, cap at 100
@@ -17,7 +17,7 @@ export const generateSpeedSolveMarathonQuestions = (difficulty: SpeedSolveDiffic
   }
 
   // Generate the question using the scaled difficulty
-  const question = generateSpeedSolveQuestions(scaledDifficulty)
+  const question = generateRapidGameQuestions(scaledDifficulty)
 
   return {
     ...question,
@@ -25,7 +25,7 @@ export const generateSpeedSolveMarathonQuestions = (difficulty: SpeedSolveDiffic
   }
 }
 
-export const calculateSpeedSolveMarathonScore = (totalTime: number, score: number) => {
+export const calculateRapidMarathonScore = (totalTime: number, score: number) => {
   if (score === 0) return 0  // No points if no questions answered
 
   // Base score: 100 points per question answered
@@ -40,8 +40,8 @@ export const calculateSpeedSolveMarathonScore = (totalTime: number, score: numbe
   return Math.max(0, Math.round(baseScore - timePenalty))
 }
 
-export const generateSpeedSolveQuestions = (
-  difficulty: SpeedSolveDifficulty,
+export const generateRapidGameQuestions = (
+  difficulty: RapidGameDifficulty,
 ) => {
   const { range, quantity } = difficulty!
   const operators = ['+', '-']
@@ -77,8 +77,8 @@ export const generateSpeedSolveQuestions = (
   }
 }
 
-export const generateCasualGameQuestions = (
-  difficulty: CasualGameDifficulty,
+export const generateFlowGameQuestions = (
+  difficulty: FlowGameDifficulty,
 ): number[] => {
   const { range, quantity } = difficulty!
   const length =
@@ -103,7 +103,7 @@ export const generateCasualGameQuestions = (
   return questions
 }
 
-export const generateCasualGameDifficultyWithRound = (round: number) => {
+export const generateFlowGameDifficultyWithRound = (round: number) => {
   return {
     range: {
       min: 1,
@@ -118,7 +118,7 @@ export const generateCasualGameDifficultyWithRound = (round: number) => {
   }
 }
 
-export const calculateCasualCompetitionScore = (averageTime: number, round: number) => {
+export const calculateFlowCompetitionScore = (averageTime: number, round: number) => {
   if (round === 0) return 0 // Prevent division by zero
 
   // Base score: The higher the round, the more points

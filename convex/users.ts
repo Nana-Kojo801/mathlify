@@ -47,8 +47,8 @@ export const insert = mutation({
       ...args,
       avatar: `https://ui-avatars.com/api/?background=random&name=${args.username[0]}`,
       elo: {
-        casual: 0,
-        speedSolve: 0,
+        flow: 0,
+        rapid: 0,
       },
       friends: [],
     })
@@ -68,6 +68,24 @@ export const updateProfile = mutation({
   },
 })
 
+export const update = mutation({
+  args: {
+    userId: v.id('users'),
+    username: v.optional(v.string()),
+    password: v.optional(v.string()),
+    avatar: v.optional(v.string()),
+    elo: v.optional(v.object({
+      flow: v.number(),
+      rapid: v.number(),
+    })),
+    friends: v.optional(v.array(v.id('users'))),
+    lastCompetition: v.optional(v.optional(v.id('competitions')))
+  },
+  handler: async (ctx, {  userId,...changes}) => {
+    await ctx.db.patch(userId, changes)
+  }
+})
+
 export const addFriend = mutation({
   args: { userId: v.id('users'), friendId: v.id('users') },
   handler: async (ctx, { userId, friendId }) => {
@@ -83,5 +101,14 @@ export const addFriend = mutation({
         friends: Array.from(new Set([...user!.friends, friendId])),
       }),
     ])
+  },
+})
+
+export const updateLastCompetition = mutation({
+  args: { userId: v.id('users'), competitionId: v.id('competitions') },
+  handler: async (ctx, { userId, competitionId }) => {
+    await ctx.db.patch(userId, {
+      lastCompetition: competitionId,
+    })
   },
 })
