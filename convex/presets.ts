@@ -27,7 +27,7 @@ export const createCasualPreset = mutation({
     duration: v.float64(),
   },
   handler: async (ctx, { userId, name, ...settings }) => {
-    await ctx.db.insert('presets', { settings, name, type: 'casual', userId })
+    await ctx.db.insert('presets', { settings, name, type: 'flow', userId })
   },
 })
 
@@ -49,7 +49,7 @@ export const createSpeedSolvePreset = mutation({
     await ctx.db.insert('presets', {
       settings,
       name,
-      type: 'speedSolve',
+      type: 'rapid',
       userId,
     })
   },
