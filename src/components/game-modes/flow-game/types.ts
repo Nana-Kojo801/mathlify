@@ -1,4 +1,4 @@
-import type { CasualGameDifficulty } from '@/types'
+import type { FlowGameDifficulty } from '@/types'
 
 export type FlowGameStore = {
   state:
@@ -9,7 +9,7 @@ export type FlowGameStore = {
     | 'correct'
     | 'wrong'
     | 'timeout'
-  difficulty: CasualGameDifficulty | null
+  difficulty: FlowGameDifficulty | null
   questions: number[]
   answer: number | null
   timeUsed: number
