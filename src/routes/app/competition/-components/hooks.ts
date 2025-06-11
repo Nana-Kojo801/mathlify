@@ -5,6 +5,7 @@ import {
   fetchFlowEntryQuery,
   fetchRapidEntriesQuery,
   fetchRapidEntryQuery,
+  fetchShouldShowResultQuery,
 } from './queries'
 import { useUser } from '@/hooks/user'
 import { useActions } from '@/stores/server-time-store'
@@ -78,4 +79,14 @@ export const useTimer = () => {
   }, [])
 
   return timeRemaining
+}
+
+export const useShouldShowResult = () => {
+  const user = useUser()
+
+  const { data: shouldShow } = useSuspenseQuery(
+    fetchShouldShowResultQuery(user._id, user.lastCompetition)
+  )
+
+  return shouldShow
 }

@@ -5,6 +5,7 @@ import {
   fetchFlowEntryQuery,
   fetchRapidEntriesQuery,
   fetchRapidEntryQuery,
+  fetchShouldShowResultQuery,
 } from './-components/queries'
 import { Clock, Loader2, Trophy } from 'lucide-react'
 import { useCompetition } from './-components/hooks'
@@ -14,11 +15,18 @@ export const Route = createFileRoute('/app/competition')({
   loader: async ({ context: { queryClient, auth } }) => {
     const user = auth.user!
     await Promise.all([
-      queryClient.ensureQueryData(fetchCompetitionQuery(user.lastCompetition)),
-      queryClient.ensureQueryData(fetchFlowEntriesQuery(user.lastCompetition)),
-      queryClient.ensureQueryData(fetchRapidEntriesQuery(user.lastCompetition)),
-      queryClient.ensureQueryData(fetchFlowEntryQuery(user._id, user.lastCompetition)),
-      queryClient.ensureQueryData(fetchRapidEntryQuery(user._id, user.lastCompetition)),
+      queryClient.ensureQueryData(fetchCompetitionQuery()),
+      queryClient.ensureQueryData(fetchFlowEntriesQuery()),
+      queryClient.ensureQueryData(fetchRapidEntriesQuery()),
+      queryClient.ensureQueryData(
+        fetchFlowEntryQuery(user._id),
+      ),
+      queryClient.ensureQueryData(
+        fetchRapidEntryQuery(user._id),
+      ),
+      queryClient.ensureQueryData(
+        fetchShouldShowResultQuery(user._id, user.lastCompetition),
+      ),
     ])
   },
   pendingComponent: () => {

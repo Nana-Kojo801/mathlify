@@ -13,12 +13,14 @@ import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import {useFlowEntry, useCompetition} from '../../-components/hooks'
+import { useAuth } from '@/components/auth-provider'
 
 export const Route = createFileRoute('/app/competition/play/flow/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { updateAuthUser } = useAuth()
   const user = useUser()
   const competition = useCompetition()
   const gameState = useGameState()
@@ -40,7 +42,7 @@ function RouteComponent() {
   const handleResult = useCallback(
     (status: 'correct' | 'wrong' | 'timeout') => {
       if (status !== 'correct') return
-
+      updateAuthUser({ lastCompetition: competition._id })
       const timeUsed = flowGameStore.getState().timeUsed
       const newTotalTime = gameData.totalTime + timeUsed
       const tempScore = calculateFlowCompetitionScore(timeUsed, gameData.round)

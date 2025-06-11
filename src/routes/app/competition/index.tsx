@@ -4,9 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import FlowTab from './-components/flow/flow-tab'
 import RapidTab from './-components/rapid/rapid-tab'
-import { useCompetition, useTimer } from './-components/hooks'
+import {
+  useShouldShowResult,
+  useTimer,
+} from './-components/hooks'
 import { ResultIndicator } from './-components/result-indicator'
-import { useUser } from '@/hooks/user'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/app/competition/')({
   component: CompetitionPage,
@@ -14,8 +17,8 @@ export const Route = createFileRoute('/app/competition/')({
 
 export function CompetitionPage() {
   const timeRemaininng = useTimer()
-  const competition = useCompetition()
-  const user = useUser()
+  const shouldShowResult = useShouldShowResult()
+  const [showResult, setShowResult] = useState(shouldShowResult)
 
   const formatTime = (time: number) => {
     const days = Math.floor(time / (1000 * 60 * 60 * 24)).toString()
@@ -81,7 +84,7 @@ export function CompetitionPage() {
           </Tabs>
         </main>
       </div>
-      {competition.expired && !competition.resultViews.includes(user._id) && <ResultIndicator />}
+      {showResult && <ResultIndicator onClose={() => setShowResult(false)} />}
     </>
   )
 }

@@ -150,7 +150,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       updateUser({ userId: user!._id, ...changes }),
       db.users.update(user!._id, changes),
     ])
-  }, [])
+  }, [user, updateUser])
 
   const getUser = async () => {
     const userId = localStorage.getItem(SESSION_KEY)

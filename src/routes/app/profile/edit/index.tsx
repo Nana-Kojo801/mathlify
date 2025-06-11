@@ -39,7 +39,7 @@ function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="fixed inseet-0 overflow-auto min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
@@ -51,15 +51,6 @@ function EditProfilePage() {
             </Link>
             <span className="text-xl font-bold text-primary">Edit Profile</span>
           </div>
-          <Button
-            variant="default"
-            size="sm"
-            className="px-3"
-            onClick={() => {}}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Save
-          </Button>
         </div>
       </header>
 

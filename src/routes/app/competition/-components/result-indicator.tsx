@@ -2,10 +2,15 @@ import { Button } from '@/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
 import { Award, BarChart2 } from 'lucide-react'
 import { useCompetition } from './hooks'
+import { useMutation } from 'convex/react'
+import { api } from '@convex/_generated/api'
+import { useUser } from '@/hooks/user'
 
-export function ResultIndicator() {
+export function ResultIndicator({ onClose }: { onClose: () => void }) {
   const competition = useCompetition()
+  const user = useUser()
   const navigate = useNavigate()
+  const viewResult = useMutation(api.competitions.viewResult)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 px-5 bg-black/50">
@@ -27,7 +32,7 @@ export function ResultIndicator() {
         <div className="border-t border-muted" />
 
         {/* Action buttons */}
-        <div className="p-6 grid gap-3">
+        <div className="p-6 grid grid-cols-2 gap-3">
           <Button
             onClick={() => {
               navigate({
@@ -39,6 +44,16 @@ export function ResultIndicator() {
           >
             <BarChart2 className="h-4 w-4" />
             View Results
+          </Button>
+          <Button
+            variant="outline"
+            className="h-12 gap-2"
+            onClick={() => {
+              viewResult({ competitionId: competition._id, userId: user._id })
+              onClose()
+            }}
+          >
+            Close
           </Button>
         </div>
       </div>

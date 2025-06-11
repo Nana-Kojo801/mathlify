@@ -1,13 +1,12 @@
 import { v } from 'convex/values'
 import { mutation, query } from './_generated/server'
-import type { Id } from './_generated/dataModel'
 
 export const create = mutation({
   handler: async (ctx) => {
     const previousCompetition = await ctx.db.query('competitions').first()
     if (previousCompetition) {
       await ctx.db.patch(previousCompetition._id, {
-        expired: true
+        expired: true,
       })
     }
     await ctx.db.insert('competitions', {
@@ -235,73 +234,119 @@ export const addRapidEntry = mutation({
     }
   },
 })
-interface Player {
-  userId: Id<'users'>
-  score: number
-  avgTime: number
-  round?: number
-  questions?: number
-}
 
-interface FormattedPlayer extends Omit<Player, 'userId'> {
-  username: string
-  avatar: string
-  rank: number
-}
 export const getResults = query({
   args: { userId: v.id('users'), competitionId: v.id('competitions') },
   handler: async (ctx, { userId, competitionId }) => {
-    // Helper function to fetch and format player data
+    const [flowCompetitionEntries, rapidCompetitionEntries] = await Promise.all(
+      [
+        Promise.all(
+          (
+            await ctx.db
+              .query('flowCompetitionEntries')
+              .withIndex('by_competition', (q) =>
+                q.eq('competitionId', competitionId),
+              )
+              .collect()
+          )
+            .sort((a, b) => b.score - a.score)
+            .map(
+              async (
+                { _id, _creationTime, competitionId, ...entry },
+                index,
+              ) => {
+                const user = (await ctx.db.get(entry.userId))!
+                return {
+                  ...entry,
+                  avatar: user.avatar,
+                  username: user.username,
+                  rank: index + 1,
+                }
+              },
+            ),
+        ),
+        Promise.all(
+          (
+            await ctx.db
+              .query('rapidCompetitionEntries')
+              .withIndex('by_competition', (q) =>
+                q.eq('competitionId', competitionId),
+              )
+              .collect()
+          )
+            .sort((a, b) => b.score - a.score)
+            .map(
+              async (
+                { _id, _creationTime, competitionId, ...entry },
+                index,
+              ) => {
+                const user = (await ctx.db.get(entry.userId))!
+                return {
+                  ...entry,
+                  avatar: user.avatar,
+                  username: user.username,
+                  rank: index + 1,
+                }
+              },
+            ),
+        ),
+      ],
+    )
 
-    const getFormattedPlayers = async (
-      entries: (Player & {
-        _id: string
-        _creationTime: number
-        competitionId: string
-      })[],
-      sortFn: (a: Player, b: Player) => number,
-      limit = 3,
-    ): Promise<FormattedPlayer[]> => {
-      return Promise.all(
-        entries
-          .sort(sortFn)
-          .slice(0, limit)
-          .map(
-            async ({ _id, _creationTime, competitionId, ...player }, index) => {
-              const user = (await ctx.db.get(player.userId))!
-              return {
-                ...player,
-                username: user.username,
-                avatar: user.avatar,
-                rank: index + 1,
-              }
-            },
-          ),
-      )
+    return {
+      flow: {
+        topPlayers: flowCompetitionEntries
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3),
+        bestAvgTime: flowCompetitionEntries
+          .sort((a, b) => a.avgTime - b.avgTime)[0],
+        bestRound: flowCompetitionEntries
+          .sort((a, b) => b.round - a.round)[0],
+        userPerformance:
+          flowCompetitionEntries.find((entry) => entry.userId === userId) ??
+          null,
+        totalPlayers: flowCompetitionEntries.length
+      },
+      rapid: {
+        topPlayers: rapidCompetitionEntries
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3),
+        bestAvgTime: rapidCompetitionEntries
+          .sort((a, b) => a.avgTime - b.avgTime)[0],
+        bestRound: rapidCompetitionEntries
+          .sort((a, b) => b.questions - a.questions)[0],
+        userPerformance:
+          rapidCompetitionEntries.find((entry) => entry.userId === userId) ??
+          null,
+        totalPlayers: rapidCompetitionEntries.length
+      },
     }
+  },
+})
 
-    // Fetch flow entries once
-    const flowEntries = await ctx.db
-      .query('flowCompetitionEntries')
-      .withIndex('by_competition', (q) => q.eq('competitionId', competitionId))
-      .collect()
+export const viewResult = mutation({
+  args: { competitionId: v.id('competitions'), userId: v.id('users') },
+  handler: async (ctx, { competitionId, userId }) => {
+    const competition = await ctx.db.get(competitionId)
+    if (!competition) return
+    if (!competition.resultViews.includes(userId)) {
+      await ctx.db.patch(competition._id, {
+        resultViews: [...competition.resultViews, userId],
+      })
+    }
+  },
+})
 
-    // Fetch rapid entries once
-    const rapidEntries = await ctx.db
-      .query('rapidCompetitionEntries')
-      .withIndex('by_competition', (q) => q.eq('competitionId', competitionId))
-      .collect()
-
-    // Get flow game results
-    const [
-      flowGameTopPlayers,
-      [flowGameTopAvgTimePlayer],
-      [flowGameTopRoundPlayer],
-      userFlowEntry,
-    ] = await Promise.all([
-      getFormattedPlayers(flowEntries, (a, b) => b.score - a.score, 3),
-      getFormattedPlayers(flowEntries, (a, b) => a.avgTime - b.avgTime, 1),
-      getFormattedPlayers(flowEntries, (a, b) => b.round! - a.round!, 1),
+export const shouldShowResult = query({
+  args: {
+    competitionId: v.optional(v.id('competitions')),
+    userId: v.id('users'),
+  },
+  handler: async (ctx, { competitionId, userId }) => {
+    if (!competitionId) return false
+    const competition = await ctx.db.get(competitionId)
+    if (!competition) return false
+    const [flowEntry, rapidEntry] = await Promise.all([
       ctx.db
         .query('flowCompetitionEntries')
         .withIndex('by_competition', (q) =>
@@ -309,22 +354,6 @@ export const getResults = query({
         )
         .filter((q) => q.eq(q.field('userId'), userId))
         .unique(),
-    ])
-
-    // Get rapid game results
-    const [
-      rapidGameTopPlayers,
-      [rapidGameTopAvgTimePlayer],
-      [rapidGameTopQuestionsPlayer],
-      userRapidEntry,
-    ] = await Promise.all([
-      getFormattedPlayers(rapidEntries, (a, b) => b.score - a.score, 3),
-      getFormattedPlayers(rapidEntries, (a, b) => a.avgTime - b.avgTime, 1),
-      getFormattedPlayers(
-        rapidEntries,
-        (a, b) => b.questions! - a.questions!,
-        1,
-      ),
       ctx.db
         .query('rapidCompetitionEntries')
         .withIndex('by_competition', (q) =>
@@ -333,20 +362,11 @@ export const getResults = query({
         .filter((q) => q.eq(q.field('userId'), userId))
         .unique(),
     ])
-
-    return {
-      flow: {
-        topPlayers: flowGameTopPlayers,
-        topAvgTimePlayer: flowGameTopAvgTimePlayer,
-        topRoundPlayer: flowGameTopRoundPlayer,
-        userPerformance: userFlowEntry,
-      },
-      rapid: {
-        topPlayers: rapidGameTopPlayers,
-        topAvgTimePlayer: rapidGameTopAvgTimePlayer,
-        topQuestionsPlayer: rapidGameTopQuestionsPlayer,
-        userPerformance: userRapidEntry,
-      },
+    if (flowEntry || rapidEntry) {
+      if (competition.expired && !competition.resultViews.includes(userId))
+        return true
+      else return false
     }
+    return false
   },
 })
