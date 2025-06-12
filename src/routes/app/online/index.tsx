@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { PageHeader } from '@/components/page-header'
 
 export const Route = createFileRoute('/app/online/')({
   component: OnlinePage,
@@ -25,11 +26,7 @@ function OnlinePage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header - Made more compact */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/40 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg sm:text-xl font-bold text-primary">
-          Online Play
-        </h1>
-      </header>
+      <PageHeader title='Online' />
 
       {/* Main Content - Adjusted spacing */}
       <main className="flex-1 px-4 py-4 sm:py-5 flex flex-col gap-5 w-full">

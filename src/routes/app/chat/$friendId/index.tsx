@@ -1,6 +1,4 @@
-import { createFileRoute, Link, useParams } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 import {
   useMutation as useTanstackMutation,
   useQueries,
@@ -16,6 +14,7 @@ import Chat from '@/components/chat'
 import { friendQueryOptions, messagesQueryOptions } from './-queries'
 import { useConvex } from 'convex/react'
 import { useFriendMessagesStore } from '@/stores/friend-messages-store'
+import { PageHeader } from '@/components/page-header'
 
 export const Route = createFileRoute('/app/chat/$friendId/')({
   component: RouteComponent,
@@ -37,24 +36,27 @@ function RouteComponent() {
   const user = useUser()
   const { friendId } = useParams({ from: '/app/chat/$friendId/' })
   const convex = useConvex()
-  const addMessage = useFriendMessagesStore(state => state.addMessage)
+  const addMessage = useFriendMessagesStore((state) => state.addMessage)
 
   const [{ data: friend, isLoading: loadingFriend }, { data: messages }] =
     useQueries({
       queries: [
         friendQueryOptions(friendId as User['_id']),
         messagesQueryOptions(user._id, friendId as User['_id']),
-      ]
+      ],
     })
 
   const { mutateAsync: sendMessage, isPending: isSendingMessage } =
     useTanstackMutation({
       mutationFn: async (message: string) => {
-        const newMessage = await convex.mutation(api.friendMessages.sendMessage, {
-          senderId: user._id,
-          receiverId: friendId as User['_id'],
-          message,
-        })
+        const newMessage = await convex.mutation(
+          api.friendMessages.sendMessage,
+          {
+            senderId: user._id,
+            receiverId: friendId as User['_id'],
+            message,
+          },
+        )
         addMessage(newMessage)
       },
     })
@@ -67,32 +69,25 @@ function RouteComponent() {
   return (
     <div className="fixed inset-0 z-30 w-full h-dvh bg-background text-foreground flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4">
-        <div className="flex items-center gap-3 h-16">
-          <Link to="/app">
-            <Button size="icon" variant="ghost" className="rounded-full">
-              <ArrowLeft className="size-5" />
-            </Button>
-          </Link>
-          {loadingFriend ? (
-            <ChatHeaderSkeleton />
-          ) : (
-            <>
-              <UserAvatar
-                className="size-10"
-                username={friend!.username}
-                avatar={friend!.avatar}
-              />
-              <div className="flex flex-col justify-center">
-                <span className="font-semibold leading-none">
-                  {friend!.username}
-                </span>
-                {/* <span className="text-xs text-muted-foreground">Online</span> */}
-              </div>
-            </>
-          )}
-        </div>
-      </header>
+      <PageHeader showBackButton backLink='/app'>
+        {loadingFriend ? (
+          <ChatHeaderSkeleton />
+        ) : (
+          <>
+            <UserAvatar
+              className="size-10"
+              username={friend!.username}
+              avatar={friend!.avatar}
+            />
+            <div className="flex flex-col justify-center">
+              <span className="font-semibold leading-none">
+                {friend!.username}
+              </span>
+              {/* <span className="text-xs text-muted-foreground">Online</span> */}
+            </div>
+          </>
+        )}
+      </PageHeader>
 
       <Chat
         messages={messages}

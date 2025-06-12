@@ -4,12 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import FlowTab from './-components/flow/flow-tab'
 import RapidTab from './-components/rapid/rapid-tab'
-import {
-  useShouldShowResult,
-  useTimer,
-} from './-components/hooks'
+import { useShouldShowResult, useTimer } from './-components/hooks'
 import { ResultIndicator } from './-components/result-indicator'
 import { useState } from 'react'
+import { PageHeader } from '@/components/page-header'
 
 export const Route = createFileRoute('/app/competition/')({
   component: CompetitionPage,
@@ -34,14 +32,10 @@ export function CompetitionPage() {
   return (
     <>
       <div className="min-h-screen bg-background text-foreground flex flex-col relative">
-        {/* Header */}
-        <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-primary">
-                Competition
-              </span>
-            </div>
+        
+        <PageHeader
+          title="Competition"
+          rightContent={
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="h-7 gap-1.5 px-3">
                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
@@ -50,9 +44,8 @@ export function CompetitionPage() {
                 </span>
               </Badge>
             </div>
-          </div>
-        </header>
-
+          }
+        />
         {/* Main Content */}
         <main className="flex-1 p-4 w-full">
           {/* Competition Tabs */}

@@ -7,7 +7,7 @@ import { UserPlus, ChevronRight, MessagesSquare, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import type { User } from '@/types'
-import { useFriendsStore } from '@/stores/friends-store'
+import useFriends from '@/hooks/friends'
 
 const Friend = ({ friend }: { friend: User }) => {
   const user = useUser()
@@ -56,13 +56,7 @@ const Friend = ({ friend }: { friend: User }) => {
 }
 
 export default function FriendsList() {
-  const user = useUser()
-  const localFriends = useFriendsStore((state) => state.friends)
-  const { data: friends } = useQuery({
-    ...convexQuery(api.users.getUsers, { users: user.friends }),
-    initialData: localFriends,
-    enabled: !!localFriends
-  })
+  const friends = useFriends()
 
   const handleViewAllClick = () => {
     console.log('Navigate to all friends page')

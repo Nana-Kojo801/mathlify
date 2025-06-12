@@ -12,38 +12,33 @@ import { useActions } from '@/stores/server-time-store'
 import { useState, useEffect } from 'react'
 
 export const useCompetition = () => {
-    const user = useUser()
-  const { data: competition } = useSuspenseQuery(fetchCompetitionQuery(user.lastCompetition))
+  const { data: competition } = useSuspenseQuery(fetchCompetitionQuery())
 
   return competition!
 }
 
 export const useFlowEntry = () => {
   const user = useUser()
-  const competition = useCompetition()
 
   const { data: entry } = useSuspenseQuery(
-    fetchFlowEntryQuery(user._id, competition._id),
+    fetchFlowEntryQuery(user._id),
   )
 
   return entry
 }
 
 export const useFlowEntries = () => {
-  const competition = useCompetition()
-
   const { data: entries } = useSuspenseQuery(
-    fetchFlowEntriesQuery(competition._id),
+    fetchFlowEntriesQuery()
   )
 
   return entries
 }
 
 export const useRapidEntries = () => {
-  const user = useUser()
 
   const { data: entries } = useSuspenseQuery(
-    fetchRapidEntriesQuery(user.lastCompetition),
+    fetchRapidEntriesQuery(),
   )
 
   return entries
@@ -53,7 +48,7 @@ export const useRapidEntry = () => {
   const user = useUser()
 
   const { data: entry } = useSuspenseQuery(
-    fetchRapidEntryQuery(user._id, user.lastCompetition),
+    fetchRapidEntryQuery(user._id),
   )
 
   return entry

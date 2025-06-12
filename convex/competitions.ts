@@ -84,6 +84,7 @@ export const getFlowEntry = query({
   },
   handler: async (ctx, { userId, competitionId }) => {
     const user = (await ctx.db.get(userId))!
+    let id = competitionId
     const defaultEntry = {
       userId: user._id,
       username: user.username,
@@ -93,11 +94,14 @@ export const getFlowEntry = query({
       round: 0,
       rank: 0,
     }
-
-    if (!competitionId) return defaultEntry
+    if (!competitionId) {
+      const currentCompetition = await ctx.db.query('competitions').first()
+      if (!currentCompetition) return defaultEntry
+      id = currentCompetition._id
+    }
     const userEntry = await ctx.db
       .query('flowCompetitionEntries')
-      .withIndex('by_competition', (q) => q.eq('competitionId', competitionId))
+      .withIndex('by_competition', (q) => q.eq('competitionId', id!))
       .filter((q) => q.eq(q.field('userId'), userId))
       .unique()
 
@@ -107,9 +111,7 @@ export const getFlowEntry = query({
       (
         await ctx.db
           .query('flowCompetitionEntries')
-          .withIndex('by_competition', (q) =>
-            q.eq('competitionId', competitionId),
-          )
+          .withIndex('by_competition', (q) => q.eq('competitionId', id!))
           .collect()
       )
         .sort((a, b) => b.score - a.score)

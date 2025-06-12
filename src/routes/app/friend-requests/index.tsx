@@ -1,12 +1,9 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowLeft, Check } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import UserAvatar from '@/components/user-avatar'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import {
-  convexQuery,
-  useConvex,
-} from '@convex-dev/react-query'
+import { convexQuery, useConvex } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { useUser } from '@/hooks/user'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -14,6 +11,7 @@ import type { FriendRequest, User } from '@/types'
 import { toast } from 'sonner'
 import Spinner from '@/components/spinner'
 import { useFriendsStore } from '@/stores/friends-store'
+import { PageHeader } from '@/components/page-header'
 
 export const Route = createFileRoute('/app/friend-requests/')({
   component: RouteComponent,
@@ -49,7 +47,7 @@ const Request = ({
   request: FriendRequest & { sender: User; receiver: User }
 }) => {
   const convex = useConvex()
-  const addFriend = useFriendsStore(state => state.addFriend)
+  const addFriend = useFriendsStore((state) => state.addFriend)
   const { mutateAsync: acceptRequest, isPending: isAcceptingRequest } =
     useMutation({
       mutationFn: async () => {
@@ -57,7 +55,7 @@ const Request = ({
           convex.mutation(api.friendRequests.acceptRequests, {
             requestId: request._id,
           }),
-          addFriend(request.sender)
+          addFriend(request.sender),
         ])
       },
       onError: () => {
@@ -109,21 +107,7 @@ function RouteComponent() {
   return (
     <div className="fixed inset-0 z-20 min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Left Side: Back Button + Logo */}
-          <div className="flex items-center space-x-2">
-            <Link to="/app">
-              <Button size="icon" variant="ghost" className="size-8 p-0">
-                <ArrowLeft className="size-5" />
-              </Button>
-            </Link>
-            <span className="text-xl font-bold text-primary">
-              Friend Requests
-            </span>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Requests" showBackButton backLink="/app" />
 
       {/* Main Content */}
       <main className="flex-1 p-4 flex flex-col gap-3">

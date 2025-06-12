@@ -1,13 +1,13 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowLeft, Camera, Save, User, Lock } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Camera, Save, User, Lock } from 'lucide-react'
 import { useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useUser } from '@/hooks/user'
 import { useAppForm } from '@/hooks/form'
 import type { z } from 'zod'
 import { authSchema } from '@/components/auth-form'
 import { useAuth } from '@/components/auth-provider'
+import { PageHeader } from '@/components/page-header'
 
 export const Route = createFileRoute('/app/profile/edit/')({
   component: EditProfilePage,
@@ -39,23 +39,12 @@ function EditProfilePage() {
   }
 
   return (
-    <div className="fixed inseet-0 overflow-auto min-h-screen bg-background text-foreground flex flex-col">
+    <div className="fixed inset-0 z-30 overflow-auto min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-2">
-            <Link to="/app/profile">
-              <Button variant="ghost" size="sm" className="p-2">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
-            <span className="text-xl font-bold text-primary">Edit Profile</span>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Edit" showBackButton backLink="/app/profile" />
 
       {/* Main Content */}
-      <main className="flex-1 px-4 py-6 sm:px-6 max-w-xl mx-auto w-full">
+      <main className="flex-1 px-4 py-8 sm:px-6 max-w-xl mx-auto w-full">
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -64,38 +53,49 @@ function EditProfilePage() {
           className="space-y-8"
         >
           {/* Avatar Section */}
-          <div className="flex flex-col items-center space-y-4 py-4">
-            <div className="relative">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="relative group">
               <input
                 id="avatar"
                 type="file"
                 onChange={handleAvatarChange}
                 className="hidden"
+                accept="image/*"
               />
-              <img
-                ref={imageRef}
-                src={user.avatar}
-                alt="Profile"
-                className="w-24 h-24 rounded-full border-2 border-primary"
-              />
-              <label
-                htmlFor="avatar"
-                className="absolute bottom-0 right-0 rounded-full p-2 bg-secondary"
-              >
-                <Camera className="w-4 h-4" />
-              </label>
+              <div className="relative rounded-full p-1 bg-gradient-to-br from-primary to-secondary">
+                <img
+                  ref={imageRef}
+                  src={user.avatar}
+                  alt="Profile"
+                  className="w-28 h-28 rounded-full border-4 border-background object-cover"
+                />
+                <label
+                  htmlFor="avatar"
+                  className="absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                  <div className="bg-background p-3 rounded-full shadow-lg">
+                    <Camera className="w-5 h-5 text-primary" />
+                  </div>
+                </label>
+              </div>
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
-                Member since {new Date(user._creationTime).toDateString()}
+                Member since{' '}
+                {new Date(user._creationTime).toLocaleDateString('en-US', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
               </p>
             </div>
           </div>
 
           {/* Form Fields */}
-          <div className="space-y-6 flex flex-col items-center">
-            <div className="space-y-2 w-full max-w-md">
-              <Label htmlFor="username">Username</Label>
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="username" className="text-muted-foreground">
+                Username
+              </Label>
               <form.AppField
                 name="username"
                 children={(field) => (
@@ -103,24 +103,27 @@ function EditProfilePage() {
                     id="username"
                     name="username"
                     placeholder="Enter username"
-                    className="pl-10"
+                    className="pl-10 h-12"
                   >
-                    <User className="absolute z-10 left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   </field.TextField>
                 )}
               />
             </div>
-            <div className="space-y-2 w-full max-w-md">
-              <Label htmlFor="password">Password</Label>
+            <div className="space-y-3">
+              <Label htmlFor="password" className="text-muted-foreground">
+                Password
+              </Label>
               <form.AppField
                 name="password"
                 children={(field) => (
                   <field.TextField
                     id="password"
+                    type="password"
                     placeholder="Enter password"
-                    className="pl-10"
+                    className="pl-10 h-12"
                   >
-                    <Lock className="absolute z-10 left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   </field.TextField>
                 )}
               />
@@ -128,24 +131,19 @@ function EditProfilePage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-4 pt-6 w-full max-w-md mx-auto">
-            <Link to="/app/profile">
-              <Button variant="destructive" type="button" className="w-full">
-                Cancel
-              </Button>
-            </Link>
+          <div className="pt-6">
             <form.AppForm>
-              <form.SubscribeButton className="w-full">
+              <form.SubscribeButton className="w-full h-12">
                 {form.state.isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-primary" />
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-background border-t-primary" />
                     Saving...
                   </div>
                 ) : (
-                  <>
-                    <Save />
-                    Save changes
-                  </>
+                  <div className="flex items-center justify-center gap-2">
+                    <Save className="w-5 h-5" />
+                    <span>Save Changes</span>
+                  </div>
                 )}
               </form.SubscribeButton>
             </form.AppForm>

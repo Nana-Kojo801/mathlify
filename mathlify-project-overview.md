@@ -82,7 +82,7 @@ Here are the primary pages for the app:
   - Leaderboard (room-specific rankings)
 
 ### 8. Profile Page
-- User statistics dashboard (username, avatar, play history).
+- User statistics dashboard (username, avatar, play history, elo, etc).
 - Achievements and badges display.
 - Profile editing capabilities.
 - Global leaderboards (separate for each game mode).
