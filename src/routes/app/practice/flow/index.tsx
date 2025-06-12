@@ -8,7 +8,7 @@ export const Route = createFileRoute('/app/practice/flow/')({
 function RouteComponent() {
   return (
     <Game.FlowGameLayout>
-      <Game.FlowGame quitTo={{ to: '/app/practice' }} />
+      <Game.FlowGame quitTo={{ to: '/app/practice', search: { mode: 'flow' } }} />
     </Game.FlowGameLayout>
   )
 }

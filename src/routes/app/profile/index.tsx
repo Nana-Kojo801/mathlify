@@ -1,23 +1,31 @@
-import { createFileRoute } from '@tanstack/react-router'
-import {
-  Gamepad2,
-  User,
-  Eye,
-  TrendingUp,
-} from 'lucide-react'
-import { useState } from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Gamepad2, User, Eye, TrendingUp } from 'lucide-react'
 import FriendsList from './-components/friends-list'
 import RecentGames from './-components/recent-games'
 import OverviewTab from './-components/overview-tab'
 import StatisticsTab from './-components/statistics-tab'
 import ProfileHeader from './-components/profile-header'
+import { z } from 'zod'
+
+const searchSchema = z.object({
+  tab: z
+    .union([
+      z.literal('overview'),
+      z.literal('statistics'),
+      z.literal('games'),
+      z.literal('friends'),
+    ])
+    .default('overview'),
+})
 
 export const Route = createFileRoute('/app/profile/')({
   component: ProfilePage,
+  validateSearch: searchSchema,
 })
 
 function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('overview')
+  const searchParams = Route.useSearch()
+  const navigate = useNavigate({ from: '/app/profile' })
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Eye },
@@ -27,7 +35,7 @@ function ProfilePage() {
   ]
 
   const renderTabContent = () => {
-    switch (activeTab) {
+    switch (searchParams.tab) {
       case 'overview':
         return <OverviewTab />
       case 'statistics':
@@ -53,9 +61,15 @@ function ProfilePage() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() =>
+                  navigate({
+                    search: {
+                      tab: tab.id as z.infer<typeof searchSchema>['tab'],
+                    },
+                  })
+                }
                 className={`flex items-center gap-2 px-4 py-4 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
-                  activeTab === tab.id
+                  searchParams.tab === tab.id
                     ? 'border-primary text-primary'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground'
                 }`}

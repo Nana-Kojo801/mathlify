@@ -37,7 +37,7 @@ const FooterNavigation = () => {
             key={name}
             to={to}
             className="flex flex-col items-center h-full py-6"
-            activeOptions={{ exact: true }}
+            activeOptions={{ exact: true, includeSearch: false }}
             activeProps={{
                 className: "text-primary"
             }}

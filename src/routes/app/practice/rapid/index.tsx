@@ -8,7 +8,7 @@ export const Route = createFileRoute('/app/practice/rapid/')({
 function RouteComponent() {
   return (
     <Game.RapidGameLayout>
-      <Game.RapidGame quitTo={{ to: '/app/practice' }} />
+      <Game.RapidGame quitTo={{ to: '/app/practice', search: { mode: 'rapid' } }} />
     </Game.RapidGameLayout>
   )
 }

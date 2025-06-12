@@ -1,13 +1,15 @@
 import type { GameType } from '@/types'
+import { useNavigate } from '@tanstack/react-router'
 import { Brain, CheckIcon, Zap } from 'lucide-react'
-import React from 'react'
 
 type GameModeSelectionType = {
-    gameMode: GameType
-    setGameMode: React.Dispatch<React.SetStateAction<GameType>>
+  gameMode: GameType
 }
 
-const GameModeSelection = ({ gameMode, setGameMode }: GameModeSelectionType) => {
+const GameModeSelection = ({
+  gameMode,
+}: GameModeSelectionType) => {
+  const navigate = useNavigate()
   return (
     <section className="mb-4">
       <h2 className="text-xl font-bold mb-3">Game Mode</h2>
@@ -16,7 +18,9 @@ const GameModeSelection = ({ gameMode, setGameMode }: GameModeSelectionType) => 
           className={`bg-card/60 backdrop-blur-sm rounded-lg border ${
             gameMode === 'flow' ? 'border-primary' : 'border-border/50'
           } p-4 cursor-pointer`}
-          onClick={() => setGameMode('flow')}
+          onClick={() =>
+            navigate({ from: '/app/practice', search: { mode: 'flow' } })
+          }
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -37,7 +41,9 @@ const GameModeSelection = ({ gameMode, setGameMode }: GameModeSelectionType) => 
           className={`bg-card/60 backdrop-blur-sm rounded-lg border ${
             gameMode === 'rapid' ? 'border-secondary' : 'border-border/50'
           } p-4 cursor-pointer`}
-          onClick={() => setGameMode('rapid')}
+          onClick={() =>
+            navigate({ from: '/app/practice', search: { mode: 'rapid' } })
+          }
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
