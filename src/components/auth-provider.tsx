@@ -13,13 +13,15 @@ import type { z } from 'zod'
 import type { authSchema } from './auth-form'
 import { useNetworkState } from 'react-use'
 import { db } from '@/lib/dexie'
-import { registerFriendMessagesSync } from '@/stores/friend-messages-store'
-import { registerFriendsStore } from '@/stores/friends-store'
+import { syncFriendMessages } from '@/stores/friend-messages-store'
+import { syncFriends } from '@/stores/friends-store'
 
 export type AuthContextType = {
   user: User | null
   loading: boolean
+  syncing: boolean
   authenticated: boolean
+  init: () => Promise<void>
   signup: (values: z.infer<typeof authSchema>) => Promise<boolean>
   login: (values: z.infer<typeof authSchema>) => Promise<boolean>
   updateAuthUser: (changes: Partial<User>) => Promise<void>
@@ -32,11 +34,12 @@ export type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const SESSION_KEY = 'mathlify-session'
+export const SESSION_KEY = 'mathlify-session'
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
   const [authenticated, setAuthenticated] = useState(false)
   const convex = useConvex()
   const generateUrl = useMutation(api.upload.generateUploadUrl)
@@ -58,7 +61,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await db.users.add(newUser)
         setUser(newUser)
         setAuthenticated(true)
-        registerFriendMessagesSync(convex, newUser._id, newUser.friends, online ?? false)
         return true
       } catch (e) {
         toast.error('Something went wrong. Try again later')
@@ -86,7 +88,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await db.users.add(existingUser)
         setUser(existingUser)
         setAuthenticated(true)
-        registerFriendMessagesSync(convex, existingUser._id, existingUser.friends, online ?? false)
         return true
       } catch {
         toast.error('Something went wrong. Try again later')
@@ -144,15 +145,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     [user, convex],
   )
 
-  const updateAuthUser = useCallback(async (changes: Partial<User>) => {
-    setUser(Object.assign(user!, changes))
-    await Promise.all([
-      updateUser({ userId: user!._id, ...changes }),
-      db.users.update(user!._id, changes),
-    ])
-  }, [user, updateUser])
+  const updateAuthUser = useCallback(
+    async (changes: Partial<User>) => {
+      setUser(Object.assign(user!, changes))
+      await Promise.all([
+        updateUser({ userId: user!._id, ...changes }),
+        db.users.update(user!._id, changes),
+      ])
+    },
+    [user, updateUser],
+  )
 
-  const getUser = async () => {
+  const getUser = useCallback(async () => {
     const userId = localStorage.getItem(SESSION_KEY)
     if (!userId) return null
     if (online) {
@@ -168,35 +172,64 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return user
     }
     return (await db.users.get(userId))!
-  }
+  }, [])
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const user = await getUser()
-        if (!user) {
-          setLoading(false)
-          setAuthenticated(false)
-          return
-        }
-        setUser(user)
-        setAuthenticated(true)
-        registerFriendMessagesSync(convex, user._id, user.friends, online ?? false)
-        registerFriendsStore(convex, user, online ?? false)
-        setLoading(false)
-      } catch(e) {
-        console.error(e)
+  const sync = useCallback(async () => {
+    if(!user) return
+    try {
+      setSyncing(true)
+      await Promise.all([
+        syncFriendMessages({ user, online: online ?? false, convex }),
+        syncFriends({ user, online: online ?? false, convex }),
+      ])
+      setSyncing(false)
+    } catch(e) {
+      setSyncing(false)
+      toast.error("Error syncing")
+    }
+  }, [user])
+
+  const init = useCallback(async () => {
+    try {
+      const user = await getUser()
+      if (!user) {
         setLoading(false)
         setAuthenticated(false)
-        toast.error('An error occured')
+        return
       }
+      setUser(user)
+      setAuthenticated(true)
+      setLoading(false)
+    } catch (e) {
+      console.error(e)
+      setLoading(false)
+      setAuthenticated(false)
+      toast.error('An error occured')
     }
+  }, [])
+
+  useEffect(() => {
+    if(!authenticated || !user) return
+    sync()
+  }, [authenticated, user])
+
+  useEffect(() => {
     init()
   }, [])
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, authenticated, signup, login, editProfile, updateAuthUser }}
+      value={{
+        user,
+        loading,
+        syncing,
+        authenticated,
+        signup,
+        login,
+        editProfile,
+        updateAuthUser,
+        init,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,6 +1,5 @@
 import type { User } from '@/types'
 import { create } from 'zustand'
-import { useInitStore } from './init-store'
 import { api } from '@convex/_generated/api'
 import { db } from '@/lib/dexie'
 import type { ConvexReactClient } from 'convex/react'
@@ -28,26 +27,28 @@ export const useFriendsStore = create<FriendsStoreType>((set, get) => ({
   },
 }))
 
-export const registerFriendsStore = (
-  convex: ConvexReactClient,
-  user: User,
-  online: boolean,
-) => {
-  useInitStore.getState().registerTask(async () => {
-    if (online) {
-      const friends = await convex.query(api.users.getUsers, {
-        users: user.friends,
-      })
-      await db.friends.clear()
-      await Promise.all(
-        friends.map(async (friend) => {
-          await db.friends.add(friend)
-        }),
-      )
-      useFriendsStore.getState().setFriends(friends)
-    } else {
-      const localFriends = await db.friends.toArray()
-      useFriendsStore.getState().setFriends(localFriends)
-    }
-  })
+export const syncFriends = async ({
+  user,
+  online,
+  convex,
+}: {
+  user: User
+  online: boolean
+  convex: ConvexReactClient
+}) => {
+  if (online) {
+    const friends = await convex.query(api.users.getUsers, {
+      users: user!.friends,
+    })
+    await db.friends.clear()
+    await Promise.all(
+      friends.map(async (friend) => {
+        await db.friends.add(friend)
+      }),
+    )
+    useFriendsStore.getState().setFriends(friends)
+  } else {
+    const localFriends = await db.friends.toArray()
+    useFriendsStore.getState().setFriends(localFriends)
+  }
 }

@@ -28,7 +28,8 @@ const Friend = ({ friend }: { friend: User }) => {
         <UserAvatar
           username={friend.username}
           avatar={friend.avatar}
-          className="size-10 ring-2 ring-primary ring-offset-2"
+          className="size-10"
+          lastActive={friend.lastActive}
         />
         <div className="flex flex-col">
           <span className="font-semibold text-foreground">

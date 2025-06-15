@@ -51,6 +51,7 @@ export const insert = mutation({
         rapid: 0,
       },
       friends: [],
+      lastActive: Date.now()
     })
     return (await ctx.db.get(id))!
   },
@@ -79,10 +80,18 @@ export const update = mutation({
       rapid: v.number(),
     })),
     friends: v.optional(v.array(v.id('users'))),
-    lastCompetition: v.optional(v.optional(v.id('competitions')))
+    lastCompetition: v.optional(v.optional(v.id('competitions'))),
+    lastActive: v.optional(v.number())
   },
   handler: async (ctx, {  userId,...changes}) => {
     await ctx.db.patch(userId, changes)
+  }
+})
+
+export const updatePresence = mutation({
+  args: { userId: v.id("users")},
+  handler: async (ctx, { userId }) => {
+    await ctx.db.patch(userId, { lastActive: Date.now() })
   }
 })
 

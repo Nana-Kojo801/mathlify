@@ -9,7 +9,13 @@ import {
   useWrongs,
 } from './rapid-game-store'
 
-const Questions = () => {
+const Questions = ({
+  customTimer,
+  onCorrect = () => {},
+}: {
+  customTimer?: number
+  onCorrect?: (score: number) => void
+}) => {
   const [selected, setSelected] = useState<number | null>(null)
   const score = useScore()
   const wrongs = useWrongs()
@@ -25,8 +31,10 @@ const Questions = () => {
     setReveal(true)
     setSelected(index)
 
-    if (answer === question.correctAnswer) setScore(score + 1)
-    else setWrongs(wrongs + 1)
+    if (answer === question.correctAnswer) {
+      onCorrect(score + 1)
+      setScore(score + 1)
+    } else setWrongs(wrongs + 1)
 
     setTimeout(() => {
       setSelected(null)
@@ -36,7 +44,7 @@ const Questions = () => {
   }
 
   useEffect(() => {
-    if (timer <= 0) return
+    if (timer <= 0 || customTimer !== undefined) return
 
     const interval = setInterval(() => {
       setTimer((prevTimer) => prevTimer - 1)
@@ -62,7 +70,7 @@ const Questions = () => {
         </div>
         <div className="flex items-center gap-2 bg-card px-5 py-3 rounded-xl text-lg font-semibold shadow-md">
           <Timer className="text-red-400 w-6 h-6" />
-          <span>{timer}s</span>
+          <span>{customTimer !== undefined ? customTimer : timer}s</span>
         </div>
       </div>
 
@@ -88,7 +96,12 @@ const Questions = () => {
               onClick={() => handleOptionClicked(answer, index)}
               className={cn(
                 'text-lg sm:text-xl md:text-2xl font-semibold py-6 px-4 rounded-2xl shadow-md transition-all duration-300 w-full focus:outline-none',
-                reveal ? isCorrect ? 'bg-green-500' : 'bg-red-500' : 'bg-primary')}
+                reveal
+                  ? isCorrect
+                    ? 'bg-green-500'
+                    : 'bg-red-500'
+                  : 'bg-primary',
+              )}
             >
               {answer}
             </button>

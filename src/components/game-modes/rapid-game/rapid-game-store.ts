@@ -14,11 +14,11 @@ const useRapidGameStore = create<RapidGameStore>((set, get) => ({
     setQuestion: (question) => set({ question }),
     setScore: (score) => set({ score }),
     setWrongs: (wrongs) => set({ wrongs }),
-    init: (difficulty) => {
+    init: (difficulty, state = "idle") => {
       if (difficulty === null) throw Error('Difficulty must not be null')
       console.log('initing', difficulty)
       const question = generateRapidGameQuestions(difficulty)
-      set({ difficulty, question, state: 'idle', wrongs: 0, score: 0 })
+      set({ difficulty, question, state, wrongs: 0, score: 0 })
     },
     playAgain: () => {
       get().actions.init(get().difficulty)

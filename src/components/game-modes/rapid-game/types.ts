@@ -15,7 +15,7 @@ export type RapidGameStore = {
   score: number
   wrongs: number
   actions: {
-    init: (difficulty: RapidGameStore['difficulty']) => void
+    init: (difficulty: RapidGameStore['difficulty'], state?: RapidGameStore['state']) => void
     playAgain: () => void
     generateQuestion: () => void
     reset: () => void

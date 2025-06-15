@@ -3,7 +3,7 @@ import { mutation, query } from './_generated/server'
 
 export const create = mutation({
   handler: async (ctx) => {
-    const previousCompetition = await ctx.db.query('competitions').first()
+    const previousCompetition = await ctx.db.query('competitions').order("desc").first()
     if (previousCompetition) {
       await ctx.db.patch(previousCompetition._id, {
         expired: true,
@@ -171,7 +171,7 @@ export const get = query({
   args: { competitionId: v.optional(v.id('competitions')) },
   handler: async (ctx, { competitionId }) => {
     if (!competitionId) {
-      const currentCompetition = await ctx.db.query('competitions').first()
+      const currentCompetition = await ctx.db.query('competitions').order("desc").first()
       if (!currentCompetition) return null
       competitionId = currentCompetition._id
     }

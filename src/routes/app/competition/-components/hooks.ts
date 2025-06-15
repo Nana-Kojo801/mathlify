@@ -8,8 +8,8 @@ import {
   fetchShouldShowResultQuery,
 } from './queries'
 import { useUser } from '@/hooks/user'
-import { useActions } from '@/stores/server-time-store'
 import { useState, useEffect } from 'react'
+import { DateTime } from 'luxon'
 
 export const useCompetition = () => {
   const { data: competition } = useSuspenseQuery(fetchCompetitionQuery())
@@ -56,13 +56,12 @@ export const useRapidEntry = () => {
 
 export const useTimer = () => {
   const [timeRemaining, setTimeRemaining] = useState(0)
-  const { getServerTime } = useActions()
   const competition = useCompetition()
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const serverTime = getServerTime()
-      const remaining = competition.endTime - serverTime
+      const now = DateTime.now()
+      const remaining = DateTime.fromMillis(competition.endTime).diff(now).as("milliseconds")
       if (remaining <= 0) {
         clearInterval(interval)
       } else {

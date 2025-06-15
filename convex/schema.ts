@@ -11,12 +11,25 @@ export default defineSchema({
       rapid: v.number(),
     }),
     friends: v.array(v.id('users')),
-    lastCompetition: v.optional(v.id('competitions'))
+    lastCompetition: v.optional(v.id('competitions')),
+    lastActive: v.number()
   })
     .index('by_uesrname', ['username'])
     .searchIndex('search_user', {
       searchField: 'username',
     }),
+  useGameData: defineTable({
+    flow: v.object({
+      wins: v.number(),
+      losses: v.number(),
+      peakElo: v.number()
+    }),
+    rapid: v.object({
+      wins: v.number(),
+      losses: v.number(),
+      peakElo: v.number()
+    })
+  }),
   friendRequests: defineTable({
     senderId: v.id('users'),
     receiverId: v.id('users'),
@@ -72,4 +85,24 @@ export default defineSchema({
     resultViews: v.array(v.id('users')),
     expired: v.boolean(),
   }),
+  rapidOnlineMatches: defineTable({
+    player1Id: v.optional(v.id("users")),
+    player2Id: v.optional(v.id("users")),
+    status: v.union(v.literal("waiting"), v.literal("countdown"), v.literal("questions"), v.literal("result")),
+    gamePhase: v.object({
+      type: v.union(v.literal("waiting"), v.literal("countdown"), v.literal("questions"), v.literal("result")),
+      startTime: v.number(),
+      endTime: v.number()
+    }),
+    gameResult: v.object({
+      player1: v.number(),
+      player2: v.number()
+    })
+  }),
+  rapidOnlineQueue: defineTable({
+    userId: v.id("users"),
+    isSearching: v.boolean(),
+    maxWaitTime: v.number(),
+    joinedAt: v.number()
+  }).index("by_userId", ["userId"])
 })

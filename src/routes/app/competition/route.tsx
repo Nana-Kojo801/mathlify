@@ -14,6 +14,7 @@ export const Route = createFileRoute('/app/competition')({
   component: RouteComponent,
   loader: async ({ context: { queryClient, auth } }) => {
     const user = auth.user!
+
     await Promise.all([
       queryClient.ensureQueryData(fetchCompetitionQuery()),
       queryClient.ensureQueryData(fetchFlowEntriesQuery()),

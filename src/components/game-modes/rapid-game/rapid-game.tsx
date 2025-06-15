@@ -51,7 +51,7 @@ const RapidGame = ({
   return (
     <div className='w-full h-full flex justify-center items-center'>
       {state === 'idle' && <Idle />}
-      {state === 'countdown' && <CountDown />}
+      {state === 'countdown' && !custom.includes('countdown') && <CountDown />}
       {state === 'questions' && !custom.includes('questions') && <Questions />}
       {state === 'result' && !custom.includes('result') && (
         <Result playAgain={playAgain} quit={quit} />

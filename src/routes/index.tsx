@@ -10,7 +10,8 @@ export const Route = createFileRoute('/')({
 
 function LandingPage() {
   const { loading, authenticated } = useAuth()
-  if (!loading && authenticated) return <Navigate to="/app" />
+
+  if(!loading && authenticated) return <Navigate to='/app' />
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
