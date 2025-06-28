@@ -21,8 +21,8 @@ export const Route = createFileRoute('/app/online/match/')({
       </div>
     )
   },
-  loader: async ({ context: { auth, queryClient } }) => {
-    const user = auth.user
+  loader: async ({ context: { app, queryClient } }) => {
+    const user = app.auth.getState().user
     await Promise.all([
       queryClient.ensureQueryData(fetchRapidQueueStatusQueryOptions(user!._id)),
       queryClient.ensureQueryData(fetchActiveRapidMatchQueryOptions(user!._id)),

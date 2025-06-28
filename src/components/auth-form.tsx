@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useAppForm } from '@/hooks/form'
 import { z } from 'zod'
-import { useAuth } from './auth-provider'
+import { useAuth } from './app-wrapper'
 
 export type AuthFormProps = {
   type: 'signup' | 'login'
@@ -20,9 +20,9 @@ export const authSchema = z.object({
 })
 
 const AuthForm = ({ type }: AuthFormProps) => {
-  const { signup, login } = useAuth()
   const navigate = useNavigate()
-
+  const signup = useAuth((state) => state.signup)
+  const login = useAuth((state) => state.login)
   const isSignup = useMemo(() => type === 'signup', [type])
 
   const [showPassword, setShowPassword] = useState(false)
@@ -35,12 +35,12 @@ const AuthForm = ({ type }: AuthFormProps) => {
       onChange: authSchema,
     },
     onSubmit: async ({ value: values }) => {
-      if(isSignup) {
+      if (isSignup) {
         const success = await signup(values)
-        if(success) navigate({ to: '/app' })
+        if (success) navigate({ to: '/app' })
       } else {
         const success = await login(values)
-        if(success) navigate({ to: '/app' })
+        if (success) navigate({ to: '/app' })
       }
     },
   })

@@ -6,8 +6,8 @@ import { useUser } from '@/hooks/user'
 import { useAppForm } from '@/hooks/form'
 import type { z } from 'zod'
 import { authSchema } from '@/components/auth-form'
-import { useAuth } from '@/components/auth-provider'
 import { PageHeader } from '@/components/page-header'
+import { useAuth } from '@/components/app-wrapper'
 
 export const Route = createFileRoute('/app/profile/edit/')({
   component: EditProfilePage,
@@ -15,9 +15,9 @@ export const Route = createFileRoute('/app/profile/edit/')({
 
 function EditProfilePage() {
   const user = useUser()
-  const { editProfile } = useAuth()
   const [previewAvatar, setPreviewAvatar] = useState<File | null>(null)
   const imageRef = useRef<HTMLImageElement | null>(null)
+  const editProfile = useAuth(state => state.editProfile)
 
   const form = useAppForm({
     defaultValues: {
@@ -39,7 +39,7 @@ function EditProfilePage() {
   }
 
   return (
-    <div className="fixed inset-0 z-30 overflow-auto min-h-screen bg-background text-foreground flex flex-col">
+    <div className="fixed inset-0 z-20 overflow-auto min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <PageHeader title="Edit" showBackButton backLink="/app/profile" />
 

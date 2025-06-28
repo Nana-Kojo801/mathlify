@@ -1,18 +1,21 @@
-import { createFileRoute, Navigate, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import FooterNavigation from './-components/footer-navigation'
-import { useAuth } from '@/components/auth-provider'
 import { initPresense } from '@/lib/presence'
+import LoadingScreen from '../-components/loading-screen'
 
 export const Route = createFileRoute('/app')({
   component: RouteComponent,
+  pendingComponent: LoadingScreen,
+  beforeLoad: async ({ context: { app } }) => {
+    await app.init()
+    if(!app.auth.getState().user) {
+      throw redirect({ to: '/app' })
+    }
+  },
 })
 
 function RouteComponent() {
-  const { loading, authenticated } = useAuth()
-
   initPresense()
-
-  if (!loading && !authenticated) return <Navigate to="/" />
   return (
     <div className="w-full h-screen flex flex-col">
       <main className="flex-grow overflow-y-auto">

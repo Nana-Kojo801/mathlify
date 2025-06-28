@@ -12,14 +12,14 @@ import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { useRapidEntry, useCompetition} from '../../-components/hooks'
-import { useAuth } from '@/components/auth-provider'
+import { useAuth } from '@/components/app-wrapper'
 
 export const Route = createFileRoute('/app/competition/play/rapid/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { updateAuthUser } = useAuth()
+  const updateAuthUser = useAuth((state) => state.updateAuthUser)
   const user = useUser()
   const gameState = useGameState()
   const competition = useCompetition()

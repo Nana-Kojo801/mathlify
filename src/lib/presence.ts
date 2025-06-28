@@ -1,11 +1,11 @@
-import { useUser } from '@/hooks/user'
+import { useAuthUser } from '@/stores/auth-store'
 import { api } from '@convex/_generated/api'
 import { useMutation } from 'convex/react'
 import { DateTime } from 'luxon'
 import { useEffect } from 'react'
 
 export const initPresense = () => {
-  const user = useUser()
+  const user = useAuthUser()
   const updatePresence = useMutation(api.users.updatePresence)
 
   useEffect(() => {

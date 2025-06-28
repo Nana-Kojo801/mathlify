@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/user'
 import UserAvatar from '@/components/user-avatar'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
+import { getServerTime } from '@/stores/server-time-store'
 
 const Countdown = () => {
   const match = useActiveRapidMatch()
@@ -16,7 +17,7 @@ const Countdown = () => {
   useEffect(() => {
     if (!match || match.status !== 'countdown') return
     const interval = setInterval(() => {
-      const now = DateTime.now()
+      const now = DateTime.fromMillis(getServerTime())
       const endTime = DateTime.fromMillis(match.gamePhase.endTime)
       const timeLeft = endTime.diff(now)
 
@@ -47,7 +48,7 @@ const Question = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = DateTime.now()
+      const now = DateTime.fromMillis(getServerTime())
       const endTime = DateTime.fromMillis(match.gamePhase.endTime)
       const timeLeft = Math.ceil(endTime.diff(now).as('seconds'))
 

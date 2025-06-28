@@ -9,16 +9,15 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
-import { useAuth } from './components/auth-provider.tsx'
 import ConvexProvider from '@/integrations/convex/provider'
-import MathlifyWrapper from './components/mathlify-wrapper.tsx'
+import AppWrapper, { useApp } from './components/app-wrapper.tsx'
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     ...TanstackQuery.getContext(),
-    auth: undefined!,
+    app: undefined!,
   },
   defaultPreload: 'intent',
   scrollRestoration: true,
@@ -34,8 +33,8 @@ declare module '@tanstack/react-router' {
 }
 
 const App = () => {
-  const auth = useAuth()
-  return <RouterProvider router={router} context={{ auth }} />
+  const app = useApp()
+  return <RouterProvider router={router} context={{ app }} />
 }
 
 // Render the app
@@ -45,9 +44,9 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <TanstackQuery.Provider>
       <ConvexProvider>
-        <MathlifyWrapper>
+        <AppWrapper>
           <App />
-        </MathlifyWrapper>
+        </AppWrapper>
       </ConvexProvider>
     </TanstackQuery.Provider>
   )

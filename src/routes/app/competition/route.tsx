@@ -12,7 +12,8 @@ import { useCompetition } from './-components/hooks'
 
 export const Route = createFileRoute('/app/competition')({
   component: RouteComponent,
-  loader: async ({ context: { queryClient, auth } }) => {
+  loader: async ({ context: { queryClient, app } }) => {
+    const auth = app.auth.getState()
     const user = auth.user!
 
     await Promise.all([

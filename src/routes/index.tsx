@@ -1,17 +1,16 @@
 import { createFileRoute, Navigate, Link } from '@tanstack/react-router'
-import { useAuth } from '@/components/auth-provider'
 import { Button } from '@/components/ui/button'
 import Logo from '@/logo.svg'
 import { ArrowRight } from 'lucide-react'
+import { SESSION_KEY } from '@/stores/auth-store'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
 function LandingPage() {
-  const { loading, authenticated } = useAuth()
-
-  if(!loading && authenticated) return <Navigate to='/app' />
+  const session = localStorage.getItem(SESSION_KEY)
+  if(session) return <Navigate to='/app' />
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">

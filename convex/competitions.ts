@@ -22,7 +22,7 @@ export const getFlowEntries = query({
   handler: async (ctx, { competitionId }) => {
     let id = competitionId
     if (!competitionId) {
-      const currentCompetition = await ctx.db.query('competitions').first()
+      const currentCompetition = await ctx.db.query('competitions').order("desc").first()
       if (!currentCompetition) return []
       id = currentCompetition._id
     }
@@ -52,7 +52,7 @@ export const getRapidEntries = query({
   handler: async (ctx, { competitionId }) => {
     let id = competitionId
     if (!competitionId) {
-      const currentCompetition = await ctx.db.query('competitions').first()
+      const currentCompetition = await ctx.db.query('competitions').order("desc").first()
       if (!currentCompetition) return []
       id = currentCompetition._id
     }
@@ -95,7 +95,7 @@ export const getFlowEntry = query({
       rank: 0,
     }
     if (!competitionId) {
-      const currentCompetition = await ctx.db.query('competitions').first()
+      const currentCompetition = await ctx.db.query('competitions').order("desc").first()
       if (!currentCompetition) return defaultEntry
       id = currentCompetition._id
     }
@@ -140,7 +140,7 @@ export const getRapidEntry = query({
       rank: 0,
     }
     if (!competitionId) {
-      const currentCompetition = await ctx.db.query('competitions').first()
+      const currentCompetition = await ctx.db.query('competitions').order("desc").first()
       if (!currentCompetition) return defaultEntry
       id = currentCompetition._id
     }
