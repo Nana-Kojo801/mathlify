@@ -6,44 +6,35 @@ import { api } from '@convex/_generated/api'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useQuery } from 'convex/react'
-import { Zap, Gamepad2, Badge, Target } from 'lucide-react'
+import { Zap, Gamepad2, Target } from 'lucide-react'
 import { toast } from 'sonner'
 
 const FlowMode = () => {
   return (
-    <div className="bg-muted/10 border-2 border-primary/30 hover:border-primary/50 rounded-lg p-6 transition-colors">
-      <div className="flex items-start justify-between mb-4">
+    <div className="bg-muted/10 border border-border/30 hover:bg-muted/20 transition-colors p-4 rounded-lg">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-primary/15 rounded-lg flex items-center justify-center">
-            <Gamepad2 className="w-6 h-6 text-primary" />
+          <div className="w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center">
+            <Gamepad2 className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h4 className="text-base font-semibold">Casual Mode</h4>
-            <p className="text-xs text-muted-foreground">
-              Fast-paced competitive matches
-            </p>
+            <h3 className="font-medium">Casual Mode</h3>
+            <span className="text-xs text-muted-foreground">Fast-paced competitive matches</span>
           </div>
+        </div>
+        <div className="text-right">
+          <div className="text-sm font-medium text-green-600">143 active</div>
+          <div className="text-xs text-muted-foreground">players</div>
         </div>
       </div>
 
-      <div className="space-y-3 mb-6">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">Your Rating</span>
-          <Badge className="bg-primary/20 text-primary border-primary/30 font-medium">
-            1,247 ELO
-          </Badge>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">
-            Players in Queue
-          </span>
-          <span className="text-sm font-medium text-green-600">143 active</span>
-        </div>
+      <div className="flex justify-between items-center mb-4">
+        <span className="text-sm text-muted-foreground">Your Rating</span>
+        <span className="text-sm font-medium">1,247 ELO</span>
       </div>
 
       <Link to="/app/online/match" search={{ mode: 'flow' }}>
-        <Button className="w-full h-11 font-medium">Find Flow Match</Button>
+        <Button className="w-full h-10 font-medium">Find Flow Match</Button>
       </Link>
     </div>
   )
@@ -59,38 +50,28 @@ const RapidMode = () => {
     },
   })
   const navigate = useNavigate()
+  
   return (
-    <div className="bg-muted/10 border-2 border-secondary/30 hover:border-secondary/50 rounded-lg p-6 cursor-pointer transition-colors">
-      <div className="flex items-start justify-between mb-4">
+    <div className="bg-muted/10 border border-border/30 hover:bg-muted/20 transition-colors p-4 rounded-lg">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-secondary/15 rounded-lg flex items-center justify-center">
-            <Target className="w-6 h-6 text-secondary" />
+          <div className="w-10 h-10 bg-secondary/15 rounded-lg flex items-center justify-center">
+            <Target className="w-5 h-5 text-secondary" />
           </div>
           <div>
-            <h4 className="text-base font-semibold">Speed Challenge</h4>
-            <p className="text-xs text-muted-foreground">
-              Relaxed gameplay, perfect for practice
-            </p>
+            <h3 className="font-medium">Speed Challenge</h3>
+            <span className="text-xs text-muted-foreground">Relaxed gameplay, perfect for practice</span>
           </div>
+        </div>
+        <div className="text-right">
+          <div className="text-sm font-medium text-green-600">{activeUsers} active</div>
+          <div className="text-xs text-muted-foreground">players</div>
         </div>
       </div>
 
-      <div className="space-y-3 mb-6">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">Your Rating</span>
-          <Badge className="bg-secondary/20 text-secondary border-secondary/30 font-medium">
-            {user.elo.rapid} ELO
-          </Badge>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">
-            Players in Queue
-          </span>
-          <span className="text-sm font-medium text-green-600">
-            {activeUsers} active
-          </span>
-        </div>
+      <div className="flex justify-between items-center mb-4">
+        <span className="text-sm text-muted-foreground">Your Rating</span>
+        <span className="text-sm font-medium">{user.elo.rapid} ELO</span>
       </div>
 
       <Button
@@ -99,10 +80,16 @@ const RapidMode = () => {
           await joinQueue({ userId: user._id })
           navigate({ to: '/app/online/match', search: { mode: 'rapid' } })
         }}
-        className="w-full h-11 font-medium bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+        className="w-full h-10 font-medium bg-secondary hover:bg-secondary/90 text-secondary-foreground"
       >
-        {joiningQueue && <Spinner />}
-        Find Rapid Match
+        {joiningQueue ? (
+          <div className="flex items-center gap-2">
+            <Spinner />
+            <span>Finding match...</span>
+          </div>
+        ) : (
+          'Find Rapid Match'
+        )}
       </Button>
     </div>
   )
@@ -110,10 +97,10 @@ const RapidMode = () => {
 
 const MatchmakingTab = () => {
   return (
-    <div>
+    <div className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-lg font-semibold flex items-center gap-2 text-foreground">
-          <Zap className="text-primary w-5 h-5" />
+          <Zap className="text-primary w-4 h-4" />
           Quick Match
         </h2>
         <p className="text-sm text-muted-foreground">
@@ -121,16 +108,12 @@ const MatchmakingTab = () => {
         </p>
       </div>
 
-      {/* Game Modes */}
       <div className="space-y-4">
         <h3 className="text-base font-semibold text-foreground">
           Choose Your Mode
         </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Casual Mode */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <FlowMode />
-
-          {/* Speed Challenge Mode */}
           <RapidMode />
         </div>
       </div>

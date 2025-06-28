@@ -44,7 +44,7 @@ function RouteComponent() {
   const competition = useCompetition()
   if (!competition)
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4 px-4">
+      <div className="flex flex-col items-center justify-center h-full gap-4 px-4">
         <div className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent animate-pulse flex items-center gap-2">
           <Trophy className="h-6 w-6" />
           No Active Competition
