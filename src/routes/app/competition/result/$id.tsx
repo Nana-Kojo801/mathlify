@@ -6,8 +6,8 @@ import GameModeSection from './-components/game-mode-section'
 
 export const Route = createFileRoute('/app/competition/result/$id')({
   component: ResultPage,
-  beforeLoad: ({ context: { auth } }) => {
-    const user = auth.user!
+  beforeLoad: ({ context: { app } }) => {
+    const user = app.auth.getState().user!
     if (!user.lastCompetition) throw redirect({ to: '/app/competition' })
   },
   pendingComponent: () => {
@@ -17,8 +17,8 @@ export const Route = createFileRoute('/app/competition/result/$id')({
       </div>
     )
   },
-  loader: async ({ params, context: { queryClient, auth } }) => {
-    const user = auth.user!
+  loader: async ({ params, context: { queryClient, app } }) => {
+    const user = app.auth.getState().user!
     await queryClient.ensureQueryData(
       fetchCompetitionResultQuery(params.id as Competition['_id'], user._id),
     )
