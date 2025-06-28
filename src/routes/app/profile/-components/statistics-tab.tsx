@@ -6,11 +6,7 @@ import {
   Gamepad2,
   Target,
   Clock,
-  Award,
-  TrendingUp,
-  TrendingDown,
-  Crown,
-  Star,
+  Award
 } from 'lucide-react'
 import stats from './stats'
 
