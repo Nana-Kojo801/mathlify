@@ -74,6 +74,9 @@ const estimateServerTime = (serverTime: number, latency: number): number => {
 const performTimeSync = async (convex: ReturnType<typeof useConvex>): Promise<SyncResult> => {
   try {
     const requestTime = Date.now()
+    const tempServerTime = await fetch('/.netlify/functions/server-time').then(res => Number(res))
+    console.log('[SERVER_TIME_SYNC]: Temporary server time fetched', tempServerTime);
+    
     const serverTime = await convex.query(api.serverTime.get)
     const receivedTime = Date.now()
     
