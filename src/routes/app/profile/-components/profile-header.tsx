@@ -14,7 +14,8 @@ const ProfileHeader = () => {
           <UserAvatar
             username={user.username}
             avatar={user.avatar}
-            className="size-20 sm:size-32 border-4 border-background shadow-lg"
+            className="size-20 sm:size-32"
+            lastActive={user.lastActive}
           />
         </div>
 

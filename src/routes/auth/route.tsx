@@ -1,10 +1,15 @@
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, useNavigate } from '@tanstack/react-router'
 import Logo from '@/logo.svg'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { SESSION_KEY } from '@/stores/auth-store'
 
 export const Route = createFileRoute('/auth')({
   component: RouteComponent,
+  beforeLoad: () => {
+    const session = localStorage.getItem(SESSION_KEY)
+    if(session) throw redirect({ to: "/app" })
+  }
 })
 
 function RouteComponent() {

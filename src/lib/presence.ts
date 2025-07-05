@@ -1,4 +1,5 @@
 import { useAuthUser } from '@/stores/auth-store'
+import { getServerTime } from '@/stores/server-time-store'
 import { api } from '@convex/_generated/api'
 import { useMutation } from 'convex/react'
 import { DateTime } from 'luxon'
@@ -24,7 +25,7 @@ export const initPresense = () => {
 }
 
 export const isActive = (lastActive: number) => {
-  const now = DateTime.now()
+  const now = DateTime.fromMillis(getServerTime())
   const active = DateTime.fromMillis(lastActive)
   const diff = active.diff(now).as("seconds")
   return diff < 15

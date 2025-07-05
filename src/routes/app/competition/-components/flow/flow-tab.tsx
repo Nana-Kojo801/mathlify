@@ -1,11 +1,12 @@
-import { Button } from '@/components/ui/button'
-import { Users, History, List, Sparkles, Medal } from 'lucide-react'
+import { Users, Sparkles, Medal } from 'lucide-react'
 import PerformanceDashboard from './performance-dashboard'
 import TopPlayers from './top-players'
 import OtherPlayers from './other-players'
 import CompetitionCta from './competition-cta'
+import { useWeek } from '../hooks'
 
 const FlowTab = () => {
+  const week = useWeek()
   return (
     <>
       <PerformanceDashboard />
@@ -32,7 +33,7 @@ const FlowTab = () => {
                 </h2>
                 <span className="hidden sm:inline-flex items-center gap-1 text-xs font-medium bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded-full">
                   <Sparkles className="w-3 h-3" />
-                  Season 5
+                  Week {week}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground flex items-center gap-1.5">
@@ -43,7 +44,7 @@ const FlowTab = () => {
           </div>
 
           {/* Right Side - Action Buttons */}
-          <div className="flex gap-2 w-full sm:w-auto">
+          {/* <div className="flex gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
@@ -60,7 +61,7 @@ const FlowTab = () => {
               <List className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline font-medium">View Full</span>
             </Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Top 3 Players */}

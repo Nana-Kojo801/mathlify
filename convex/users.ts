@@ -81,7 +81,8 @@ export const update = mutation({
     })),
     friends: v.optional(v.array(v.id('users'))),
     lastCompetition: v.optional(v.optional(v.id('competitions'))),
-    lastActive: v.optional(v.number())
+    lastActive: v.optional(v.number()),
+    storageId: v.optional(v.id("_storage"))
   },
   handler: async (ctx, {  userId,...changes}) => {
     await ctx.db.patch(userId, changes)

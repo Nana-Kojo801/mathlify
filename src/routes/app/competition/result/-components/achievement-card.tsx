@@ -15,20 +15,6 @@ const AchievementCard = ({
   avgTime: number
   score: number
 }) => {
-  const getTypeLabel = (type: 'top' | 'speed' | 'questions' | 'rounds') => {
-    switch (type) {
-      case 'top':
-        return 'Top Score'
-      case 'speed':
-        return 'Fastest Average'
-      case 'questions':
-        return 'Most Questions'
-      case 'rounds':
-        return 'Highest Round'
-      default:
-        return ''
-    }
-  }
 
   const getTypeIcon = (type: 'top' | 'speed' | 'questions' | 'rounds') => {
     switch (type) {
@@ -44,6 +30,20 @@ const AchievementCard = ({
         return null
     }
   }
+
+  const getAchievementDetails = () => {
+    if (type === 'speed') {
+      return `${avgTime}s avg`
+    }
+    if (type === 'rounds' && round !== undefined) {
+      return `Round ${round} • ${avgTime}s avg`
+    }
+    if (type === 'questions' && questions !== undefined) {
+      return `Questions ${questions} • ${avgTime}s avg`
+    }
+    return `${avgTime}s avg`
+  }
+
   return (
     <div className="flex items-center justify-between p-4 bg-background rounded-lg border hover:border-secondary/30 transition-colors">
       <div className="flex items-center gap-4">
@@ -53,11 +53,7 @@ const AchievementCard = ({
         <div>
           <div className="font-medium text-foreground">{username}</div>
           <div className="text-sm text-muted-foreground">
-            {getTypeLabel(type)} •{' '}
-            {type === 'questions'
-              ? `Questions ${questions}`
-              : type === 'rounds' ? `Round ${round}` : ''}{' '}
-            • {avgTime}s avg
+            {getAchievementDetails()}
           </div>
         </div>
       </div>

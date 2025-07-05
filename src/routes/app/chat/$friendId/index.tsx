@@ -1,50 +1,70 @@
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import {
   useMutation as useTanstackMutation,
-  useQueries,
+  useSuspenseQueries,
 } from '@tanstack/react-query'
 import { api } from '@convex/_generated/api'
 import { useUser } from '@/hooks/user'
-import type { User } from '@/types'
+import type { FriendMessage, User } from '@/types'
 import UserAvatar from '@/components/user-avatar'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation } from 'convex/react'
-import { Skeleton } from '@/components/ui/skeleton'
 import Chat from '@/components/chat'
 import { friendQueryOptions, messagesQueryOptions } from './-queries'
 import { useConvex } from 'convex/react'
 import { useFriendMessagesStore } from '@/stores/friend-messages-store'
 import { PageHeader } from '@/components/page-header'
+import { toast } from 'sonner'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import Message from './-components/message'
+import EditMessage from './-components/edit-message'
 
 export const Route = createFileRoute('/app/chat/$friendId/')({
   component: RouteComponent,
-})
+  loader: async ({ context: { app, queryClient }, params }) => {
+    const user = app.auth.getState().user!
+    const friendId = params.friendId as User['_id']
 
-const ChatHeaderSkeleton = () => {
-  return (
-    <div className="flex items-center gap-3">
-      <Skeleton className="h-9 w-9 rounded-full" />
-      <div className="flex flex-col space-y-1">
-        <Skeleton className="h-4 w-24 rounded" />
-        <Skeleton className="h-3 w-16 rounded" />
-      </div>
-    </div>
-  )
-}
+    await Promise.all([
+      queryClient.ensureQueryData(friendQueryOptions(friendId as User['_id'])),
+      queryClient.ensureQueryData(
+        messagesQueryOptions(user._id, friendId as User['_id']),
+      ),
+    ])
+  },
+})
 
 function RouteComponent() {
   const user = useUser()
   const { friendId } = useParams({ from: '/app/chat/$friendId/' })
   const convex = useConvex()
   const addMessage = useFriendMessagesStore((state) => state.addMessage)
+  const editLocalMessage = useFriendMessagesStore((state) => state.editMessage)
+  const deleteLocalMessage = useFriendMessagesStore((state) => state.deleteMessage)
 
-  const [{ data: friend, isLoading: loadingFriend }, { data: messages }] =
-    useQueries({
-      queries: [
-        friendQueryOptions(friendId as User['_id']),
-        messagesQueryOptions(user._id, friendId as User['_id']),
-      ],
-    })
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false)
+  const [selectedMessageId, setSelectedMessageId] = useState<
+    FriendMessage['_id'] | null
+  >(null)
+  const [editingMessageId, setEditingMessageId] = useState<
+    FriendMessage['_id'] | null
+  >(null)
+
+  const [{ data: friend }, { data: messages }] = useSuspenseQueries({
+    queries: [
+      friendQueryOptions(friendId as User['_id']),
+      messagesQueryOptions(user._id, friendId as User['_id']),
+    ],
+  })
 
   const { mutateAsync: sendMessage, isPending: isSendingMessage } =
     useTanstackMutation({
@@ -59,6 +79,37 @@ function RouteComponent() {
         )
         addMessage(newMessage)
       },
+      onError: () => {
+        toast.error('Error sending message. Please try again later')
+      },
+    })
+  const { mutateAsync: deleteMessage, isPending: isDeletingMessage } =
+    useTanstackMutation({
+      mutationFn: async (id: FriendMessage['_id']) => {
+        await convex.mutation(api.friendMessages.deleteMessage, { id })
+        return id
+      },
+      onSuccess: (messageId) => {
+        deleteLocalMessage(messageId)
+        toast.success('Message deleted successfully')
+      },
+      onError: () => {
+        toast.error('Error deleting message. Please try again later')
+      },
+    })
+  const { mutateAsync: editMessage, isPending: isEditingMessage } =
+    useTanstackMutation({
+      mutationFn: async (data: { messageId: FriendMessage['_id'], newMessage: string }) => {
+        await convex.mutation(api.friendMessages.editMessage, data)
+        return data
+      },
+      onSuccess: ({ messageId, newMessage }) => {
+        editLocalMessage(messageId, newMessage)
+        toast.success('Message edited successfully')
+      },
+      onError: () => {
+        toast.error('Error editing message. Please try again later')
+      },
     })
   const markAsRead = useMutation(api.friendMessages.markAsRead)
 
@@ -66,27 +117,38 @@ function RouteComponent() {
     markAsRead({ userId: user._id, friendId: friendId as User['_id'] })
   }, [friendId, user._id, markAsRead])
 
+  const handleDeleteMessage = async (messageId: FriendMessage['_id']) => {
+    await deleteMessage(messageId)
+    setIsDeleteConfirmationOpen(false)
+    setSelectedMessageId(null)
+  }
+
+  const handleEditMessage = async (messageId: FriendMessage['_id'], newContent: string) => {
+    await editMessage({ messageId, newMessage: newContent })
+    setEditingMessageId(null)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null)
+  }
+
   return (
     <div className="fixed inset-0 z-30 w-full h-dvh bg-background text-foreground flex flex-col">
       {/* Header */}
-      <PageHeader showBackButton backLink='/app'>
-        {loadingFriend ? (
-          <ChatHeaderSkeleton />
-        ) : (
-          <>
-            <UserAvatar
-              className="size-10"
-              username={friend!.username}
-              avatar={friend!.avatar}
-            />
-            <div className="flex flex-col justify-center">
-              <span className="font-semibold leading-none">
-                {friend!.username}
-              </span>
-              {/* <span className="text-xs text-muted-foreground">Online</span> */}
-            </div>
-          </>
-        )}
+      <PageHeader
+        className="flex items-center gap-3 px-4 py-1"
+        showBackButton
+        backLink="/app"
+      >
+        <UserAvatar
+          className="size-10"
+          username={friend!.username}
+          avatar={friend!.avatar}
+          lastActive={friend!.lastActive}
+        />
+        <div className="flex flex-col justify-center">
+          <span className="font-semibold leading-none">{friend!.username}</span>
+        </div>
       </PageHeader>
 
       <Chat
@@ -95,41 +157,72 @@ function RouteComponent() {
           await sendMessage(message)
         }}
         isSendingMessage={isSendingMessage}
-        render={(message) => (
-          <div
-            key={message._id}
-            className="group/message hover:bg-accent/5 rounded-md p-2"
-          >
-            <div className="flex gap-2">
-              <UserAvatar
-                username={message.sender.username}
-                avatar={message.sender.avatar}
-                className="size-10"
+        render={(message) => {
+          const isOwn = message.sender._id === user._id
+          const isEditing = editingMessageId === message._id
+          
+          if (isEditing) {
+            return (
+              <EditMessage
+                key={message._id}
+                message={message}
+                isOwn={isOwn}
+                onSave={handleEditMessage}
+                onCancel={handleCancelEdit}
+                isSaving={isEditingMessage}
               />
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center mb-1">
-                  <span className={`font-medium`}>
-                    {message.sender.username}
-                  </span>
-                  <span className="text-xs text-muted-foreground ml-2">
-                    {new Date(message._creationTime).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                </div>
-
-                <div className="space-y-1">
-                  <div key={message._id} className="text-sm min-w-0">
-                    <p className="break-words">{message.message}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+            )
+          }
+          
+          return (
+            <Message
+              key={message._id}
+              isOwn={isOwn}
+              message={message}
+              setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+              setSelectedMessageId={setSelectedMessageId}
+              setEditingMessageId={setEditingMessageId}
+            />
+          )
+        }}
       />
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmationOpen && selectedMessageId && (
+        <Dialog
+          open={isDeleteConfirmationOpen}
+          onOpenChange={setIsDeleteConfirmationOpen}
+        >
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Delete Message</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this message?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex flex-row gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDeleteConfirmationOpen(false)}
+                disabled={isDeletingMessage}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => handleDeleteMessage(selectedMessageId)}
+                disabled={isDeletingMessage}
+                className="flex-1"
+              >
+                {isDeletingMessage ? 'Deleting...' : 'Delete'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }

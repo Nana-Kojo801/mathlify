@@ -17,6 +17,13 @@ export const fetchFlowEntriesQuery = (competitionId?: Competition['_id']) => {
   })
 }
 
+export const fetchWeek = () => {
+  return queryOptions({
+    ...convexQuery(api.competitions.getWeek, {}),
+    gcTime: 1000 * 60 * 5
+  })
+}
+
 export const fetchRapidEntriesQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
     ...convexQuery(api.competitions.getRapidEntries, { competitionId }),

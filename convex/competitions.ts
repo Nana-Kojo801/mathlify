@@ -339,6 +339,12 @@ export const viewResult = mutation({
   },
 })
 
+export const getWeek = query({
+  handler: async (ctx) => {
+    return (await ctx.db.query("competitions").collect()).length
+  }
+})
+
 export const shouldShowResult = query({
   args: {
     competitionId: v.optional(v.id('competitions')),

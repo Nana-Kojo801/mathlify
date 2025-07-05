@@ -9,7 +9,7 @@ export const Route = createFileRoute('/app')({
   beforeLoad: async ({ context: { app } }) => {
     await app.init()
     if(!app.auth.getState().user) {
-      throw redirect({ to: '/app' })
+      throw redirect({ to: '/' })
     }
   },
 })

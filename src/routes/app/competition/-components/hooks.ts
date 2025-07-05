@@ -6,6 +6,7 @@ import {
   fetchRapidEntriesQuery,
   fetchRapidEntryQuery,
   fetchShouldShowResultQuery,
+  fetchWeek,
 } from './queries'
 import { useUser } from '@/hooks/user'
 import { useState, useEffect } from 'react'
@@ -15,6 +16,11 @@ export const useCompetition = () => {
   const { data: competition } = useSuspenseQuery(fetchCompetitionQuery())
 
   return competition!
+}
+
+export const useWeek = () => {
+  const { data: week } = useSuspenseQuery(fetchWeek())
+  return week
 }
 
 export const useFlowEntry = () => {

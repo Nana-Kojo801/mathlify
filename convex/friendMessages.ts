@@ -123,3 +123,19 @@ export const getUnreadMessages = query({
     return messages.filter((message) => !message.readBy.includes(userId)).length
   },
 })
+
+export const editMessage = mutation({
+  args: { messageId: v.id("friendMessages"), newMessage: v.string() },
+  handler: async (ctx, { messageId, newMessage }) => {
+    await ctx.db.patch(messageId, {
+      message: newMessage
+    })
+  }
+})
+
+export const deleteMessage = mutation({
+  args: { id: v.id("friendMessages")},
+  handler: async (ctx, { id }) => {
+    await ctx.db.delete(id)
+  }
+})

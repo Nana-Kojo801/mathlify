@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import type React from 'react'
 import { Input } from './ui/input'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from './ui/button'
 import Spinner from './spinner'
 import { Send } from 'lucide-react'
@@ -23,6 +23,15 @@ export default function Chat<T>({
 }: ChatProps<T>) {
   const [message, setMessage] = useState('')
   const bottomRef = useRef<HTMLDivElement | null>(null)
+
+  const sendMessage = useCallback( async () => {
+    await handleSendMessage(message)
+    setMessage('')
+  }, [message])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === "Enter") sendMessage()
+  }, [message])
 
   useEffect(() => {
     if (bottomRef.current) {
@@ -46,6 +55,7 @@ export default function Chat<T>({
               placeholder="Type a message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 w-full"
             />
           </div>
@@ -55,10 +65,7 @@ export default function Chat<T>({
             size="sm"
             className="h-8 px-3 mr-3"
             disabled={isSendingMessage || message.length === 0}
-            onClick={async () => {
-              await handleSendMessage(message)
-              setMessage('')
-            }}
+            onClick={sendMessage}
           >
             {isSendingMessage ? <Spinner /> : <Send className="h-4 w-4 mr-1" />}
             <span className="hidden sm:inline">Send</span>

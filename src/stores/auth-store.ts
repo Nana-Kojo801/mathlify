@@ -7,6 +7,7 @@ import type { ConvexReactClient } from 'convex/react'
 import { toast } from 'sonner'
 import type { z } from 'zod'
 import { createStore } from 'zustand'
+import type { Id } from '@convex/_generated/dataModel'
 
 export const SESSION_KEY = 'mathlify-session'
 
@@ -31,7 +32,15 @@ const getUser = async (convex: ConvexReactClient, online: boolean) => {
   if (online) {
     const user = (await convex.query(api.users.get, {
       id: userId as User['_id'],
-    }))!
+    }))
+    if(!user) {
+      await Promise.all([
+        db.friendMessages.clear(),
+        db.users.clear(),
+        db.friends.clear()
+      ])
+      return null
+    }
     const existingUser = await db.users.get(userId)
     if (existingUser) {
       await db.users.update(userId, user)
@@ -52,6 +61,7 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
       try {
         const user = await getUser(convex, online)
         if (!user) {
+          localStorage.removeItem(SESSION_KEY)
           set({ loading: false, authenticated: false })
           return
         }
@@ -117,6 +127,7 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
           }
         }
         let newAvatar = user!.avatar
+        let storageId: undefined | Id<"_storage"> = undefined
         if (values.avatar) {
           const postUrl = await convex.mutation(api.upload.generateUploadUrl)
           const result = await fetch(postUrl, {
@@ -126,20 +137,25 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
             },
             body: values.avatar,
           }).then((res) => res.json())
+          storageId = result.storageId as Id<"_storage">
           newAvatar = (await convex.query(api.upload.getUrl, {
             storageId: result.storageId,
           }))!
         }
         set({ user: Object.assign(user!, { ...values, avatar: newAvatar }) })
+        if(user!.storageId && storageId) {
+          await convex.mutation(api.upload.deleteStorageId, { id: storageId })
+        }
         await Promise.all([
           db.users.update(user!._id, {
             ...values,
             avatar: newAvatar,
           }),
-          convex.mutation(api.users.updateProfile, {
+          convex.mutation(api.users.update, {
             ...values,
             avatar: newAvatar,
             userId: user!._id,
+            storageId: storageId
           }),
         ])
         toast.success('Successfully updated profile', { duration: 1200 })

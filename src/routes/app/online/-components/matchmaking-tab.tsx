@@ -1,13 +1,7 @@
-import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { useUser } from '@/hooks/user'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { api } from '@convex/_generated/api'
-import { useMutation } from '@tanstack/react-query'
-import { Link, useNavigate } from '@tanstack/react-router'
-import { useQuery } from 'convex/react'
+import { Link } from '@tanstack/react-router'
 import { Zap, Gamepad2, Target } from 'lucide-react'
-import { toast } from 'sonner'
 
 const FlowMode = () => {
   return (
@@ -42,14 +36,7 @@ const FlowMode = () => {
 
 const RapidMode = () => {
   const user = useUser()
-  const activeUsers = useQuery(api.queue.getRapidQueueActiveSize) || 0
-  const { mutateAsync: joinQueue, isPending: joiningQueue } = useMutation({
-    mutationFn: useConvexMutation(api.queue.joinRapidQueue),
-    onError: () => {
-      toast.error('Error occured when joining queue')
-    },
-  })
-  const navigate = useNavigate()
+  const activeUsers = 0
   
   return (
     <div className="bg-muted/10 border border-border/30 hover:bg-muted/20 transition-colors p-4 rounded-lg">
@@ -75,21 +62,10 @@ const RapidMode = () => {
       </div>
 
       <Button
-        disabled={joiningQueue}
-        onClick={async () => {
-          await joinQueue({ userId: user._id })
-          navigate({ to: '/app/online/match', search: { mode: 'rapid' } })
-        }}
+        
         className="w-full h-10 font-medium bg-secondary hover:bg-secondary/90 text-secondary-foreground"
       >
-        {joiningQueue ? (
-          <div className="flex items-center gap-2">
-            <Spinner />
-            <span>Finding match...</span>
-          </div>
-        ) : (
-          'Find Rapid Match'
-        )}
+        Find rapid match
       </Button>
     </div>
   )

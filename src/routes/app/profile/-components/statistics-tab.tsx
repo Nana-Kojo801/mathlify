@@ -8,7 +8,6 @@ import {
   Clock,
   Award
 } from 'lucide-react'
-import stats from './stats'
 
 const EloRankingsSection = () => {
   return (
@@ -28,29 +27,29 @@ const EloRankingsSection = () => {
             <div>
               <h4 className="font-bold text-sm sm:text-base text-foreground">Flow Mode</h4>
               <p className="text-xs text-muted-foreground">
-                Rank #{stats.flowRank}
+                Rank —
               </p>
             </div>
           </div>
 
           {/* Main ELO Display */}
           <div className="text-center mb-3 sm:mb-4 p-2 sm:p-3 bg-background/50 rounded-lg border border-border/30">
-            <div className="text-xl sm:text-2xl font-bold text-primary mb-1">{stats.flowElo}</div>
+            <div className="text-xl sm:text-2xl font-bold text-primary mb-1">Unranked</div>
             <div className="text-xs text-muted-foreground">Current ELO</div>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-1 sm:gap-2">
             <div className="text-center p-1.5 sm:p-2 bg-background/30 rounded-lg">
-              <div className="text-sm sm:text-base font-bold text-foreground">{stats.peakFlowElo}</div>
+              <div className="text-sm sm:text-base font-bold text-foreground">—</div>
               <div className="text-xs text-muted-foreground">Peak</div>
             </div>
             <div className="text-center p-1.5 sm:p-2 bg-background/30 rounded-lg">
-              <div className="text-sm sm:text-base font-bold text-foreground">{stats.flowGamesPlayed}</div>
+              <div className="text-sm sm:text-base font-bold text-foreground">0</div>
               <div className="text-xs text-muted-foreground">Games</div>
             </div>
             <div className="text-center p-1.5 sm:p-2 bg-green-500/10 rounded-lg border border-green-500/20">
-              <div className="text-sm sm:text-base font-bold text-green-600">{stats.flowWinRate}</div>
+              <div className="text-sm sm:text-base font-bold text-green-600">0%</div>
               <div className="text-xs text-muted-foreground">Win Rate</div>
             </div>
           </div>
@@ -66,29 +65,29 @@ const EloRankingsSection = () => {
             <div>
               <h4 className="font-bold text-sm sm:text-base text-foreground">Rapid Mode</h4>
               <p className="text-xs text-muted-foreground">
-                Rank #{stats.rapidRank}
+                Rank —
               </p>
             </div>
           </div>
 
           {/* Main ELO Display */}
           <div className="text-center mb-3 sm:mb-4 p-2 sm:p-3 bg-background/50 rounded-lg border border-border/30">
-            <div className="text-xl sm:text-2xl font-bold text-secondary mb-1">{stats.rapidElo}</div>
+            <div className="text-xl sm:text-2xl font-bold text-secondary mb-1">Unranked</div>
             <div className="text-xs text-muted-foreground">Current ELO</div>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-1 sm:gap-2">
             <div className="text-center p-1.5 sm:p-2 bg-background/30 rounded-lg">
-              <div className="text-sm sm:text-base font-bold text-foreground">{stats.peakRapidElo}</div>
+              <div className="text-sm sm:text-base font-bold text-foreground">—</div>
               <div className="text-xs text-muted-foreground">Peak</div>
             </div>
             <div className="text-center p-1.5 sm:p-2 bg-background/30 rounded-lg">
-              <div className="text-sm sm:text-base font-bold text-foreground">{stats.rapidGamesPlayed}</div>
+              <div className="text-sm sm:text-base font-bold text-foreground">0</div>
               <div className="text-xs text-muted-foreground">Games</div>
             </div>
             <div className="text-center p-1.5 sm:p-2 bg-green-500/10 rounded-lg border border-green-500/20">
-              <div className="text-sm sm:text-base font-bold text-green-600">{stats.rapidWinRate}</div>
+              <div className="text-sm sm:text-base font-bold text-green-600">0%</div>
               <div className="text-xs text-muted-foreground">Win Rate</div>
             </div>
           </div>
@@ -110,7 +109,7 @@ const GamePerformanceSection = () => {
           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted/50 rounded-lg flex items-center justify-center mx-auto mb-1.5 sm:mb-2 group-hover:bg-primary/10 transition-colors">
             <Gamepad2 className="size-3 sm:size-4 text-muted-foreground group-hover:text-primary transition-colors" />
           </div>
-          <div className="text-sm sm:text-lg font-bold text-foreground">{stats.totalGames}</div>
+          <div className="text-sm sm:text-lg font-bold text-foreground">0</div>
           <div className="text-xs text-muted-foreground">Total Games</div>
         </div>
         
@@ -119,7 +118,7 @@ const GamePerformanceSection = () => {
             <Trophy className="size-3 sm:size-4 text-green-600" />
           </div>
           <div className="text-sm sm:text-lg font-bold text-green-600">
-            {stats.totalWins}
+            0
           </div>
           <div className="text-xs text-muted-foreground">Total Wins</div>
         </div>
@@ -129,7 +128,7 @@ const GamePerformanceSection = () => {
             <Target className="size-3 sm:size-4 text-red-600" />
           </div>
           <div className="text-sm sm:text-lg font-bold text-red-600">
-            {stats.totalLosses}
+            0
           </div>
           <div className="text-xs text-muted-foreground">Total Losses</div>
         </div>
@@ -139,7 +138,7 @@ const GamePerformanceSection = () => {
             <BarChart2 className="size-3 sm:size-4 text-green-600" />
           </div>
           <div className="text-sm sm:text-lg font-bold text-green-600">
-            {stats.winRate}
+            0%
           </div>
           <div className="text-xs text-muted-foreground">Win Rate</div>
         </div>
@@ -149,7 +148,7 @@ const GamePerformanceSection = () => {
             <Clock className="size-3 sm:size-4 text-blue-600" />
           </div>
           <div className="text-sm sm:text-lg font-bold text-blue-600">
-            {stats.totalPlayTime}
+            0h
           </div>
           <div className="text-xs text-muted-foreground">Play Time</div>
         </div>
@@ -159,7 +158,7 @@ const GamePerformanceSection = () => {
             <Award className="size-3 sm:size-4 text-yellow-600" />
           </div>
           <div className="text-sm sm:text-lg font-bold text-yellow-600">
-            {stats.achievements}
+            0
           </div>
           <div className="text-xs text-muted-foreground">Achievements</div>
         </div>
@@ -189,26 +188,26 @@ const ModeBreakdownSection = () => {
             <div className="text-center p-2 sm:p-3 bg-background/50 rounded-lg border border-border/30">
               <div className="flex justify-center items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
                 <div className="text-center">
-                  <div className="text-sm sm:text-lg font-bold text-green-600">{stats.flowWins}</div>
+                  <div className="text-sm sm:text-lg font-bold text-green-600">0</div>
                   <div className="text-xs text-muted-foreground">Wins</div>
                 </div>
                 <div className="text-sm sm:text-lg font-bold text-muted-foreground">/</div>
                 <div className="text-center">
-                  <div className="text-sm sm:text-lg font-bold text-red-600">{stats.flowLosses}</div>
+                  <div className="text-sm sm:text-lg font-bold text-red-600">0</div>
                   <div className="text-xs text-muted-foreground">Losses</div>
                 </div>
               </div>
               <div className="w-full bg-muted/30 rounded-full h-1 sm:h-1.5">
                 <div 
                   className="bg-gradient-to-r from-green-500 to-green-600 h-1 sm:h-1.5 rounded-full" 
-                  style={{ width: `${(stats.flowWins / (stats.flowWins + stats.flowLosses)) * 100}%` }}
+                  style={{ width: `0%` }}
                 ></div>
               </div>
             </div>
 
             {/* Win Rate Display */}
             <div className="text-center p-2 sm:p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-              <div className="text-lg sm:text-xl font-bold text-green-600 mb-1">{stats.flowWinRate}</div>
+              <div className="text-lg sm:text-xl font-bold text-green-600 mb-1">0%</div>
               <div className="text-xs text-muted-foreground">Win Rate</div>
             </div>
           </div>
@@ -227,30 +226,26 @@ const ModeBreakdownSection = () => {
             <div className="text-center p-2 sm:p-3 bg-background/50 rounded-lg border border-border/30">
               <div className="flex justify-center items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
                 <div className="text-center">
-                  <div className="text-sm sm:text-lg font-bold text-green-600">
-                    {stats.rapidWins}
-                  </div>
+                  <div className="text-sm sm:text-lg font-bold text-green-600">0</div>
                   <div className="text-xs text-muted-foreground">Wins</div>
                 </div>
                 <div className="text-sm sm:text-lg font-bold text-muted-foreground">/</div>
                 <div className="text-center">
-                  <div className="text-sm sm:text-lg font-bold text-red-600">
-                    {stats.rapidLosses}
-                  </div>
+                  <div className="text-sm sm:text-lg font-bold text-red-600">0</div>
                   <div className="text-xs text-muted-foreground">Losses</div>
                 </div>
               </div>
               <div className="w-full bg-muted/30 rounded-full h-1 sm:h-1.5">
                 <div 
                   className="bg-gradient-to-r from-green-500 to-green-600 h-1 sm:h-1.5 rounded-full" 
-                  style={{ width: `${(stats.rapidWins / (stats.rapidWins + stats.rapidLosses)) * 100}%` }}
+                  style={{ width: `0%` }}
                 ></div>
               </div>
             </div>
 
             {/* Win Rate Display */}
             <div className="text-center p-2 sm:p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-              <div className="text-lg sm:text-xl font-bold text-green-600 mb-1">{stats.rapidWinRate}</div>
+              <div className="text-lg sm:text-xl font-bold text-green-600 mb-1">0%</div>
               <div className="text-xs text-muted-foreground">Win Rate</div>
             </div>
           </div>

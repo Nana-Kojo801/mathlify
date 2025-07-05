@@ -12,7 +12,8 @@ export default defineSchema({
     }),
     friends: v.array(v.id('users')),
     lastCompetition: v.optional(v.id('competitions')),
-    lastActive: v.number()
+    lastActive: v.number(),
+    storageId: v.optional(v.id("_storage"))
   })
     .index('by_uesrname', ['username'])
     .searchIndex('search_user', {
@@ -84,25 +85,5 @@ export default defineSchema({
     endTime: v.number(),
     resultViews: v.array(v.id('users')),
     expired: v.boolean(),
-  }),
-  rapidOnlineMatches: defineTable({
-    player1Id: v.optional(v.id("users")),
-    player2Id: v.optional(v.id("users")),
-    status: v.union(v.literal("waiting"), v.literal("countdown"), v.literal("questions"), v.literal("result")),
-    gamePhase: v.object({
-      type: v.union(v.literal("waiting"), v.literal("countdown"), v.literal("questions"), v.literal("result")),
-      startTime: v.number(),
-      endTime: v.number()
-    }),
-    gameResult: v.object({
-      player1: v.number(),
-      player2: v.number()
-    })
-  }),
-  rapidOnlineQueue: defineTable({
-    userId: v.id("users"),
-    isSearching: v.boolean(),
-    maxWaitTime: v.number(),
-    joinedAt: v.number()
-  }).index("by_userId", ["userId"])
+  })
 })

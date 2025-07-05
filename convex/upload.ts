@@ -13,3 +13,10 @@ export const generateUploadUrl = mutation({
       return await ctx.storage.getUrl(args.storageId);
     },
   });
+
+export const deleteStorageId = mutation({
+  args: { id: v.id("_storage")},
+  handler: async (ctx, { id }) => {
+    await ctx.storage.delete(id)
+  }
+})

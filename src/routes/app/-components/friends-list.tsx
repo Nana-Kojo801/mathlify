@@ -3,7 +3,7 @@ import { useUser } from '@/hooks/user'
 import { convexQuery } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { useQuery } from '@tanstack/react-query'
-import { UserPlus, ChevronRight, MessagesSquare, Bell } from 'lucide-react'
+import { UserPlus, MessagesSquare, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import type { User } from '@/types'
@@ -58,12 +58,7 @@ const Friend = ({ friend }: { friend: User }) => {
 
 export default function FriendsList() {
   const friends = useFriends()
-
-  const handleViewAllClick = () => {
-    console.log('Navigate to all friends page')
-    // In a real app: router.push('/friends')
-  }
-
+  
   return (
     <section className="mb-6 w-full">
       {/* Header with notifications */}
@@ -98,12 +93,12 @@ export default function FriendsList() {
       </div>
 
       {/* View All Button */}
-      {friends!.length > 0 && (
+      {/* {friends!.length > 0 && (
         <Button onClick={handleViewAllClick} className="mt-4 w-full">
           <span className="text-sm font-medium">View All Friends</span>
           <ChevronRight className="w-4 h-4" />
         </Button>
-      )}
+      )} */}
     </section>
   )
 }
