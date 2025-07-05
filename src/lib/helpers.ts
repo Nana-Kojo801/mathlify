@@ -107,14 +107,14 @@ export const generateFlowGameDifficultyWithRound = (round: number) => {
   return {
     range: {
       min: 1,
-      max: Math.min(10 + round * 2, 100), // Caps at 100
+      max: Math.min(10 + round * 4, 100), // Doubled from 2 to 4 - caps at 100
     },
     quantity: {
-      min: Math.min(2 + Math.floor(round / 5), 10), // Increases every 5 rounds, max 10
-      max: Math.min(4 + Math.floor(round / 5), 15), // Slightly higher max limit
+      min: Math.min(2 + Math.floor(round / 3), 10), // Reduced from every 2 rounds to every 3 rounds, max 10
+      max: Math.min(4 + Math.floor(round / 3), 15), // Reduced from every 2 rounds to every 3 rounds, max 15
     },
-    timeInterval: Math.max(3 - round * 0.1, 0.5), // Decreases, min 0.5s
-    duration: Math.max(10 - round * 0.5, 3), // Decreases, min 3s
+    timeInterval: Math.max(3 - round * 0.4, 0.8), // Increased from 0.15 to 0.4 - much faster decrease, min 0.8s
+    duration: Math.max(10 - round * 1, 3), // Doubled from 0.5 to 1 - decreases faster, min 3s
   }
 }
 
