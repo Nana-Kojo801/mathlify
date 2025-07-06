@@ -97,7 +97,7 @@ const Request = ({
 function RouteComponent() {
   const user = useUser()
   const { data: requests, isPending: loadingRequests } = useQuery({
-    ...convexQuery(api.friendRequests.getFullReceivedRequests, {
+    ...convexQuery(api.friendRequests.getReceivedRequests, {
       userId: user._id,
     }),
     gcTime: 1000 * 60,

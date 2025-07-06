@@ -1,12 +1,12 @@
 import type React from 'react'
 import Answer from './answer'
-import { useActions, useGameState } from './flow-game-store'
+import { useActions, useDifficulty, useGameState } from './flow-game-store'
 import Countdown from './countdown'
 import Idle from './idle'
 import Questions from './questions'
 import { Correct, Timeout, Wrong } from './result'
 import { useNavigate, type NavigateOptions } from '@tanstack/react-router'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 
 export const FlowGameLayout = ({
@@ -47,6 +47,7 @@ const CasualGame = ({
 }: FlowGameProps) => {
   const gameState = useGameState()
   const { reset } = useActions()
+  const difficulty = useDifficulty()
   const navigate = useNavigate()
 
   const quit = useCallback(() => {
@@ -79,6 +80,10 @@ const CasualGame = ({
         break
     }
   }, [custom, gameState])
+
+  useEffect(() => {
+    if (!difficulty) quit()
+  }, [])
 
   return (
     <div

@@ -51,7 +51,7 @@ const CreateRapidPresetModal = ({
   onOpenChange,
 }: CreateRapidPresetModalProps) => {
   const user = useUser()
-  const createSpeedSolvePreset = useMutation(api.presets.createSpeedSolvePreset)
+  const createSpeedSolvePreset = useMutation(api.presets.createPreset)
   const [isCreating, setIsCreating] = useState(false)
   const form = useAppForm({
     defaultValues: {
@@ -87,7 +87,7 @@ const CreateRapidPresetModal = ({
             
             try {
               setIsCreating(true)
-              await createSpeedSolvePreset({ ...values, userId: user._id })
+              await createSpeedSolvePreset({ ...values, userId: user._id, type: 'flow' })
               toast.success('Preset created successfully')
               onOpenChange(false)
               setIsCreating(false)

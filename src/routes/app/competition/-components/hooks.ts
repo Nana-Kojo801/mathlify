@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import {
   fetchCompetitionQuery,
   fetchFlowEntriesQuery,
@@ -11,6 +11,7 @@ import {
 import { useUser } from '@/hooks/user'
 import { useState, useEffect } from 'react'
 import { DateTime } from 'luxon'
+import { getServerTime } from '@/stores/server-time-store'
 
 export const useCompetition = () => {
   const { data: competition } = useSuspenseQuery(fetchCompetitionQuery())
@@ -27,7 +28,7 @@ export const useFlowEntry = () => {
   const user = useUser()
 
   const { data: entry } = useSuspenseQuery(
-    fetchFlowEntryQuery(user._id),
+    fetchFlowEntryQuery(user._id)
   )
 
   return entry
@@ -54,7 +55,7 @@ export const useRapidEntry = () => {
   const user = useUser()
 
   const { data: entry } = useSuspenseQuery(
-    fetchRapidEntryQuery(user._id),
+    fetchRapidEntryQuery(user._id)
   )
 
   return entry
@@ -66,7 +67,7 @@ export const useTimer = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = DateTime.now()
+      const now = DateTime.fromMillis(getServerTime())
       const remaining = DateTime.fromMillis(competition.endTime).diff(now).as("milliseconds")
       if (remaining <= 0) {
         clearInterval(interval)
@@ -84,7 +85,7 @@ export const useTimer = () => {
 export const useShouldShowResult = () => {
   const user = useUser()
 
-  const { data: shouldShow } = useSuspenseQuery(
+  const { data: shouldShow } = useQuery(
     fetchShouldShowResultQuery(user._id, user.lastCompetition)
   )
 

@@ -1,19 +1,18 @@
 import { v } from 'convex/values'
 import { mutation, query } from './_generated/server'
+import { createUserPreset, getUserPresets } from './models/presets/helpers'
 
 export const get = query({
   args: { userId: v.id('users') },
   handler: async (ctx, { userId }) => {
-    return await ctx.db
-      .query('presets')
-      .filter((q) => q.eq(q.field('userId'), userId))
-      .collect()
+    return getUserPresets(ctx, userId)
   },
 })
 
-export const createCasualPreset = mutation({
+export const createPreset = mutation({
   args: {
     userId: v.id('users'),
+    type: v.union(v.literal('flow'), v.literal('rapid')),
     name: v.string(),
     range: v.object({
       min: v.number(),
@@ -23,35 +22,11 @@ export const createCasualPreset = mutation({
       min: v.number(),
       max: v.number(),
     }),
-    timeInterval: v.float64(),
+    timeInterval: v.optional(v.float64()),
     duration: v.float64(),
   },
-  handler: async (ctx, { userId, name, ...settings }) => {
-    await ctx.db.insert('presets', { settings, name, type: 'flow', userId })
-  },
-})
-
-export const createSpeedSolvePreset = mutation({
-  args: {
-    userId: v.id('users'),
-    name: v.string(),
-    range: v.object({
-      min: v.number(),
-      max: v.number(),
-    }),
-    quantity: v.object({
-      min: v.number(),
-      max: v.number(),
-    }),
-    duration: v.float64(),
-  },
-  handler: async (ctx, { userId, name, ...settings }) => {
-    await ctx.db.insert('presets', {
-      settings,
-      name,
-      type: 'rapid',
-      userId,
-    })
+  handler: async (ctx, { userId, type, name, ...settings }) => {
+    await createUserPreset(ctx, userId, type, name, settings)
   },
 })
 

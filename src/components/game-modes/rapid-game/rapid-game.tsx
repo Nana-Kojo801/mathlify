@@ -48,6 +48,10 @@ const RapidGame = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if(!difficulty) quit()
+  }, [])
+
   return (
     <div className='w-full h-full flex justify-center items-center'>
       {state === 'idle' && <Idle />}

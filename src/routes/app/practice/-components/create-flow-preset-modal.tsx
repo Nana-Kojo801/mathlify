@@ -53,7 +53,7 @@ const CreateFlowPresetModal = ({
   onOpenChange,
 }: CreateFlowPresetModalProps) => {
   const user = useUser()
-  const createCasualPreset = useMutation(api.presets.createCasualPreset)
+  const createCasualPreset = useMutation(api.presets.createPreset)
   const [isCreating, setIsCreating] = useState(false)
   const form = useAppForm({
     defaultValues: {
@@ -90,7 +90,7 @@ const CreateFlowPresetModal = ({
             
             try {
               setIsCreating(true)
-              await createCasualPreset({ ...values, userId: user._id })
+              await createCasualPreset({ ...values, userId: user._id, type: 'flow' })
               toast.success('Preset created successfully')
               onOpenChange(false)
               setIsCreating(false)

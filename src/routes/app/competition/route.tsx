@@ -6,6 +6,7 @@ import {
   fetchRapidEntriesQuery,
   fetchRapidEntryQuery,
   fetchShouldShowResultQuery,
+  fetchWeek,
 } from './-components/queries'
 import { Clock, Loader2, Trophy } from 'lucide-react'
 import { useCompetition } from './-components/hooks'
@@ -29,6 +30,7 @@ export const Route = createFileRoute('/app/competition')({
       queryClient.ensureQueryData(
         fetchShouldShowResultQuery(user._id, user.lastCompetition),
       ),
+      queryClient.ensureQueryData(fetchWeek())
     ])
   },
   pendingComponent: () => {

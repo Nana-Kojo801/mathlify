@@ -11,12 +11,9 @@ export const initPresense = () => {
 
   useEffect(() => {
     if (!user) return
-    const interval = setInterval(
-      () => {
-        updatePresence({ userId: user._id })
-      },
-      1000 * 10,
-    )
+    const interval = setInterval(() => {
+      updatePresence({ userId: user._id })
+    }, 1000 * 10)
 
     return () => {
       clearInterval(interval)
@@ -27,6 +24,6 @@ export const initPresense = () => {
 export const isActive = (lastActive: number) => {
   const now = DateTime.fromMillis(getServerTime())
   const active = DateTime.fromMillis(lastActive)
-  const diff = active.diff(now).as("seconds")
-  return diff < 15
+  const diff = now.diff(active).as('seconds')
+  return Math.abs(diff) < 15
 }

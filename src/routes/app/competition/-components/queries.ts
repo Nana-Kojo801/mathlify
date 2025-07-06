@@ -3,31 +3,37 @@ import { convexQuery } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { queryOptions } from '@tanstack/react-query'
 
+const GC_TIME = 1000 * 60 * 5
+
 export const fetchCompetitionQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
     ...convexQuery(api.competitions.get, { competitionId }),
-    gcTime: 1000 * 60 * 5,
+    gcTime: GC_TIME,
   })
 }
 
 export const fetchFlowEntriesQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
-    ...convexQuery(api.competitions.getFlowEntries, { competitionId }),
-    gcTime: 1000 * 60 * 5,
+    ...convexQuery(api.competitions.getFlowEntries, {
+      competitionId
+    }),
+    gcTime: GC_TIME,
   })
 }
 
 export const fetchWeek = () => {
   return queryOptions({
     ...convexQuery(api.competitions.getWeek, {}),
-    gcTime: 1000 * 60 * 5
+    gcTime: GC_TIME,
   })
 }
 
 export const fetchRapidEntriesQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
-    ...convexQuery(api.competitions.getRapidEntries, { competitionId }),
-    gcTime: 1000 * 60 * 5,
+    ...convexQuery(api.competitions.getRapidEntries, {
+      competitionId,
+    }),
+    gcTime: GC_TIME,
   })
 }
 
@@ -37,7 +43,7 @@ export const fetchFlowEntryQuery = (
 ) => {
   return queryOptions({
     ...convexQuery(api.competitions.getFlowEntry, { userId, competitionId }),
-    gcTime: 1000 * 60 * 5,
+    gcTime: GC_TIME,
   })
 }
 
@@ -47,7 +53,7 @@ export const fetchRapidEntryQuery = (
 ) => {
   return queryOptions({
     ...convexQuery(api.competitions.getRapidEntry, { userId, competitionId }),
-    gcTime: 1000 * 60 * 5,
+    gcTime: GC_TIME,
   })
 }
 
@@ -60,6 +66,6 @@ export const fetchShouldShowResultQuery = (
       competitionId,
       userId,
     }),
-    gcTime: 1000 * 60 * 5,
+    gcTime: GC_TIME,
   })
 }
