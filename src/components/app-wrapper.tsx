@@ -24,7 +24,6 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 export default function AppWrapper({ children }: PropsWithChildren) {
   const convex = useConvex()
   const { online } = useNetworkState()
-  const user = useQuery(api.users.getAuthUser)
   const [auth] = useState(createAuthStore(convex, online ?? false))
   const [isInitializing, setIsInitializing] = useState(true)
 
@@ -47,6 +46,7 @@ export default function AppWrapper({ children }: PropsWithChildren) {
   }, [auth, online])
 
   const init = useCallback(async () => {
+    const user = await convex.query(api.users.getAuthUser)
     if (!user) return
     try {
       setIsInitializing(true)
@@ -58,10 +58,12 @@ export default function AppWrapper({ children }: PropsWithChildren) {
       setIsInitializing(false)
       console.log('[APP]: AN ERROR OCCURRED')
     }
-  }, [auth, sync, user, isInitializing])
+  }, [auth, sync])
 
   return (
-    <AppContext.Provider value={{ auth, init, isInitializing }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ auth, init, isInitializing }}>
+      {children}
+    </AppContext.Provider>
   )
 }
 

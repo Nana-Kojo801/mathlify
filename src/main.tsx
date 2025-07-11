@@ -4,12 +4,11 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import * as TanstackQuery from './integrations/tanstack-query/root-provider'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
-
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import ConvexProvider from '@/integrations/convex/provider'
 import AppWrapper, { useApp } from './components/app-wrapper.tsx'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useConvexAuth } from 'convex/react'
 import LoadingScreen from './routes/-components/loading-screen.tsx'
 
@@ -51,13 +50,15 @@ const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
-    <TanstackQuery.Provider>
-      <ConvexProvider>
-        <AppWrapper>
-          <App />
-        </AppWrapper>
-      </ConvexProvider>
-    </TanstackQuery.Provider>,
+    <React.StrictMode>
+      <TanstackQuery.Provider>
+        <ConvexProvider>
+          <AppWrapper>
+            <App />
+          </AppWrapper>
+        </ConvexProvider>
+      </TanstackQuery.Provider>
+    </React.StrictMode>
   )
 }
 
