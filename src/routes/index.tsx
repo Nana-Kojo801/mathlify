@@ -1,17 +1,19 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import Logo from '@/logo.svg'
 import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
+import { useConvexAuth } from 'convex/react'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
 function LandingPage() {
+  const { isAuthenticated } = useConvexAuth()
   const [showAuthChangeModal, setShowAuthChangeModal] = useState(!!localStorage.getItem('mathlify-session'))
 
-  // if (isAuthenticated) return <Navigate to="/app" />
+  if (isAuthenticated) return <Navigate to="/app" />
 
   return (
     <>
