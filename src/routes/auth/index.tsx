@@ -2,11 +2,16 @@ import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { useAuthActions } from '@convex-dev/auth/react'
 import { useMutation } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 
 export const Route = createFileRoute('/auth/')({
   component: RouteComponent,
+  beforeLoad: async ({ context: { app } }) => {
+    if(app.auth.getState().user) {
+      throw redirect({ to: '/app' })
+    }
+  },
 })
 
 function RouteComponent() {
