@@ -46,9 +46,12 @@ export default function AppWrapper({ children }: PropsWithChildren) {
   }, [auth, online])
 
   const init = useCallback(async () => {
-    const user = await convex.query(api.users.getAuthUser)
-    if (!user) return
     try {
+      const user = await convex.query(api.users.getAuthUser)
+      if (!user) {
+        setIsInitializing(false)
+        return
+      }
       setIsInitializing(true)
       await auth.getState().init(user)
       await sync()

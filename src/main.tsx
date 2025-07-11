@@ -33,12 +33,12 @@ declare module '@tanstack/react-router' {
 }
 
 const App = () => {
-  const { isLoading, isAuthenticated } = useConvexAuth()
+  const { isLoading } = useConvexAuth()
   const app = useApp()
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) app.init()
-  }, [isLoading, isAuthenticated])
+    if (!isLoading) app.init()
+  }, [isLoading])
 
   if (isLoading || app.isInitializing) return <LoadingScreen />
 
@@ -58,7 +58,7 @@ if (rootElement && !rootElement.innerHTML) {
           </AppWrapper>
         </ConvexProvider>
       </TanstackQuery.Provider>
-    </React.StrictMode>
+    </React.StrictMode>,
   )
 }
 
