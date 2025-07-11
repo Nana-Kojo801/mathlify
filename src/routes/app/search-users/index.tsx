@@ -96,7 +96,6 @@ const Friend = ({
         <Button
           onClick={async () => {
             await sendFriendRequest({
-              senderId: user._id,
               receiverId: friend._id,
             })
           }}
@@ -118,14 +117,11 @@ const Friend = ({
 
 function SearchUsersPage() {
   const [query, setQuery] = useState('')
-  const user = useUser()
   const users = useQuery(api.users.searchUsers, { query }) || []
   const sentRequests =
-    useQuery(api.friendRequests.getSentRequests, { userId: user._id }) || []
+    useQuery(api.friendRequests.getSentRequests, {}) || []
   const receivedRequest =
-    useQuery(api.friendRequests.getReceivedRequests, {
-      userId: user._id,
-    }) || []
+    useQuery(api.friendRequests.getReceivedRequests, {}) || []
 
   return (
     <div className="flex flex-col fixed inset-0 w-full h-full z-20 bg-background text-foreground">

@@ -15,9 +15,7 @@ export interface AuthStoreType {
   user: User | null
   loading: boolean
   authenticated: boolean
-  init: () => Promise<void>
-  signup: (values: z.infer<typeof authSchema>) => Promise<boolean>
-  login: (values: z.infer<typeof authSchema>) => Promise<boolean>
+  init: (user: any) => Promise<void>
   updateAuthUser: (changes: Partial<User>) => Promise<void>
   editProfile: (
     values: z.infer<typeof authSchema> & {
@@ -26,91 +24,47 @@ export interface AuthStoreType {
   ) => Promise<void>
 }
 
-const getUser = async (convex: ConvexReactClient, online: boolean) => {
-  const userId = localStorage.getItem(SESSION_KEY)
-  if (!userId) return null
+const getUser = async (
+  convex: ConvexReactClient,
+  online: boolean,
+  user: any
+) => {
   if (online) {
-    const user = (await convex.query(api.users.get, {
-      id: userId as User['_id'],
-    }))
-    if(!user) {
-      await Promise.all([
-        db.friendMessages.clear(),
-        db.users.clear(),
-        db.friends.clear()
-      ])
-      return null
-    }
-    const existingUser = await db.users.get(userId)
-    if (existingUser) {
-      await db.users.update(userId, user)
+    let existingUser = (await convex.query(api.users.getByEmail, {
+      email: user.email,
+    }))!
+
+    const existingLocalUser = await db.users
+      .filter((localUser) => localUser.email === user.email)
+      .first()
+
+    if (existingLocalUser) {
+      await db.users.update(existingUser._id, existingUser)
     } else {
-      await db.users.add(user)
+      await db.users.add(existingUser)
     }
-    return user
+    return existingUser
   }
-  return (await db.users.get(userId))!
+  return (await db.users.filter((localUser) => localUser.email === user.email).first())!
 }
 
-export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
+export const createAuthStore = (
+  convex: ConvexReactClient,
+  online: boolean,
+) =>
   createStore<AuthStoreType>((set, get) => ({
     user: null,
-    loading: true,
+    loading: false,
     authenticated: false,
-    init: async () => {
+    init: async (user: any) => {
       try {
-        const user = await getUser(convex, online)
-        if (!user) {
-          localStorage.removeItem(SESSION_KEY)
-          set({ loading: false, authenticated: false })
-          return
-        }
-        set({ user, loading: false, authenticated: true })
+        set({ loading: true })
+        const authenticatedUser = await getUser(convex, online, user)
+        set({ user: authenticatedUser, loading: false, authenticated: true })
       } catch (e) {
         console.error(e)
         set({ loading: false, authenticated: false })
         toast.error('[AUTH]: AN ERROR OCCURED')
-      }
-    },
-    signup: async (values) => {
-      try {
-        const existingUser = await convex.query(api.users.getByUsername, {
-          username: values.username,
-        })
-        if (existingUser) {
-          toast.error('Username already exists', { duration: 1200 })
-          return false
-        }
-        const newUser = await convex.mutation(api.users.insert, values)
-        localStorage.setItem(SESSION_KEY, newUser._id)
-        await db.users.add(newUser)
-        set({ user: newUser, authenticated: true })
-        return true
-      } catch (e) {
-        toast.error('Something went wrong. Try again later')
-        return true
-      }
-    },
-    login: async (values) => {
-      try {
-        const existingUser = await convex.query(api.users.getByUsername, {
-          username: values.username,
-        })
-        if (!existingUser) {
-          toast.error('Username does not exists')
-          return false
-        }
-        if (existingUser.password !== values.password) {
-          toast.error('Invalid user info')
-          return false
-        }
-        localStorage.setItem(SESSION_KEY, existingUser._id)
-        await db.users.add(existingUser)
-        set({ user: existingUser, authenticated: true })
-        return true
-      } catch {
-        toast.error('Something went wrong. Try again later')
-        return false
       }
     },
     editProfile: async (values) => {
@@ -127,7 +81,7 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
           }
         }
         let newAvatar = user!.avatar
-        let storageId: undefined | Id<"_storage"> = undefined
+        let storageId: undefined | Id<'_storage'> = undefined
         if (values.avatar) {
           const postUrl = await convex.mutation(api.upload.generateUploadUrl)
           const result = await fetch(postUrl, {
@@ -137,13 +91,13 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
             },
             body: values.avatar,
           }).then((res) => res.json())
-          storageId = result.storageId as Id<"_storage">
+          storageId = result.storageId as Id<'_storage'>
           newAvatar = (await convex.query(api.upload.getUrl, {
             storageId: result.storageId,
           }))!
         }
         set({ user: Object.assign(user!, { ...values, avatar: newAvatar }) })
-        if(user!.storageId && storageId) {
+        if (user!.storageId && storageId) {
           await convex.mutation(api.upload.deleteStorageId, { id: storageId })
         }
         await Promise.all([
@@ -154,8 +108,7 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
           convex.mutation(api.users.update, {
             ...values,
             avatar: newAvatar,
-            userId: user!._id,
-            storageId: storageId
+            storageId: storageId,
           }),
         ])
         toast.success('Successfully updated profile', { duration: 1200 })
@@ -168,17 +121,10 @@ export const createAuthStore = (convex: ConvexReactClient, online: boolean) =>
       const user = get().user
       set({ user: Object.assign(user!, changes) })
       await Promise.all([
-        convex.mutation(api.users.update, { userId: user!._id, ...changes }),
+        convex.mutation(api.users.update, changes),
         db.users.update(user!._id, changes),
       ])
     },
   }))
 
 export const useAuthUser = () => useAuth((state) => state.user)
-
-export const useAuthActions = () => useAuth(state => ({
-    signup: state.signup,
-    login: state.login,
-    editProfile: state.editProfile,
-    updateAuthUser: state.updateAuthUser
-}))

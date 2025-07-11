@@ -7,17 +7,17 @@
 ## Core Game Concept
 
 - Two distinct game modes to test different math skills:
-  - **Casual**: A sequence of numbers appears one after another, and players must calculate and input the sum at the end.
-  - **Speed Solve**: Players are given math expressions with multiple operations and must choose the correct answer from four options as quickly as possible.
+  - **Flow Mode**: A sequence of numbers appears one after another, and players must calculate and input the sum at the end.
+  - **Rapid**: Players are given math expressions with multiple operations and must choose the correct answer from four options as quickly as possible.
 - Competitive gameplay through ranking systems (ELO), weekly tournaments, and head-to-head matches.
 - Social features allowing players to connect with friends, chat, and track each other's progress.
 - Customizable difficulty settings for personalized practice sessions.
 
 ## Gameplay
 
-1. Players can choose between **Casual** mode for addition practice or **Speed Solve** for mixed operations.
-2. In **Casual**, numbers appear sequentially with timed intervals, and players calculate the running sum.
-3. In **Speed Solve**, players race against the clock to solve as many expressions as possible.
+1. Players can choose between **Flow Mode** for addition practice or **Rapid** for mixed operations.
+2. In **Flow Mode**, numbers appear sequentially with timed intervals, and players calculate the running sum.
+3. In **Rapid**, players race against the clock to solve as many expressions as possible.
 4. Both modes feature progressive difficulty and competitive ranking.
 5. Players earn ELO points based on performance, which determines their position on leaderboards.
 
@@ -48,18 +48,18 @@ Here are the primary pages for the app:
 - Recent activity or achievements showcase.
 
 ### 4. Practice Page
-- Game mode selection (Casual vs Speed Solve).
+- Game mode selection (Flow Mode vs Rapid).
 - Difficulty settings configuration panel:
-  - **Casual**: Number range, quantity of numbers, time interval, total timer.
-  - **Speed Solve**: Number range, quantity of questions, time duration.
+  - **Flow Mode**: Number range, quantity of numbers, time interval, total timer.
+  - **Rapid**: Number range, quantity of questions, time duration.
 - Saved custom difficulty presets.
 - Visual indicators of difficulty levels.
 - "Start Practice" button with clear visual emphasis.
 
 ### 5. Competition Page
 - Weekly leaderboards for both game modes.
-- **Casual Competition**: Marathon-style with increasing difficulty rounds, scored by advancement and speed.
-- **Speed Solve Competition**: Scored by total questions answered correctly.
+- **Flow Mode Competition**: Marathon-style with increasing difficulty rounds, scored by advancement and speed.
+- **Rapid Competition**: Scored by total questions answered correctly.
 - Performance statistics and historical data.
 - Tabs or nested pages for each game mode.
 - Countdown timer to next competition reset.
@@ -112,13 +112,13 @@ Here are the primary pages for the app:
 
 ## Game Modes Detail
 
-### Casual Mode
+### Flow Mode
 - Sequential number display with controlled timing
 - Memory and addition focused
 - Marathon-style difficulty progression
 - Final sum submission with time-based scoring
 
-### Speed Solve (formerly "Answer Rush")
+### Rapid
 - Quick arithmetic expressions with multiple operations
 - Multiple-choice format with four potential answers
 - Rapid-fire questions with overall time limit

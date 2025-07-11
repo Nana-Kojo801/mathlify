@@ -11,12 +11,10 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/auth/route'
 import { Route as AppRouteImport } from './routes/app/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthIndexImport } from './routes/auth/index'
 import { Route as AppIndexImport } from './routes/app/index'
-import { Route as AuthSignupImport } from './routes/auth/signup'
-import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AppCompetitionRouteImport } from './routes/app/competition/route'
 import { Route as AppSearchUsersIndexImport } from './routes/app/search-users/index'
 import { Route as AppProfileIndexImport } from './routes/app/profile/index'
@@ -40,12 +38,6 @@ import { Route as AppOnlineRoomIdChatIndexImport } from './routes/app/online/roo
 
 // Create/Update Routes
 
-const AuthRouteRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AppRouteRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -58,22 +50,16 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthIndexRoute = AuthIndexImport.update({
+  id: '/auth/',
+  path: '/auth/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AppIndexRoute = AppIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRouteRoute,
-} as any)
-
-const AuthSignupRoute = AuthSignupImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-
-const AuthLoginRoute = AuthLoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRouteRoute,
 } as any)
 
 const AppCompetitionRouteRoute = AppCompetitionRouteImport.update({
@@ -218,13 +204,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRoute
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRoute
-    }
     '/app/competition': {
       id: '/app/competition'
       path: '/competition'
@@ -232,26 +211,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCompetitionRouteImport
       parentRoute: typeof AppRouteImport
     }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginImport
-      parentRoute: typeof AuthRouteImport
-    }
-    '/auth/signup': {
-      id: '/auth/signup'
-      path: '/signup'
-      fullPath: '/auth/signup'
-      preLoaderRoute: typeof AuthSignupImport
-      parentRoute: typeof AuthRouteImport
-    }
     '/app/': {
       id: '/app/'
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppRouteImport
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof rootRoute
     }
     '/app/competition/': {
       id: '/app/competition/'
@@ -461,28 +433,12 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
-interface AuthRouteRouteChildren {
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthSignupRoute: typeof AuthSignupRoute
-}
-
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthLoginRoute: AuthLoginRoute,
-  AuthSignupRoute: AuthSignupRoute,
-}
-
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
-)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
-  '/auth': typeof AuthRouteRouteWithChildren
   '/app/competition': typeof AppCompetitionRouteRouteWithChildren
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/app/': typeof AppIndexRoute
+  '/auth': typeof AuthIndexRoute
   '/app/competition/': typeof AppCompetitionIndexRoute
   '/app/friend-requests': typeof AppFriendRequestsIndexRoute
   '/app/online': typeof AppOnlineIndexRoute
@@ -506,10 +462,8 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteRouteWithChildren
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/app': typeof AppIndexRoute
+  '/auth': typeof AuthIndexRoute
   '/app/competition': typeof AppCompetitionIndexRoute
   '/app/friend-requests': typeof AppFriendRequestsIndexRoute
   '/app/online': typeof AppOnlineIndexRoute
@@ -534,11 +488,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
-  '/auth': typeof AuthRouteRouteWithChildren
   '/app/competition': typeof AppCompetitionRouteRouteWithChildren
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/app/': typeof AppIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/app/competition/': typeof AppCompetitionIndexRoute
   '/app/friend-requests/': typeof AppFriendRequestsIndexRoute
   '/app/online/': typeof AppOnlineIndexRoute
@@ -565,11 +517,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
-    | '/auth'
     | '/app/competition'
-    | '/auth/login'
-    | '/auth/signup'
     | '/app/'
+    | '/auth'
     | '/app/competition/'
     | '/app/friend-requests'
     | '/app/online'
@@ -592,10 +542,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
-    | '/auth/login'
-    | '/auth/signup'
     | '/app'
+    | '/auth'
     | '/app/competition'
     | '/app/friend-requests'
     | '/app/online'
@@ -618,11 +566,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
-    | '/auth'
     | '/app/competition'
-    | '/auth/login'
-    | '/auth/signup'
     | '/app/'
+    | '/auth/'
     | '/app/competition/'
     | '/app/friend-requests/'
     | '/app/online/'
@@ -648,13 +594,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
-  AuthRouteRoute: AuthRouteRouteWithChildren,
+  AuthIndexRoute: AuthIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -669,7 +615,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/app",
-        "/auth"
+        "/auth/"
       ]
     },
     "/": {
@@ -693,13 +639,6 @@ export const routeTree = rootRoute
         "/app/profile/edit/"
       ]
     },
-    "/auth": {
-      "filePath": "auth/route.tsx",
-      "children": [
-        "/auth/login",
-        "/auth/signup"
-      ]
-    },
     "/app/competition": {
       "filePath": "app/competition/route.tsx",
       "parent": "/app",
@@ -710,17 +649,12 @@ export const routeTree = rootRoute
         "/app/competition/play/rapid/"
       ]
     },
-    "/auth/login": {
-      "filePath": "auth/login.tsx",
-      "parent": "/auth"
-    },
-    "/auth/signup": {
-      "filePath": "auth/signup.tsx",
-      "parent": "/auth"
-    },
     "/app/": {
       "filePath": "app/index.tsx",
       "parent": "/app"
+    },
+    "/auth/": {
+      "filePath": "auth/index.tsx"
     },
     "/app/competition/": {
       "filePath": "app/competition/index.tsx",

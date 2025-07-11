@@ -12,7 +12,7 @@ export const initPresense = () => {
   useEffect(() => {
     if (!user) return
     const interval = setInterval(() => {
-      updatePresence({ userId: user._id })
+      updatePresence()
     }, 1000 * 10)
 
     return () => {

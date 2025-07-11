@@ -67,7 +67,7 @@ export const syncFriendMessages = async ({
       user!.friends.map(async (friendId) => {
         const friendMessages = await convex.query(
           api.friendMessages.getMessages,
-          { friendId, userId: user!._id },
+          { friendId },
         )
         await Promise.all(
           friendMessages.map(async (message: FriendMessage) => {

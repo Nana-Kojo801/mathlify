@@ -1,6 +1,6 @@
 import type { MutationCtx, QueryCtx } from '@convex/_generated/server'
 import type { Doc, Id } from '@convex/_generated/dataModel'
-import type { User } from '@/types'
+import type { User } from '../../shared/types'
 
 export const insertUser = async (
   ctx: MutationCtx,
@@ -19,6 +19,17 @@ export const getUserByUsername = async (
     .withIndex('by_username', (q) => q.eq('username', username))
     .unique()
 }
+
+export const getUserByEmail = async (
+  ctx: QueryCtx,
+  email: Doc<'users'>['email'],
+) => {
+  return await ctx.db
+    .query('users')
+    .withIndex('email', (q) => q.eq('email', email))
+    .unique()
+}
+
 
 export const updateUser = async (
   ctx: MutationCtx,

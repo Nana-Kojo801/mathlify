@@ -11,8 +11,10 @@ import {
   flowCompetitionEntries,
   rapidCompetitionEntries,
 } from './models/competitions/table'
+import { authTables } from '@convex-dev/auth/server'
 
 export default defineSchema({
+  ...authTables,
   users: userTable,
   userGameData: userGameData,
   friendRequests: friendRequestsTable,

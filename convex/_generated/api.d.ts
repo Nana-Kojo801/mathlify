@@ -13,10 +13,12 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as auth from "../auth.js";
 import type * as competitions from "../competitions.js";
 import type * as crons from "../crons.js";
 import type * as friendMessages from "../friendMessages.js";
 import type * as friendRequests from "../friendRequests.js";
+import type * as http from "../http.js";
 import type * as models_competitions_helpers from "../models/competitions/helpers.js";
 import type * as models_competitions_table from "../models/competitions/table.js";
 import type * as models_friendMessages_helpers from "../models/friendMessages/helpers.js";
@@ -29,6 +31,7 @@ import type * as models_users_helpers from "../models/users/helpers.js";
 import type * as models_users_table from "../models/users/table.js";
 import type * as presets from "../presets.js";
 import type * as serverTime from "../serverTime.js";
+import type * as shared_customFunctions from "../shared/customFunctions.js";
 import type * as shared_types from "../shared/types.js";
 import type * as upload from "../upload.js";
 import type * as users from "../users.js";
@@ -42,10 +45,12 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   competitions: typeof competitions;
   crons: typeof crons;
   friendMessages: typeof friendMessages;
   friendRequests: typeof friendRequests;
+  http: typeof http;
   "models/competitions/helpers": typeof models_competitions_helpers;
   "models/competitions/table": typeof models_competitions_table;
   "models/friendMessages/helpers": typeof models_friendMessages_helpers;
@@ -58,6 +63,7 @@ declare const fullApi: ApiFromModules<{
   "models/users/table": typeof models_users_table;
   presets: typeof presets;
   serverTime: typeof serverTime;
+  "shared/customFunctions": typeof shared_customFunctions;
   "shared/types": typeof shared_types;
   upload: typeof upload;
   users: typeof users;

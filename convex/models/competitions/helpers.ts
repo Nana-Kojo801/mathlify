@@ -55,6 +55,8 @@ export const getCompetitionFlowEntries = async (
     await Promise.all(
       entries.map(async (entry) => {
         const user = (await ctx.db.get(entry.userId))!
+        console.log('user', user);
+        
         const { _id, _creationTime, competitionId, ...actualEntry } = entry
         return {
           username: user.username,

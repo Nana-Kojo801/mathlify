@@ -22,13 +22,13 @@ export const Route = createFileRoute('/app/competition')({
       queryClient.ensureQueryData(fetchFlowEntriesQuery()),
       queryClient.ensureQueryData(fetchRapidEntriesQuery()),
       queryClient.ensureQueryData(
-        fetchFlowEntryQuery(user._id),
+        fetchFlowEntryQuery(),
       ),
       queryClient.ensureQueryData(
-        fetchRapidEntryQuery(user._id),
+        fetchRapidEntryQuery(),
       ),
       queryClient.ensureQueryData(
-        fetchShouldShowResultQuery(user._id, user.lastCompetition),
+        fetchShouldShowResultQuery(user.lastCompetition),
       ),
       queryClient.ensureQueryData(fetchWeek())
     ])
