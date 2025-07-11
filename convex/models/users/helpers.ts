@@ -20,13 +20,6 @@ export const getUserByUsername = async (
     .unique()
 }
 
-export const getUserByClerkId = async (
-  ctx: QueryCtx,
-  clerkId: Doc<'users'>['clerkId'],
-) => {
-  return await ctx.db.query('users').withIndex('by_clerkId', (q) => q.eq('clerkId', clerkId)).unique()
-}
-
 export const updateUser = async (
   ctx: MutationCtx,
   id: Id<'users'>,

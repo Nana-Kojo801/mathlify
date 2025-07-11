@@ -1,8 +1,7 @@
 import { v } from 'convex/values'
-import { mutation, query } from './_generated/server'
+import { query } from './_generated/server'
 import {
   addFriendToUser,
-  getUserByClerkId,
   getUserByUsername,
   insertUser,
   updateUser,
@@ -16,12 +15,6 @@ export const get = query({
   },
 })
 
-export const getByClerkId = query({
-  args: { clerkId: v.string()},
-  handler: async (ctx, { clerkId }) => {
-    return await getUserByClerkId(ctx, clerkId)
-  }
-})
 
 export const getByUsername = query({
   args: { username: v.string() },
@@ -53,11 +46,11 @@ export const searchUsers = authQuery({
 })
 
 export const insert = authMutation({
-  args: { username: v.string(), email: v.string(), clerkId: v.string() },
+  args: { username: v.string(), email: v.string(), image: v.string() },
   handler: async (ctx, args) => {
     return await insertUser(ctx, {
       ...args,
-      avatar: `https://ui-avatars.com/api/?background=random&name=${args.username[0]}`,
+      avatar: args.image,
       elo: {
         flow: 0,
         rapid: 0,
