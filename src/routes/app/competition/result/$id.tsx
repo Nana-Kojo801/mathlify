@@ -1,19 +1,14 @@
 import { Zap, Brain, Loader2, ArrowLeft } from 'lucide-react'
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { fetchCompetitionResultQuery } from './-components/queries'
 import type { Competition } from '@/types'
 import GameModeSection from './-components/game-mode-section'
 import { useEffect } from 'react'
-import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 
 export const Route = createFileRoute('/app/competition/result/$id')({
   component: ResultPage,
-  beforeLoad: ({ context: { app } }) => {
-    const user = app.auth.getState().user!
-    if (!user.lastCompetition) throw redirect({ to: '/app/competition' })
-  },
   pendingComponent: () => {
     return (
       <div className="flex flex-col gap-4 items-center justify-center h-screen">
@@ -30,11 +25,10 @@ export const Route = createFileRoute('/app/competition/result/$id')({
 })
 
 function ResultPage() {
-  const user = useUser()
   const { id } = Route.useParams()
   const viewResult = useMutation(api.competitions.viewResult)
   useEffect(() => {
-    viewResult({ competitionId: id as Competition['_id'], userId: user._id })
+    viewResult({ competitionId: id as Competition['_id'] })
   }, [])
   return (
     <div className="min-h-screen bg-background">

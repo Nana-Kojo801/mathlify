@@ -1,11 +1,9 @@
-import type { authSchema } from '@/components/auth-form'
 import { useAuth } from '@/components/app-wrapper'
 import { db } from '@/lib/dexie'
 import type { User } from '@/types'
 import { api } from '@convex/_generated/api'
 import type { ConvexReactClient } from 'convex/react'
 import { toast } from 'sonner'
-import type { z } from 'zod'
 import { createStore } from 'zustand'
 import type { Id } from '@convex/_generated/dataModel'
 
@@ -18,7 +16,7 @@ export interface AuthStoreType {
   init: (user: any) => Promise<void>
   updateAuthUser: (changes: Partial<User>) => Promise<void>
   editProfile: (
-    values: z.infer<typeof authSchema> & {
+    values: { username: string } & {
       avatar: File | null
     },
   ) => Promise<void>
