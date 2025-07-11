@@ -1,16 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Camera, Save, User, Lock } from 'lucide-react'
+import { Camera, Save, User } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { Label } from '@/components/ui/label'
 import { useUser } from '@/hooks/user'
 import { useAppForm } from '@/hooks/form'
-import type { z } from 'zod'
-import { authSchema } from '@/components/auth-form'
+import { z } from 'zod'
 import { PageHeader } from '@/components/page-header'
 import { useAuth } from '@/components/app-wrapper'
 
 export const Route = createFileRoute('/app/profile/edit/')({
   component: EditProfilePage,
+})
+
+const authSchema = z.object({
+  username: z.string()
 })
 
 function EditProfilePage() {
@@ -22,7 +25,6 @@ function EditProfilePage() {
   const form = useAppForm({
     defaultValues: {
       username: user.username,
-      password: user.password,
     } as z.infer<typeof authSchema>,
     validators: { onChange: authSchema },
     onSubmit: async ({ value: values }) => {
@@ -106,24 +108,6 @@ function EditProfilePage() {
                     className="pl-10 h-12"
                   >
                     <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  </field.TextField>
-                )}
-              />
-            </div>
-            <div className="space-y-3">
-              <Label htmlFor="password" className="text-muted-foreground">
-                Password
-              </Label>
-              <form.AppField
-                name="password"
-                children={(field) => (
-                  <field.TextField
-                    id="password"
-                    type="password"
-                    placeholder="Enter password"
-                    className="pl-10 h-12"
-                  >
-                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   </field.TextField>
                 )}
               />
