@@ -6,7 +6,7 @@ import {
   type PropsWithChildren,
 } from 'react'
 import { useNetworkState } from 'react-use'
-import { useConvex, useQuery } from 'convex/react'
+import { useConvex } from 'convex/react'
 import { syncFriendMessages } from '@/stores/friend-messages-store'
 import { syncFriends } from '@/stores/friends-store'
 import { createAuthStore, type AuthStoreType } from '@/stores/auth-store'
