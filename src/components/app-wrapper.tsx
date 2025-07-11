@@ -16,6 +16,7 @@ import { api } from '@convex/_generated/api'
 export interface AppContextType {
   auth: ReturnType<typeof createAuthStore>
   init: () => Promise<void>
+  isInitializing: boolean
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -25,7 +26,7 @@ export default function AppWrapper({ children }: PropsWithChildren) {
   const { online } = useNetworkState()
   const user = useQuery(api.users.getAuthUser)
   const [auth] = useState(createAuthStore(convex, online ?? false))
-  const [initialized, setInitialized] = useState(false)
+  const [isInitializing, setIsInitializing] = useState(true)
 
   const sync = useCallback(async () => {
     const authState = auth.getState()
@@ -46,20 +47,21 @@ export default function AppWrapper({ children }: PropsWithChildren) {
   }, [auth, online])
 
   const init = useCallback(async () => {
-    if (initialized || !user) return
+    if (!user) return
     try {
+      setIsInitializing(true)
       await auth.getState().init(user)
       await sync()
-      setInitialized(true)
+      setIsInitializing(false)
       console.log('[APP]: INITIALIZED')
     } catch (e) {
-      setInitialized(false)
+      setIsInitializing(false)
       console.log('[APP]: AN ERROR OCCURRED')
     }
-  }, [auth, sync, initialized, user])
+  }, [auth, sync, user, isInitializing])
 
   return (
-    <AppContext.Provider value={{ auth, init }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ auth, init, isInitializing }}>{children}</AppContext.Provider>
   )
 }
 
