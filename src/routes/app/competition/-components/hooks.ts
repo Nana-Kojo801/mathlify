@@ -25,10 +25,8 @@ export const useWeek = () => {
 }
 
 export const useFlowEntry = () => {
-  const user = useUser()
-
   const { data: entry } = useSuspenseQuery(
-    fetchFlowEntryQuery(user._id)
+    fetchFlowEntryQuery()
   )
 
   return entry
@@ -52,10 +50,8 @@ export const useRapidEntries = () => {
 }
 
 export const useRapidEntry = () => {
-  const user = useUser()
-
   const { data: entry } = useSuspenseQuery(
-    fetchRapidEntryQuery(user._id)
+    fetchRapidEntryQuery()
   )
 
   return entry
@@ -86,7 +82,7 @@ export const useShouldShowResult = () => {
   const user = useUser()
 
   const { data: shouldShow } = useQuery(
-    fetchShouldShowResultQuery(user._id, user.lastCompetition)
+    fetchShouldShowResultQuery(user.lastCompetition)
   )
 
   return shouldShow

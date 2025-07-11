@@ -72,7 +72,6 @@ function RouteComponent() {
         const newMessage = await convex.mutation(
           api.friendMessages.sendMessage,
           {
-            senderId: user._id,
             receiverId: friendId as User['_id'],
             message,
           },
@@ -114,7 +113,7 @@ function RouteComponent() {
   const markAsRead = useMutation(api.friendMessages.markAsRead)
 
   useEffect(() => {
-    markAsRead({ userId: user._id, friendId: friendId as User['_id'] })
+    markAsRead({ friendId: friendId as User['_id'] })
   }, [friendId, user._id, markAsRead])
 
   const handleDeleteMessage = async (messageId: FriendMessage['_id']) => {

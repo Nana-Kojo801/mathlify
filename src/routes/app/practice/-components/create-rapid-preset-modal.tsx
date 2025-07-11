@@ -6,7 +6,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useAppForm } from '@/hooks/form'
-import { useUser } from '@/hooks/user'
 import { api } from '@convex/_generated/api'
 import { useMutation } from 'convex/react'
 import { useState } from 'react'
@@ -50,7 +49,6 @@ const CreateRapidPresetModal = ({
   open,
   onOpenChange,
 }: CreateRapidPresetModalProps) => {
-  const user = useUser()
   const createSpeedSolvePreset = useMutation(api.presets.createPreset)
   const [isCreating, setIsCreating] = useState(false)
   const form = useAppForm({
@@ -87,7 +85,7 @@ const CreateRapidPresetModal = ({
             
             try {
               setIsCreating(true)
-              await createSpeedSolvePreset({ ...values, userId: user._id, type: 'flow' })
+              await createSpeedSolvePreset({ ...values, type: 'flow' })
               toast.success('Preset created successfully')
               onOpenChange(false)
               setIsCreating(false)

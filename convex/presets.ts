@@ -1,17 +1,17 @@
 import { v } from 'convex/values'
-import { mutation, query } from './_generated/server'
 import { createUserPreset, getUserPresets } from './models/presets/helpers'
 
-export const get = query({
-  args: { userId: v.id('users') },
-  handler: async (ctx, { userId }) => {
-    return getUserPresets(ctx, userId)
+import { authQuery, authMutation } from './shared/customFunctions'
+
+
+export const get = authQuery({
+  handler: async (ctx) => {
+    return getUserPresets(ctx, ctx.user._id)
   },
 })
 
-export const createPreset = mutation({
+export const createPreset = authMutation({
   args: {
-    userId: v.id('users'),
     type: v.union(v.literal('flow'), v.literal('rapid')),
     name: v.string(),
     range: v.object({
@@ -25,12 +25,12 @@ export const createPreset = mutation({
     timeInterval: v.optional(v.float64()),
     duration: v.float64(),
   },
-  handler: async (ctx, { userId, type, name, ...settings }) => {
-    await createUserPreset(ctx, userId, type, name, settings)
+  handler: async (ctx, { type, name, ...settings }) => {
+    await createUserPreset(ctx, ctx.user._id, type, name, settings)
   },
 })
 
-export const deletePreset = mutation({
+export const deletePreset = authMutation({
   args: { id: v.id('presets') },
   handler: async (ctx, { id }) => {
     await ctx.db.delete(id)

@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Play, Plus, Trash2 } from 'lucide-react'
 import { getPresetsQueryOptions } from './queries'
-import { useUser } from '@/hooks/user'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { FlowGameDifficulty, GameType, Preset } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
@@ -91,12 +90,11 @@ const SavedPresets = ({
   setShowCreateRapidDialog,
   gameMode,
 }: SavedPresetsType) => {
-  const user = useUser()
   const {
     data: presets,
     isPending: loadingPresets,
     isError,
-  } = useQuery(getPresetsQueryOptions(user._id))
+  } = useQuery(getPresetsQueryOptions())
 
   const filteredPresets = useMemo(
     () => presets.filter((preset) => preset.type === gameMode),

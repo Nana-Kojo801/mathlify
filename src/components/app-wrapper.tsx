@@ -6,11 +6,12 @@ import {
   type PropsWithChildren,
 } from 'react'
 import { useNetworkState } from 'react-use'
-import { useConvex } from 'convex/react'
+import { useConvex, useConvexAuth } from 'convex/react'
 import { syncFriendMessages } from '@/stores/friend-messages-store'
 import { syncFriends } from '@/stores/friends-store'
 import { createAuthStore, type AuthStoreType } from '@/stores/auth-store'
 import { useStore } from 'zustand'
+import { useUser } from '@clerk/clerk-react'
 
 export interface AppContextType {
   auth: ReturnType<typeof createAuthStore>
@@ -22,6 +23,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 export default function AppWrapper({ children }: PropsWithChildren) {
   const convex = useConvex()
   const { online } = useNetworkState()
+  const { user } = useUser()
   const [auth] = useState(createAuthStore(convex, online ?? false))
   const [initialized, setInitialized] = useState(false)
 
@@ -40,9 +42,9 @@ export default function AppWrapper({ children }: PropsWithChildren) {
   }, [auth, online])
 
   const init = useCallback(async () => {
-    if(initialized) return
+    if(initialized || !user) return
     try {
-      await auth.getState().init()
+      await auth.getState().init(user)
       await sync()
       setInitialized(true)
       console.log('[APP]: INITIALIZED');
@@ -50,7 +52,7 @@ export default function AppWrapper({ children }: PropsWithChildren) {
       setInitialized(false)
       console.log('[APP]: AN ERROR OCCURRED')
     }
-  }, [auth, sync, initialized])
+  }, [auth, sync, initialized, user])
 
   return <AppContext.Provider value={{ auth, init }}>{children}</AppContext.Provider>
 }

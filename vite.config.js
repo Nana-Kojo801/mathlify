@@ -18,8 +18,7 @@ export default defineConfig({
       manifest: {
         name: 'Mathlify',
         short_name: 'Mathlify',
-        description:
-          'Mathlify transforms mental math training into an exciting competitive experience. Challenge yourself in "Casual" addition sequences or "Speed Solve" rapid calculations while competing against friends and players worldwide. Customize practice sessions, join global leaderboards, and track your progress as your calculation speed and accuracy improve. Sharpen your mind, climb the rankings, and become a mental math champion!',
+        description: 'Mental math app',
         theme_color: '#00BFFF',
         background_color: '#101828',
         display: 'fullscreen',
@@ -66,19 +65,19 @@ export default defineConfig({
             src: '/icon-256x256.png',
             sizes: '256x256',
             type: 'image/png',
-            purpose: 'any'
+            purpose: 'any',
           },
           {
             src: '/icon-384x384.png',
             sizes: '384x384',
             type: 'image/png',
-            purpose: 'any'
+            purpose: 'any',
           },
           {
             src: '/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any'
+            purpose: 'any',
           },
         ],
       },
@@ -99,7 +98,7 @@ export default defineConfig({
                 statuses: [0, 200],
               },
             },
-          }
+          },
         ],
       },
       devOptions: {

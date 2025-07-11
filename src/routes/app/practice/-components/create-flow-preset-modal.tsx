@@ -6,7 +6,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useAppForm } from '@/hooks/form'
-import { useUser } from '@/hooks/user'
 import { api } from '@convex/_generated/api'
 import { useMutation } from 'convex/react'
 import { useState } from 'react'
@@ -52,7 +51,6 @@ const CreateFlowPresetModal = ({
   open,
   onOpenChange,
 }: CreateFlowPresetModalProps) => {
-  const user = useUser()
   const createCasualPreset = useMutation(api.presets.createPreset)
   const [isCreating, setIsCreating] = useState(false)
   const form = useAppForm({
@@ -90,7 +88,7 @@ const CreateFlowPresetModal = ({
             
             try {
               setIsCreating(true)
-              await createCasualPreset({ ...values, userId: user._id, type: 'flow' })
+              await createCasualPreset({ ...values, type: 'flow' })
               toast.success('Preset created successfully')
               onOpenChange(false)
               setIsCreating(false)

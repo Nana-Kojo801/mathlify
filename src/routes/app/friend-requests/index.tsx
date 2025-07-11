@@ -5,7 +5,6 @@ import UserAvatar from '@/components/user-avatar'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { convexQuery, useConvex } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
-import { useUser } from '@/hooks/user'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { FriendRequest, User } from '@/types'
 import { toast } from 'sonner'
@@ -95,11 +94,8 @@ const Request = ({
 }
 
 function RouteComponent() {
-  const user = useUser()
   const { data: requests, isPending: loadingRequests } = useQuery({
-    ...convexQuery(api.friendRequests.getReceivedRequests, {
-      userId: user._id,
-    }),
+    ...convexQuery(api.friendRequests.getReceivedRequests, {}),
     gcTime: 1000 * 60,
     initialData: [],
   })

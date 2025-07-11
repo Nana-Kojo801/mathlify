@@ -10,5 +10,6 @@ export const useUser = () => {
         ...convexQuery(api.users.get, { id: user!._id }),
         initialData: user,
     })
+    
     return liveUser!
 }

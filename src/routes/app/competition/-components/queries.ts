@@ -1,4 +1,4 @@
-import type { Competition, User } from '@/types'
+import type { Competition } from '@/types'
 import { convexQuery } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { queryOptions } from '@tanstack/react-query'
@@ -15,7 +15,7 @@ export const fetchCompetitionQuery = (competitionId?: Competition['_id']) => {
 export const fetchFlowEntriesQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
     ...convexQuery(api.competitions.getFlowEntries, {
-      competitionId
+      competitionId,
     }),
     gcTime: GC_TIME,
   })
@@ -37,34 +37,26 @@ export const fetchRapidEntriesQuery = (competitionId?: Competition['_id']) => {
   })
 }
 
-export const fetchFlowEntryQuery = (
-  userId: User['_id'],
-  competitionId?: Competition['_id'],
-) => {
+export const fetchFlowEntryQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
-    ...convexQuery(api.competitions.getFlowEntry, { userId, competitionId }),
+    ...convexQuery(api.competitions.getFlowEntry, { competitionId }),
     gcTime: GC_TIME,
   })
 }
 
-export const fetchRapidEntryQuery = (
-  userId: User['_id'],
-  competitionId?: Competition['_id'],
-) => {
+export const fetchRapidEntryQuery = (competitionId?: Competition['_id']) => {
   return queryOptions({
-    ...convexQuery(api.competitions.getRapidEntry, { userId, competitionId }),
+    ...convexQuery(api.competitions.getRapidEntry, { competitionId }),
     gcTime: GC_TIME,
   })
 }
 
 export const fetchShouldShowResultQuery = (
-  userId: User['_id'],
   competitionId?: Competition['_id'],
 ) => {
   return queryOptions({
     ...convexQuery(api.competitions.shouldShowResult, {
       competitionId,
-      userId,
     }),
     gcTime: GC_TIME,
   })
