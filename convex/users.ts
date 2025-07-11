@@ -2,11 +2,21 @@ import { v } from 'convex/values'
 import { query } from './_generated/server'
 import {
   addFriendToUser,
+  getUserByEmail,
   getUserByUsername,
   insertUser,
   updateUser,
 } from './models/users/helpers'
 import { authQuery, authMutation } from './shared/customFunctions'
+import { getAuthUserId } from '@convex-dev/auth/server'
+
+export const getAuthUser = query({
+  handler: async (ctx) => {
+    const id = await getAuthUserId({ auth: ctx.auth })
+    if (!id) return null
+    return (await ctx.db.get(id))!
+  }
+})
 
 export const get = query({
   args: { id: v.id('users') },
@@ -20,6 +30,13 @@ export const getByUsername = query({
   args: { username: v.string() },
   handler: async (ctx, { username }) => {
     return await getUserByUsername(ctx, username)
+  },
+})
+
+export const getByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
+    return await getUserByEmail(ctx, email)
   },
 })
 
@@ -46,11 +63,10 @@ export const searchUsers = authQuery({
 })
 
 export const insert = authMutation({
-  args: { username: v.string(), email: v.string(), image: v.string() },
+  args: { username: v.string(), email: v.string(), avatar: v.string() },
   handler: async (ctx, args) => {
     return await insertUser(ctx, {
       ...args,
-      avatar: args.image,
       elo: {
         flow: 0,
         rapid: 0,
@@ -84,7 +100,7 @@ export const update = authMutation({
 
 export const updatePresence = authMutation({
   handler: async (ctx) => {
-    await ctx.db.patch(ctx.user._id, { lastActive: Date.now() })
+    await updateUser(ctx, ctx.user._id, { lastActive: Date.now() })
   },
 })
 

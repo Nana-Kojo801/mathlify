@@ -15,7 +15,6 @@ import { Route as AppRouteImport } from './routes/app/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthIndexImport } from './routes/auth/index'
 import { Route as AppIndexImport } from './routes/app/index'
-import { Route as AuthSsoCallbackImport } from './routes/auth/sso-callback'
 import { Route as AppCompetitionRouteImport } from './routes/app/competition/route'
 import { Route as AppSearchUsersIndexImport } from './routes/app/search-users/index'
 import { Route as AppProfileIndexImport } from './routes/app/profile/index'
@@ -61,12 +60,6 @@ const AppIndexRoute = AppIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRouteRoute,
-} as any)
-
-const AuthSsoCallbackRoute = AuthSsoCallbackImport.update({
-  id: '/auth/sso-callback',
-  path: '/auth/sso-callback',
-  getParentRoute: () => rootRoute,
 } as any)
 
 const AppCompetitionRouteRoute = AppCompetitionRouteImport.update({
@@ -217,13 +210,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/competition'
       preLoaderRoute: typeof AppCompetitionRouteImport
       parentRoute: typeof AppRouteImport
-    }
-    '/auth/sso-callback': {
-      id: '/auth/sso-callback'
-      path: '/auth/sso-callback'
-      fullPath: '/auth/sso-callback'
-      preLoaderRoute: typeof AuthSsoCallbackImport
-      parentRoute: typeof rootRoute
     }
     '/app/': {
       id: '/app/'
@@ -451,7 +437,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/competition': typeof AppCompetitionRouteRouteWithChildren
-  '/auth/sso-callback': typeof AuthSsoCallbackRoute
   '/app/': typeof AppIndexRoute
   '/auth': typeof AuthIndexRoute
   '/app/competition/': typeof AppCompetitionIndexRoute
@@ -477,7 +462,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth/sso-callback': typeof AuthSsoCallbackRoute
   '/app': typeof AppIndexRoute
   '/auth': typeof AuthIndexRoute
   '/app/competition': typeof AppCompetitionIndexRoute
@@ -505,7 +489,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/competition': typeof AppCompetitionRouteRouteWithChildren
-  '/auth/sso-callback': typeof AuthSsoCallbackRoute
   '/app/': typeof AppIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/app/competition/': typeof AppCompetitionIndexRoute
@@ -535,7 +518,6 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/competition'
-    | '/auth/sso-callback'
     | '/app/'
     | '/auth'
     | '/app/competition/'
@@ -560,7 +542,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth/sso-callback'
     | '/app'
     | '/auth'
     | '/app/competition'
@@ -586,7 +567,6 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/competition'
-    | '/auth/sso-callback'
     | '/app/'
     | '/auth/'
     | '/app/competition/'
@@ -614,14 +594,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
-  AuthSsoCallbackRoute: typeof AuthSsoCallbackRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
-  AuthSsoCallbackRoute: AuthSsoCallbackRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 
@@ -637,7 +615,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/app",
-        "/auth/sso-callback",
         "/auth/"
       ]
     },
@@ -671,9 +648,6 @@ export const routeTree = rootRoute
         "/app/competition/play/flow/",
         "/app/competition/play/rapid/"
       ]
-    },
-    "/auth/sso-callback": {
-      "filePath": "auth/sso-callback.tsx"
     },
     "/app/": {
       "filePath": "app/index.tsx",

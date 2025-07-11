@@ -30,21 +30,12 @@ const getUser = async (
   user: any
 ) => {
   if (online) {
-    let existingUser = await convex.query(api.users.getByClerkId, {
-      clerkId: user.id,
-    })
-    if (!existingUser) {
-      console.log('clerk user', user);
-      
-      const newUser = await convex.mutation(api.users.insert, {
-        clerkId: user.id,
-        username: user.firstName,
-        email: user.primaryEmailAddress.emailAddress
-      })
-      existingUser = newUser
-    }
+    let existingUser = (await convex.query(api.users.getByEmail, {
+      email: user.email,
+    }))!
+
     const existingLocalUser = await db.users
-      .filter((localUser) => localUser.clerkId === user.id)
+      .filter((localUser) => localUser.email === user.email)
       .first()
 
     if (existingLocalUser) {
@@ -54,7 +45,7 @@ const getUser = async (
     }
     return existingUser
   }
-  return (await db.users.filter((localUser) => localUser.clerkId === user.id).first())!
+  return (await db.users.filter((localUser) => localUser.email === user.email).first())!
 }
 
 export const createAuthStore = (
@@ -70,7 +61,6 @@ export const createAuthStore = (
         set({ loading: true })
         const authenticatedUser = await getUser(convex, online, user)
         set({ user: authenticatedUser, loading: false, authenticated: true })
-        await new Promise((resolve) => setTimeout(resolve, 0))
       } catch (e) {
         console.error(e)
         set({ loading: false, authenticated: false })
