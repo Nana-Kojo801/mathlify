@@ -82,7 +82,18 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,jpg,jpeg,gif}'],
+        globPatterns: [
+          'assets/**/*.js',
+          'assets/**/*.css',
+          '*.html',
+          '*.svg',
+          '*.png',
+          '*.jpg',
+          '*.jpeg',
+          '*.gif',
+          '*.ico',
+          '*.webmanifest'
+        ],
         runtimeCaching: [
           {
             // Cache avatar images from Convex
