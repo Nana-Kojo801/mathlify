@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import FooterNavigation from './-components/footer-navigation'
+import Navigation from './-components/footer-navigation'
 import { initPresense } from '@/lib/presence'
 
 export const Route = createFileRoute('/app')({
@@ -15,10 +15,13 @@ function RouteComponent() {
   initPresense()
   return (
     <div className="w-full h-screen flex flex-col">
-      <main className="flex-grow overflow-y-auto">
+      {/* Navigation - Sidebar on desktop, footer on mobile */}
+      <Navigation />
+      
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto lg:ml-20 lg:mb-0 mb-[64px] lg:group-hover:ml-64 transition-all duration-300 ease-in-out">
         <Outlet />
       </main>
-      <FooterNavigation />
     </div>
   )
 }
