@@ -7,9 +7,9 @@ import {
   fetchRapidEntryQuery,
   fetchShouldShowResultQuery,
   fetchWeek,
-} from './-components/queries'
+} from './-queries'
 import { Clock, Loader2, Trophy } from 'lucide-react'
-import { useCompetition } from './-components/hooks'
+import { useCompetition } from './-hooks'
 
 export const Route = createFileRoute('/app/competition')({
   component: RouteComponent,

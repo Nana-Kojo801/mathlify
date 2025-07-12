@@ -1,6 +1,6 @@
 import { Trophy, Target, Clock, ChevronRight, Users } from 'lucide-react'
 import UserAvatar from '@/components/user-avatar'
-import { useFlowEntries } from '../hooks'
+import { useFlowEntries } from '../../-hooks'
 
 const OtherPlayers = () => {
   const entries = useFlowEntries()

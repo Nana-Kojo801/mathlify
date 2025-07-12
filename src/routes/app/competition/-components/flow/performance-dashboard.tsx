@@ -1,6 +1,6 @@
 import { Award, BarChart2, Clock, TrendingUp } from 'lucide-react'
 import React from 'react'
-import { useFlowEntry } from '../hooks'
+import { useFlowEntry } from '../../-hooks'
 
 function StatCard({
   icon,

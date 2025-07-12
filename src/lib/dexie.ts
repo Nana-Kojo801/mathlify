@@ -10,8 +10,8 @@ class MathlifyDB extends Dexie {
     constructor() {
         super('MathlifyDB');
         this.version(3).stores({
-            users: '++_id, clerkId, username, email, password, avatar, elo, friends, _creationTime, lastCompetition, lastActive',
-            friends: '++_id, clerkId, username, email, password, avatar, elo, friends, _creationTime, lastCompetition, lastActive',
+            users: '++_id, username, email, avatar, elo, friends, _creationTime, lastCompetition, lastActive',
+            friends: '++_id, username, email, avatar, elo, friends, _creationTime, lastCompetition, lastActive',
             friendMessages: '++_id, senderId, receiverId, message, _creationTime',
         })
     }

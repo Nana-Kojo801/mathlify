@@ -3,7 +3,7 @@ import PerformanceDashboard from './performance-dashboard'
 import TopPlayers from './top-players'
 import OtherPlayers from './other-players'
 import CompetitionCta from './competition-cta'
-import { useWeek } from '../hooks'
+import { useWeek } from '../../-hooks'
 
 const FlowTab = () => {
   const week = useWeek()

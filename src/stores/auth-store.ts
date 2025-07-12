@@ -13,7 +13,7 @@ export interface AuthStoreType {
   user: User | null
   loading: boolean
   authenticated: boolean
-  init: (user: any) => Promise<void>
+  init: (online: boolean) => Promise<void>
   updateAuthUser: (changes: Partial<User>) => Promise<void>
   editProfile: (
     values: { username: string } & {
@@ -25,15 +25,14 @@ export interface AuthStoreType {
 const getUser = async (
   convex: ConvexReactClient,
   online: boolean,
-  user: any
 ) => {
   if (online) {
-    let existingUser = (await convex.query(api.users.getByEmail, {
-      email: user.email,
-    }))!
+    console.log('geeting online user');
+    
+    let existingUser = (await convex.query(api.users.getAuthUser))!
 
     const existingLocalUser = await db.users
-      .filter((localUser) => localUser.email === user.email)
+      .filter((localUser) => localUser.email === existingUser!.email)
       .first()
 
     if (existingLocalUser) {
@@ -43,21 +42,22 @@ const getUser = async (
     }
     return existingUser
   }
-  return (await db.users.filter((localUser) => localUser.email === user.email).first())!
+  return ((await db.users.toArray())[0])!
 }
 
 export const createAuthStore = (
   convex: ConvexReactClient,
-  online: boolean,
 ) =>
   createStore<AuthStoreType>((set, get) => ({
     user: null,
     loading: false,
     authenticated: false,
-    init: async (user: any) => {
+    init: async (online: boolean) => {
       try {
         set({ loading: true })
-        const authenticatedUser = await getUser(convex, online, user)
+        console.log('initing');
+        
+        const authenticatedUser = await getUser(convex, online)
         set({ user: authenticatedUser, loading: false, authenticated: true })
       } catch (e) {
         console.error(e)

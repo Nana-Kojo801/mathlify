@@ -1,6 +1,6 @@
 import { Medal, Crown } from 'lucide-react'
 import UserAvatar from '@/components/user-avatar'
-import { useFlowEntries } from '../hooks'
+import { useFlowEntries } from '../../-hooks'
 
 const PlayerCard = ({ player, rank }: { 
   player: { 

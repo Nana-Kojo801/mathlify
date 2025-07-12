@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
 import { Award, BarChart2 } from 'lucide-react'
-import { useCompetition } from './hooks'
+import { useCompetition } from '../-hooks'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 

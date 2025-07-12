@@ -11,7 +11,6 @@ import { syncFriendMessages } from '@/stores/friend-messages-store'
 import { syncFriends } from '@/stores/friends-store'
 import { createAuthStore, type AuthStoreType } from '@/stores/auth-store'
 import { useStore } from 'zustand'
-import { api } from '@convex/_generated/api'
 
 export interface AppContextType {
   auth: ReturnType<typeof createAuthStore>
@@ -24,7 +23,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 export default function AppWrapper({ children }: PropsWithChildren) {
   const convex = useConvex()
   const { online } = useNetworkState()
-  const [auth] = useState(createAuthStore(convex, online ?? false))
+  const [auth] = useState(createAuthStore(convex))
   const [isInitializing, setIsInitializing] = useState(true)
 
   const sync = useCallback(async () => {
@@ -47,13 +46,8 @@ export default function AppWrapper({ children }: PropsWithChildren) {
 
   const init = useCallback(async () => {
     try {
-      const user = await convex.query(api.users.getAuthUser)
-      if (!user) {
-        setIsInitializing(false)
-        return
-      }
       setIsInitializing(true)
-      await auth.getState().init(user)
+      await auth.getState().init(online ?? false)
       await sync()
       setIsInitializing(false)
       console.log('[APP]: INITIALIZED')
@@ -61,7 +55,7 @@ export default function AppWrapper({ children }: PropsWithChildren) {
       setIsInitializing(false)
       console.log('[APP]: AN ERROR OCCURRED')
     }
-  }, [auth, sync])
+  }, [auth, sync, online])
 
   return (
     <AppContext.Provider value={{ auth, init, isInitializing }}>

@@ -2,15 +2,15 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import UserAvatar from '@/components/user-avatar'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { convexQuery, useConvex } from '@convex-dev/react-query'
+import { useQuery } from '@tanstack/react-query'
+import { convexQuery } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { FriendRequest, User } from '@/types'
 import { toast } from 'sonner'
 import Spinner from '@/components/spinner'
-import { useFriendsStore } from '@/stores/friends-store'
 import { PageHeader } from '@/components/page-header'
+import { useAcceptFriendRequestMutation } from './-mutations'
 
 export const Route = createFileRoute('/app/friend-requests/')({
   component: RouteComponent,
@@ -45,18 +45,9 @@ const Request = ({
 }: {
   request: FriendRequest & { sender: User; receiver: User }
 }) => {
-  const convex = useConvex()
-  const addFriend = useFriendsStore((state) => state.addFriend)
   const { mutateAsync: acceptRequest, isPending: isAcceptingRequest } =
-    useMutation({
-      mutationFn: async () => {
-        await Promise.all([
-          convex.mutation(api.friendRequests.acceptRequests, {
-            requestId: request._id,
-          }),
-          addFriend(request.sender),
-        ])
-      },
+    useAcceptFriendRequestMutation({
+      request,
       onError: () => {
         toast.error('An error occured', { duration: 1000 })
       },

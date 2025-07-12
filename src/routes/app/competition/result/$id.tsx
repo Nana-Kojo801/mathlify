@@ -1,6 +1,6 @@
 import { Zap, Brain, Loader2, ArrowLeft } from 'lucide-react'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { fetchCompetitionResultQuery } from './-components/queries'
+import { fetchCompetitionResultQuery } from './-queries'
 import type { Competition } from '@/types'
 import GameModeSection from './-components/game-mode-section'
 import { useEffect } from 'react'

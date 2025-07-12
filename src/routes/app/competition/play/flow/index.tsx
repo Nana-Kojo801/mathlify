@@ -9,10 +9,9 @@ import {
 } from '@/components/game-modes/flow-game/flow-game-store'
 import Result from './-components/result'
 import { calculateFlowCompetitionScore } from '@/lib/helpers'
-import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
-import {useFlowEntry, useCompetition} from '../../-components/hooks'
+import {useFlowEntry, useCompetition} from '../../-hooks'
 import { useAuth } from '@/components/app-wrapper'
 
 export const Route = createFileRoute('/app/competition/play/flow/')({
@@ -21,7 +20,6 @@ export const Route = createFileRoute('/app/competition/play/flow/')({
 
 function RouteComponent() {
   const updateAuthUser = useAuth((state) => state.updateAuthUser)
-  const user = useUser()
   const competition = useCompetition()
   const gameState = useGameState()
   const { playAgain } = useActions()
@@ -54,7 +52,6 @@ function RouteComponent() {
       if (shouldUpdateEntry) {
         const entryData = {
           competitionId: competition._id,
-          userId: user._id,
           round: gameData.round,
           avgTime,
           score: newScore,
@@ -68,7 +65,7 @@ function RouteComponent() {
         score: newScore,
       }))
     },
-    [gameData, competition, user, addEntry],
+    [gameData, competition, addEntry],
   )
 
   const renderResults = useCallback(() => {

@@ -7,7 +7,7 @@ import {
   fetchRapidEntryQuery,
   fetchShouldShowResultQuery,
   fetchWeek,
-} from './queries'
+} from './-queries'
 import { useUser } from '@/hooks/user'
 import { useState, useEffect } from 'react'
 import { DateTime } from 'luxon'

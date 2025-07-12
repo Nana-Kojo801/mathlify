@@ -8,9 +8,10 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import ConvexProvider from '@/integrations/convex/provider'
 import AppWrapper, { useApp } from './components/app-wrapper.tsx'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useConvexAuth } from 'convex/react'
 import LoadingScreen from './routes/-components/loading-screen.tsx'
+import { useNetworkState } from 'react-use'
 
 // Create a new router instance
 const router = createRouter({
@@ -33,14 +34,26 @@ declare module '@tanstack/react-router' {
 }
 
 const App = () => {
+  const { online } = useNetworkState()
   const { isLoading } = useConvexAuth()
   const app = useApp()
+  const [isConvexLoading, setIsConvexLoading] = useState(isLoading)
 
   useEffect(() => {
-    if (!isLoading) app.init()
+    setIsConvexLoading(isLoading)
   }, [isLoading])
 
-  if (isLoading || app.isInitializing) return <LoadingScreen />
+  useEffect(() => {
+    if(!online) setIsConvexLoading(false)
+  }, [online])
+
+  useEffect(() => {
+    if (!isConvexLoading) {
+      app.init()
+    }
+  }, [isConvexLoading])
+
+  if (isConvexLoading || app.isInitializing) return <LoadingScreen />
 
   return <RouterProvider router={router} context={{ app }} />
 }

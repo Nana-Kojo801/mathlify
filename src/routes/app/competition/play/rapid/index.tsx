@@ -8,10 +8,9 @@ import Questions from './-components/questions'
 import { calculateRapidMarathonScore } from '@/lib/helpers'
 import { useState } from 'react'
 import Result from './-components/result'
-import { useUser } from '@/hooks/user'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
-import { useRapidEntry, useCompetition} from '../../-components/hooks'
+import { useRapidEntry, useCompetition} from '../../-hooks'
 import { useAuth } from '@/components/app-wrapper'
 
 export const Route = createFileRoute('/app/competition/play/rapid/')({
@@ -20,7 +19,6 @@ export const Route = createFileRoute('/app/competition/play/rapid/')({
 
 function RouteComponent() {
   const updateAuthUser = useAuth((state) => state.updateAuthUser)
-  const user = useUser()
   const gameState = useGameState()
   const competition = useCompetition()
   const score = useScore()
@@ -44,7 +42,6 @@ function RouteComponent() {
     if (shouldUpdateEntry) {
       const entryData = {
         competitionId: competition._id,
-        userId: user._id,
         questions: score,
         avgTime,
         score: newScore,
