@@ -1,5 +1,5 @@
 import { Crown, Target, Timer, Trophy } from 'lucide-react'
-import useResult from './useResult'
+import {useResult} from '../-hooks'
 import type { GameType } from '@/types'
 
 const StatsOverview = ({ mode }: { mode: GameType }) => {

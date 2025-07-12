@@ -83,16 +83,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: [
-          'assets/**/*.js',
-          'assets/**/*.css',
-          '*.html',
-          '*.svg',
-          '*.png',
-          '*.jpg',
-          '*.jpeg',
-          '*.gif',
-          '*.ico',
-          '*.webmanifest'
+          '**\/*.{js,wasm,css,html,svg,png,jpg,jpeg,gif,ico,webmanifest}',
         ],
         runtimeCaching: [
           {

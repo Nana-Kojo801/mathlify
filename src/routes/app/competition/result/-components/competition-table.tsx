@@ -1,4 +1,4 @@
-import useResult from './useResult'
+import { useResult } from '../-hooks'
 import UserAvatar from '@/components/user-avatar'
 import { Medal, Star, Clock, Award } from 'lucide-react'
 import type { GameType } from '@/types'

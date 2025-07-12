@@ -4,7 +4,7 @@ import { useParams } from '@tanstack/react-router'
 import type { Competition } from '@/types'
 import { fetchCompetitionResultQuery } from './-queries'
 
-export default function useResult() {
+export const useResult = () => {
   const user = useUser()
   const { id } = useParams({ from: '/app/competition/result/$id' })
   const { data: result } = useSuspenseQuery(
