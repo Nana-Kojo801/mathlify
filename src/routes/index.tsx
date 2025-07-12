@@ -3,17 +3,19 @@ import { Button } from '@/components/ui/button'
 import Logo from '@/logo.svg'
 import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
-import { useConvexAuth } from 'convex/react'
+import { useUser } from '@/hooks/user'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
 function LandingPage() {
-  const { isAuthenticated } = useConvexAuth()
-  const [showAuthChangeModal, setShowAuthChangeModal] = useState(!!localStorage.getItem('mathlify-session'))
+  const user = useUser()
+  const [showAuthChangeModal, setShowAuthChangeModal] = useState(
+    !!localStorage.getItem('mathlify-session'),
+  )
 
-  if (isAuthenticated) return <Navigate to="/app" />
+  if (user) return <Navigate to="/app" />
 
   return (
     <>
@@ -22,9 +24,13 @@ function LandingPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-background rounded-lg shadow-2xl border w-full max-w-xs sm:max-w-md px-4 py-6 sm:p-6 mx-2 flex flex-col gap-5">
             <div className="flex flex-col gap-2 text-center">
-              <h2 className="text-lg font-bold">Authentication System Updated</h2>
+              <h2 className="text-lg font-bold">
+                Authentication System Updated
+              </h2>
               <p className="text-muted-foreground text-sm">
-                Mathlify now uses Google for authentication. For security and a better experience, you'll need to sign up again using your Google account. Your old account will no longer work.
+                Mathlify now uses Google for authentication. For security and a
+                better experience, you'll need to sign up again using your
+                Google account. Your old account will no longer work.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-3 mt-2">
