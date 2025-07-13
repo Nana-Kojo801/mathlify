@@ -1,5 +1,4 @@
 import UserAvatar from '@/components/user-avatar'
-import { useUser } from '@/hooks/user'
 import { convexQuery } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { useQuery } from '@tanstack/react-query'
@@ -10,11 +9,9 @@ import type { User } from '@/types'
 import useFriends from '@/hooks/friends'
 
 const Friend = ({ friend }: { friend: User }) => {
-  const user = useUser()
   const { data: unreadCount } = useQuery({
     ...convexQuery(api.friendMessages.getUnreadMessages, {
       friendId: friend._id,
-      userId: user._id,
     }),
     initialData: 0,
   })
@@ -58,7 +55,7 @@ const Friend = ({ friend }: { friend: User }) => {
 
 export default function FriendsList() {
   const friends = useFriends()
-  
+
   return (
     <section className="mb-6 w-full">
       {/* Header with notifications */}
