@@ -29,18 +29,20 @@ const getUser = async (
   if (online) {
     console.log('geeting online user');
     
-    let existingUser = (await convex.query(api.users.getAuthUser))!
+    const authUser = (await convex.query(api.users.getAuthUser))!
+
+    if(!authUser) return null
 
     const existingLocalUser = await db.users
-      .filter((localUser) => localUser.email === existingUser!.email)
+      .filter((localUser) => localUser.email === authUser!.email)
       .first()
 
     if (existingLocalUser) {
-      await db.users.update(existingUser._id, existingUser)
+      await db.users.update(authUser._id, authUser)
     } else {
-      await db.users.add(existingUser)
+      await db.users.add(authUser)
     }
-    return existingUser
+    return authUser
   }
   return ((await db.users.toArray())[0])!
 }
@@ -57,8 +59,8 @@ export const createAuthStore = (
         set({ loading: true })
         console.log('initing');
         
-        const authenticatedUser = await getUser(convex, online)
-        set({ user: authenticatedUser, loading: false, authenticated: true })
+        const user = await getUser(convex, online)
+        set({ user, loading: false, authenticated: user === null ? false : true })
       } catch (e) {
         console.error(e)
         set({ loading: false, authenticated: false })

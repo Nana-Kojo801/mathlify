@@ -3,19 +3,19 @@ import { Button } from '@/components/ui/button'
 import Logo from '@/logo.svg'
 import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
-import { useUser } from '@/hooks/user'
+import { useAuth } from '@/components/app-wrapper'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
 function LandingPage() {
-  const user = useUser()
+  const isAuthenticated = useAuth(state => state.authenticated)
   const [showAuthChangeModal, setShowAuthChangeModal] = useState(
     !!localStorage.getItem('mathlify-session'),
   )
 
-  if (user) return <Navigate to="/app" />
+  if (isAuthenticated) return <Navigate to="/app" />
 
   return (
     <>
