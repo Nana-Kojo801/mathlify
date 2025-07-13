@@ -3,7 +3,7 @@ import { useUser } from '@/hooks/user'
 import { convexQuery } from '@convex-dev/react-query'
 import { api } from '@convex/_generated/api'
 import { useQuery } from '@tanstack/react-query'
-import { UserPlus, MessagesSquare, Bell } from 'lucide-react'
+import { UserPlus, MessagesSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import type { User } from '@/types'
@@ -65,14 +65,6 @@ export default function FriendsList() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-foreground">Friends</h2>
         <div className="flex items-center space-x-3">
-          <Link to="/app/friend-requests">
-            <Button variant="ghost" className="p-2 rounded-full relative">
-              <Bell className="size-5 text-foreground" />
-              {/* <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                2
-              </span> */}
-            </Button>
-          </Link>
           <Link to="/app/search-users">
             <Button variant="ghost" className="p-2 rounded-full">
               <UserPlus className="size-5 text-foreground" />

@@ -1,119 +1,15 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { UserPlus, ArrowLeft, Clock3, Check } from 'lucide-react'
-import UserAvatar from '@/components/user-avatar'
+import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from 'convex/react'
 import { api } from '@convex/_generated/api'
-import type { FriendRequest, User } from '@/types'
-import { useMutation } from '@tanstack/react-query'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { toast } from 'sonner'
-import { useUser } from '@/hooks/user'
-import Spinner from '@/components/spinner'
-import { Badge } from '@/components/ui/badge'
+import Friend from './-components/friend'
+import { PageHeader } from '@/components/page-header'
 
 export const Route = createFileRoute('/app/search-users/')({
   component: SearchUsersPage,
 })
-
-const Friend = ({
-  friend,
-  sentRequests,
-  receivedRequests,
-}: {
-  friend: User
-  sentRequests: FriendRequest[]
-  receivedRequests: FriendRequest[]
-}) => {
-  const user = useUser()
-
-  const { mutateAsync: sendFriendRequest, isPending: isSendingFriendRequest } =
-    useMutation({
-      mutationFn: useConvexMutation(api.friendRequests.insert),
-      onError: () => {
-        toast.error('An error occured', { duration: 1000 })
-      },
-    })
-
-  const { mutateAsync: acceptRequest, isPending: isAcceptingRequest } =
-    useMutation({
-      mutationFn: useConvexMutation(api.friendRequests.acceptRequests),
-      onError: () => {
-        toast.error('An error occured', { duration: 1000 })
-      },
-      onSuccess: () => {
-        toast.success('Friend request accepted', { duration: 1000 })
-      },
-    })
-
-  const alreadySent = sentRequests.some(
-    (request) => request.receiverId === friend._id,
-  )
-  const alreadyReceived = receivedRequests.some(
-    (request) => request.receiverId === user._id,
-  )
-  const alreadyFriend = user.friends.some((friendId) => friendId === friend._id)
-
-  return (
-    <div
-      key={friend._id}
-      className="flex items-center justify-between p-3 bg-card/60 backdrop-blur-sm rounded-xl border border-border/50 hover:shadow-sm transition"
-    >
-      <div className="flex items-center space-x-4">
-        <UserAvatar
-          username={friend.username}
-          avatar={friend.avatar!}
-          className="size-10"
-        />
-        <div className="flex flex-col">
-          <span className="font-medium">{friend.username}</span>
-        </div>
-      </div>
-
-      {user._id === friend._id ? (
-        <Badge>You</Badge>
-      ) : alreadyFriend ? (
-        <Check className="size-6 text-green-400" />
-      ) : alreadySent ? (
-        <Clock3 className="size-6 text-yellow-400" />
-      ) : alreadyReceived ? (
-        <Button
-          onClick={async () => {
-            const request = receivedRequests.find(
-              (request) => request.senderId === friend._id,
-            )!
-            await acceptRequest({ requestId: request._id })
-          }}
-          className="bg-green-400 text-white"
-          size="sm"
-        >
-          {isAcceptingRequest ? <Spinner /> : <Check className="size-6" />}
-          Accept
-        </Button>
-      ) : (
-        <Button
-          onClick={async () => {
-            await sendFriendRequest({
-              receiverId: friend._id,
-            })
-          }}
-          size="sm"
-          className="gap-1"
-          disabled={isSendingFriendRequest}
-        >
-          {isSendingFriendRequest ? (
-            <Spinner />
-          ) : (
-            <UserPlus className="size-4" />
-          )}
-          Send request
-        </Button>
-      )}
-    </div>
-  )
-}
 
 function SearchUsersPage() {
   const [query, setQuery] = useState('')
@@ -124,34 +20,49 @@ function SearchUsersPage() {
     useQuery(api.friendRequests.getReceivedRequests, {}) || []
 
   return (
-    <div className="flex flex-col fixed inset-0 w-full h-full z-20 bg-background text-foreground">
-      {/* Top Bar */}
-      <div className="border-b border-border p-4 pb-3 mb-3">
-        <div className="relative flex items-center justify-center mb-4">
-          {/* Back Button */}
-          <Link
-            to="/app"
-            className="absolute left-0 text-muted-foreground hover:text-foreground transition"
-          >
-            <ArrowLeft className="size-5" />
-          </Link>
+    <div className="fixed inset-0 z-20 w-full h-dvh bg-background text-foreground flex flex-col">
+      {/* Modern Header */}
+      <PageHeader
+        title="Search Players"
+        showBackButton
+        backLink="/app"
+        className="border-b border-border/50"
+      />
 
-          {/* Title */}
-          <h2 className="text-lg font-semibold">Search for Friends</h2>
+      {/* Search Section */}
+      <div className="px-4 py-4 border-b border-border/30 bg-gradient-to-b from-background to-background/95">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search by username..."
+            className="w-full pl-10 pr-4 py-3 bg-card/50"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
-
-        {/* Search Input */}
-        <Input
-          type="text"
-          placeholder="Search users..."
-          className="w-full py-2"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        
       </div>
 
       {/* User List */}
-      <div className="flex-1 px-4 pb-4 space-y-3 overflow-y-auto">
+      <div className="flex-1 px-4 py-4 space-y-3 overflow-y-auto">
+        {!query && (
+          <div className="text-center py-8">
+            <Search className="size-12 text-muted-foreground/50 mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">
+              Start typing to search for other players
+            </p>
+          </div>
+        )}
+        
+        {query && users.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground text-sm">
+              No users found matching "{query}"
+            </p>
+          </div>
+        )}
+
         {users.map((user) => (
           <Friend
             key={user._id}

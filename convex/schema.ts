@@ -1,10 +1,7 @@
 import { defineSchema } from 'convex/server'
 import { userGameData, userTable } from './models/users/table'
 import friendRequestsTable from './models/friendRequests/table'
-import {
-  friendMessagesTable,
-  userConversationsTable,
-} from './models/friendMessages/table'
+import friendMessagesTable from './models/friendMessages/table'
 import presetsTable from './models/presets/table'
 import {
   competitions,
@@ -19,7 +16,6 @@ export default defineSchema({
   userGameData: userGameData,
   friendRequests: friendRequestsTable,
   friendMessages: friendMessagesTable,
-  userConversations: userConversationsTable,
   presets: presetsTable,
   flowCompetitionEntries: flowCompetitionEntries,
   rapidCompetitionEntries: rapidCompetitionEntries,

@@ -55,38 +55,30 @@ export const markUserFriendChatAsRead = async (
   ctx: MutationCtx,
   userId: User['_id'],
   friendId: User['_id'],
+  messageId: FriendMessage['_id'] | undefined,
 ) => {
-  const messages = await ctx.db
-    .query('friendMessages')
-    .withIndex('by_sender_and_receiver', (q) =>
-      q.eq('senderId', friendId).eq('receiverId', userId),
-    )
-    .collect()
-  await Promise.all(
-    messages.map(async (message) => {
-      await ctx.db.patch(message._id, {
+  if (messageId) {
+    const message = await ctx.db.get(messageId)
+    if (!message) return
+    if (!message.readBy.includes(userId)) {
+      await ctx.db.patch(messageId, {
         readBy: [...message.readBy, userId],
       })
-    }),
-  )
-
-  const userConversation = await ctx.db
-    .query('userConversations')
-    .withIndex('by_user_and_friend', (q) =>
-      q.eq('userId', userId).eq('friendId', friendId),
-    )
-    .unique()
-
-  if (userConversation) {
-    await ctx.db.patch(userConversation._id, {
-      lastReadTimestamp: Date.now(),
-    })
+    }
   } else {
-    await ctx.db.insert('userConversations', {
-      userId,
-      friendId,
-      lastReadTimestamp: Date.now(),
-    })
+    const messages = await ctx.db
+      .query('friendMessages')
+      .withIndex('by_sender_and_receiver', (q) =>
+        q.eq('senderId', friendId).eq('receiverId', userId),
+      )
+      .collect()
+    await Promise.all(
+      messages.map(async (message) => {
+        await ctx.db.patch(message._id, {
+          readBy: [...message.readBy, userId],
+        })
+      }),
+    )
   }
 }
 
@@ -95,26 +87,12 @@ export const getUserFriendChatUnreadMessagesCount = async (
   userId: User['_id'],
   friendId: User['_id'],
 ) => {
-  const userConversation = await ctx.db
-    .query('userConversations')
-    .withIndex('by_user_and_friend', (q) =>
-      q.eq('userId', userId).eq('friendId', friendId)
-    )
-    .unique()
-
-  if (!userConversation) return 0
-
   const messages = await ctx.db
     .query('friendMessages')
-    .filter((q) =>
-      q.and(
-        q.eq(q.field('senderId'), friendId),
-        q.eq(q.field('receiverId'), userId),
-      ),
+    .withIndex('by_sender_and_receiver', (q) =>
+      q.eq('senderId', friendId).eq('receiverId', userId),
     )
-    .filter((q) =>
-      q.gt(q.field('_creationTime'), userConversation.lastReadTimestamp),
-    )
+
     .collect()
   return messages.filter((message) => !message.readBy.includes(userId)).length
 }

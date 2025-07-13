@@ -28,10 +28,10 @@ export const getMessages = authQuery({
 })
 
 export const markAsRead = authMutation({
-  args: { friendId: v.id('users') },
-  handler: async (ctx, { friendId }) => {
+  args: { friendId: v.id('users'), messageId: v.optional(v.id("friendMessages")) },
+  handler: async (ctx, { friendId, messageId }) => {
     const userId = ctx.user._id
-    await markUserFriendChatAsRead(ctx, userId, friendId)
+    await markUserFriendChatAsRead(ctx, userId, friendId, messageId)
   },
 })
 

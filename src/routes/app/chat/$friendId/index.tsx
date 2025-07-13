@@ -1,7 +1,5 @@
 import { createFileRoute, useParams } from '@tanstack/react-router'
-import {
-  useSuspenseQueries,
-} from '@tanstack/react-query'
+import { useSuspenseQueries } from '@tanstack/react-query'
 import { api } from '@convex/_generated/api'
 import { useUser } from '@/hooks/user'
 import type { FriendMessage, User } from '@/types'
@@ -22,7 +20,11 @@ import {
 import { Button } from '@/components/ui/button'
 import Message from './-components/message'
 import EditMessage from './-components/edit-message'
-import { useDeleteMessageMutation, useEditMessageMutation, useSendMessageMutaion } from './-mutations'
+import {
+  useDeleteMessageMutation,
+  useEditMessageMutation,
+  useSendMessageMutaion,
+} from './-mutations'
 
 export const Route = createFileRoute('/app/chat/$friendId/')({
   component: RouteComponent,
@@ -62,15 +64,28 @@ function RouteComponent() {
   const { mutateAsync: sendMessage, isPending: isSendingMessage } =
     useSendMessageMutaion(friendId as User['_id'])
 
-  const { mutateAsync: deleteMessage, isPending: isDeletingMessage } = useDeleteMessageMutation()
+  const { mutateAsync: deleteMessage, isPending: isDeletingMessage } =
+    useDeleteMessageMutation()
 
-  const { mutateAsync: editMessage, isPending: isEditingMessage } = useEditMessageMutation()
+  const { mutateAsync: editMessage, isPending: isEditingMessage } =
+    useEditMessageMutation()
 
   const markAsRead = useMutation(api.friendMessages.markAsRead)
 
   useEffect(() => {
     markAsRead({ friendId: friendId as User['_id'] })
   }, [friendId, user._id, markAsRead])
+
+  useEffect(() => {
+    if (messages.length === 0) return
+    const currentMessage = messages[messages.length - 1]
+    if (!currentMessage.readBy.includes(user._id)) {
+      markAsRead({
+        friendId: friendId as User['_id'],
+        messageId: currentMessage._id,
+      })
+    }
+  }, [messages])
 
   const handleDeleteMessage = async (messageId: FriendMessage['_id']) => {
     await deleteMessage(messageId)

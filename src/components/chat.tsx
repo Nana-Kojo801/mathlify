@@ -35,9 +35,16 @@ export default function Chat<T>({
 
   useEffect(() => {
     if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'instant' })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }, [messages])
+
   return (
     <>
       <div className="flex-grow overflow-y-auto px-4 py-4">

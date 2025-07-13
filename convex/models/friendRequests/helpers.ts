@@ -8,7 +8,11 @@ export const createFriendRequest = async (
   senderId: User['_id'],
   receiverId: User['_id'],
 ) => {
-  const id = await ctx.db.insert('friendRequests', { senderId, receiverId })
+  const id = await ctx.db.insert('friendRequests', {
+    senderId,
+    receiverId,
+    viewedByReceiver: false,
+  })
   return (await ctx.db.get(id))!
 }
 
@@ -60,4 +64,41 @@ export const getUserReceivedRequests = async (
       }
     }),
   )
+}
+
+export const getUnviewedFriendRequestsCount = async (
+  ctx: QueryCtx,
+  userId: User['_id'],
+) => {
+  return (
+    await ctx.db
+      .query('friendRequests')
+      .withIndex('by_receiver', (q) => q.eq('receiverId', userId))
+      .collect()
+  ).filter((request) => request.viewedByReceiver === false).length
+}
+
+export const viewUserReceivedFriendRequest = async (
+  ctx: MutationCtx,
+  userId: User['_id'],
+  requestId: FriendRequest['_id'] | undefined,
+) => {
+  if (requestId) {
+    const request = await ctx.db.get(requestId)
+    if (!request) return
+    if (!request.viewedByReceiver) {
+      await ctx.db.patch(requestId, { viewedByReceiver: true })
+    }
+  } else {
+    const userFriendRequests = await ctx.db
+      .query('friendRequests')
+      .withIndex('by_receiver', (q) => q.eq('receiverId', userId))
+      .collect()
+
+    await Promise.all(
+      userFriendRequests.map(async (request) => {
+        await ctx.db.patch(request._id, { viewedByReceiver: true })
+      }),
+    )
+  }
 }

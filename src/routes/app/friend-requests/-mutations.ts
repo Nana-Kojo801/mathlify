@@ -1,15 +1,13 @@
 import { useFriendsStore } from '@/stores/friends-store'
 import type { FriendRequest, User } from '@/types'
 import { api } from '@convex/_generated/api'
-import { useMutation, type UseMutationOptions } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useConvex } from 'convex/react'
+import { toast } from 'sonner'
 
-export const useAcceptFriendRequestMutation = ({
-  request,
-  ...options
-}: UseMutationOptions & {
-  request: FriendRequest & { sender: User; receiver: User }
-}) => {
+export const useAcceptFriendRequestMutation = (
+  request: FriendRequest & { sender: User; receiver: User },
+) => {
   const convex = useConvex()
   const addFriend = useFriendsStore((state) => state.addFriend)
   return useMutation({
@@ -21,6 +19,11 @@ export const useAcceptFriendRequestMutation = ({
         addFriend(request.sender),
       ])
     },
-    ...options,
+    onError: () => {
+      toast.error('An error occured', { duration: 1000 })
+    },
+    onSuccess: () => {
+      toast.success('Friend request accepted', { duration: 1000 })
+    },
   })
 }
