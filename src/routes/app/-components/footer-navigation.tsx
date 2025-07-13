@@ -40,7 +40,7 @@ const Navigation = () => {
       <nav className="hidden lg:block fixed left-0 top-0 z-20 h-full bg-background/80 backdrop-blur-md border-r border-border/50 group">
         <div className="w-20 group-hover:w-64 transition-all duration-300 ease-in-out h-full flex flex-col bg-sidebar overflow-hidden">
           {/* Logo/Brand Section */}
-          <div className="h-[65px] border-b px-4 flex items-center">
+          <div className="h-[65px] px-4 flex items-center">
             <img className="size-12 object-cover" src={Logo} alt="Logo" />
             <span className="text-xl font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
               Mathlify
@@ -69,7 +69,7 @@ const Navigation = () => {
           </div>
 
           {/* Bottom Section - User Info */}
-          <div className="p-4 border-t border-border/50">
+          <div className="p-4">
             <div className="flex items-center gap-3 px-2">
               <UserAvatar
                 avatar={user.avatar}
@@ -87,7 +87,7 @@ const Navigation = () => {
       </nav>
 
       {/* Mobile Footer Navigation */}
-      <footer className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-t border-border/50">
+      <footer className="lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md border-t border-border/50">
         <div className="flex justify-around items-center">
           {links.map(({ name, Icon, to }) => (
             <Link

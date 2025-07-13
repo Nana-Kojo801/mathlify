@@ -20,7 +20,7 @@ function SearchUsersPage() {
     useQuery(api.friendRequests.getReceivedRequests, {}) || []
 
   return (
-    <div className="fixed inset-0 z-20 w-full h-dvh bg-background text-foreground flex flex-col">
+    <div className="fixed inset-0 z-20 lg:relative lg:z-0 w-full h-dvh bg-background text-foreground flex flex-col">
       {/* Modern Header */}
       <PageHeader
         title="Search Players"

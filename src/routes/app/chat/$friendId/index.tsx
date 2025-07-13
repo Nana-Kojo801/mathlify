@@ -106,7 +106,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="fixed inset-0 z-30 w-full h-dvh bg-background text-foreground flex flex-col">
+    <div className="fixed inset-0 z-30 lg:relative lg:z-0 w-full h-dvh bg-background text-foreground flex flex-col">
       {/* Header */}
       <PageHeader
         className="flex items-center gap-3 px-4 py-1"
