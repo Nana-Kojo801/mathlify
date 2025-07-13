@@ -100,9 +100,12 @@ export const viewResult = authMutation({
     const competition = await ctx.db.get(competitionId)
     if (!competition) return
     if (!competition.resultViews.includes(ctx.user._id)) {
-      await ctx.db.patch(competition._id, {
-        resultViews: [...competition.resultViews, ctx.user._id],
-      })
+      await Promise.all([
+        ctx.db.patch(ctx.user._id, { lastCompetition: undefined }),
+        ctx.db.patch(competition._id, {
+          resultViews: [...competition.resultViews, ctx.user._id],
+        }),
+      ])
     }
   },
 })
@@ -115,7 +118,7 @@ export const getWeek = authQuery({
 
 export const shouldShowResult = authQuery({
   args: {
-    competitionId: v.optional(v.id('competitions'))
+    competitionId: v.optional(v.id('competitions')),
   },
   handler: async (ctx, { competitionId }) => {
     const userId = ctx.user._id

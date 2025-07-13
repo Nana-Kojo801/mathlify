@@ -1,6 +1,5 @@
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import {
-  useMutation as useTanstackMutation,
   useSuspenseQueries,
 } from '@tanstack/react-query'
 import { api } from '@convex/_generated/api'
@@ -11,10 +10,7 @@ import { useEffect, useState } from 'react'
 import { useMutation } from 'convex/react'
 import Chat from '@/components/chat'
 import { friendQueryOptions, messagesQueryOptions } from './-queries'
-import { useConvex } from 'convex/react'
-import { useFriendMessagesStore } from '@/stores/friend-messages-store'
 import { PageHeader } from '@/components/page-header'
-import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -26,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button'
 import Message from './-components/message'
 import EditMessage from './-components/edit-message'
+import { useDeleteMessageMutation, useEditMessageMutation, useSendMessageMutaion } from './-mutations'
 
 export const Route = createFileRoute('/app/chat/$friendId/')({
   component: RouteComponent,
@@ -45,10 +42,6 @@ export const Route = createFileRoute('/app/chat/$friendId/')({
 function RouteComponent() {
   const user = useUser()
   const { friendId } = useParams({ from: '/app/chat/$friendId/' })
-  const convex = useConvex()
-  const addMessage = useFriendMessagesStore((state) => state.addMessage)
-  const editLocalMessage = useFriendMessagesStore((state) => state.editMessage)
-  const deleteLocalMessage = useFriendMessagesStore((state) => state.deleteMessage)
 
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false)
@@ -67,49 +60,12 @@ function RouteComponent() {
   })
 
   const { mutateAsync: sendMessage, isPending: isSendingMessage } =
-    useTanstackMutation({
-      mutationFn: async (message: string) => {
-        const newMessage = await convex.mutation(
-          api.friendMessages.sendMessage,
-          {
-            receiverId: friendId as User['_id'],
-            message,
-          },
-        )
-        addMessage(newMessage)
-      },
-      onError: () => {
-        toast.error('Error sending message. Please try again later')
-      },
-    })
-  const { mutateAsync: deleteMessage, isPending: isDeletingMessage } =
-    useTanstackMutation({
-      mutationFn: async (id: FriendMessage['_id']) => {
-        await convex.mutation(api.friendMessages.deleteMessage, { id })
-        return id
-      },
-      onSuccess: (messageId) => {
-        deleteLocalMessage(messageId)
-        toast.success('Message deleted successfully')
-      },
-      onError: () => {
-        toast.error('Error deleting message. Please try again later')
-      },
-    })
-  const { mutateAsync: editMessage, isPending: isEditingMessage } =
-    useTanstackMutation({
-      mutationFn: async (data: { messageId: FriendMessage['_id'], newMessage: string }) => {
-        await convex.mutation(api.friendMessages.editMessage, data)
-        return data
-      },
-      onSuccess: ({ messageId, newMessage }) => {
-        editLocalMessage(messageId, newMessage)
-        toast.success('Message edited successfully')
-      },
-      onError: () => {
-        toast.error('Error editing message. Please try again later')
-      },
-    })
+    useSendMessageMutaion(friendId as User['_id'])
+
+  const { mutateAsync: deleteMessage, isPending: isDeletingMessage } = useDeleteMessageMutation()
+
+  const { mutateAsync: editMessage, isPending: isEditingMessage } = useEditMessageMutation()
+
   const markAsRead = useMutation(api.friendMessages.markAsRead)
 
   useEffect(() => {
@@ -122,7 +78,10 @@ function RouteComponent() {
     setSelectedMessageId(null)
   }
 
-  const handleEditMessage = async (messageId: FriendMessage['_id'], newContent: string) => {
+  const handleEditMessage = async (
+    messageId: FriendMessage['_id'],
+    newContent: string,
+  ) => {
     await editMessage({ messageId, newMessage: newContent })
     setEditingMessageId(null)
   }
@@ -159,7 +118,7 @@ function RouteComponent() {
         render={(message) => {
           const isOwn = message.sender._id === user._id
           const isEditing = editingMessageId === message._id
-          
+
           if (isEditing) {
             return (
               <EditMessage
@@ -172,7 +131,7 @@ function RouteComponent() {
               />
             )
           }
-          
+
           return (
             <Message
               key={message._id}
