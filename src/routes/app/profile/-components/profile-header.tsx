@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import UserAvatar from '@/components/user-avatar'
 import { useUser } from '@/hooks/user'
-import { Edit, Calendar, Brain, Zap } from 'lucide-react'
+import { Edit, Calendar } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
 const ProfileHeader = () => {
