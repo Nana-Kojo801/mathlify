@@ -19,7 +19,7 @@ function RouteComponent() {
       <Navigation />
       
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto lg:ml-20 lg:group-hover:ml-64 transition-all duration-300 ease-in-out">
+      <main className="flex-1 overflow-y-auto lg:ml-20 lg:mb-0 mb-[64px] lg:group-hover:ml-64 transition-all duration-300 ease-in-out">
         <Outlet />
       </main>
     </div>
