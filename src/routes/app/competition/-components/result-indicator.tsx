@@ -4,8 +4,10 @@ import { Award, BarChart2 } from 'lucide-react'
 import { useCompetition } from '../-hooks'
 import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
+import { useUser } from '@/hooks/user'
 
 export function ResultIndicator({ onClose }: { onClose: () => void }) {
+  const user = useUser()
   const competition = useCompetition()
   const navigate = useNavigate()
   const viewResult = useMutation(api.competitions.viewResult)
@@ -35,7 +37,7 @@ export function ResultIndicator({ onClose }: { onClose: () => void }) {
             onClick={() => {
               navigate({
                 to: '/app/competition/result/$id',
-                params: { id: competition._id },
+                params: { id: user.lastCompetition! || competition._id },
               })
             }}
             className="h-12 gap-2"
@@ -47,7 +49,7 @@ export function ResultIndicator({ onClose }: { onClose: () => void }) {
             variant="outline"
             className="h-12 gap-2"
             onClick={() => {
-              viewResult({ competitionId: competition._id })
+              viewResult({ competitionId: user.lastCompetition! || competition._id })
               onClose()
             }}
           >
